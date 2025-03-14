@@ -1,16 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
-    function onScanSuccess(decodedText) {
-        document.getElementById("result").innerText = `QR Code: ${decodedText}`;
-        sendToGoogleSheet(decodedText);
-    }
+// Initialisation du scanner QR Code
+console.log("Initialisation du scanner...");
+var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
 
-    new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render(onScanSuccess);
-});
+html5QrcodeScanner.render(onScanSuccess);
+console.log("Scanner lancé !");
 
+// Fonction appelée lorsqu'un QR Code est scanné
+function onScanSuccess(qrCodeMessage) {
+    console.log("Scan réussi :", qrCodeMessage); // Vérifier si cette ligne s'affiche
+    sendDataToGoogleSheet(qrCodeMessage);
+}
 
+// Fonction pour envoyer les données scannées à Google Sheets
 function sendDataToGoogleSheet(scannedData) {
-
-        console.log("Données scannées :", scannedData); // Vérifier si la donnée est correcte
+    console.log("Données scannées :", scannedData); // Vérifier si cette ligne s'affiche
 
     const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // Remplace par ton URL
     const formData = new FormData();
@@ -21,24 +24,12 @@ function sendDataToGoogleSheet(scannedData) {
         body: formData
     })
     .then(response => response.text())
-    .then(data => console.log("Réponse Google Sheet :", data))
-    .catch(error => console.error("Erreur lors de l'envoi des données :", error));
-}
-
-// Enregistrement du Service Worker
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").then(() => {
-        console.log("Service Worker enregistré !");
+    .then(data => {
+        console.log("Réponse Google Sheet :", data);
+        alert("Scan envoyé avec succès !");
+    })
+    .catch(error => {
+        console.error("Erreur lors de l'envoi des données :", error);
+        alert("Erreur lors de l'envoi des données !");
     });
 }
-
-document.getElementById("scanButton").addEventListener("click", () => {
-    if (typeof Html5QrcodeScanner !== "undefined") {
-        document.getElementById("reader").style.display = "block";
-        new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render((decodedText) => {
-            document.getElementById("result").innerText = `QR Code: ${decodedText}`;
-        });
-    } else {
-        console.error("La bibliothèque Html5QrcodeScanner ne s'est pas chargée !");
-    }
-});
