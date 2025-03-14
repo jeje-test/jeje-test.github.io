@@ -12,7 +12,15 @@ function sendToGoogleSheet(data) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qrData: data })
-    }).then(response => response.json())
-      .then(result => console.log(result))
-      .catch(error => console.error("Erreur:", error));
+    })
+    .then(response => response.json())
+    .then(result => console.log(result))
+    .catch(error => console.error("Erreur:", error));
+}
+
+// Enregistrement du Service Worker
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js").then(() => {
+        console.log("Service Worker enregistré !");
+    });
 }
