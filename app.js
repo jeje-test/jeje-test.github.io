@@ -24,3 +24,14 @@ if ("serviceWorker" in navigator) {
         console.log("Service Worker enregistré !");
     });
 }
+
+document.getElementById("scanButton").addEventListener("click", () => {
+    if (typeof Html5QrcodeScanner !== "undefined") {
+        document.getElementById("reader").style.display = "block";
+        new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render((decodedText) => {
+            document.getElementById("result").innerText = `QR Code: ${decodedText}`;
+        });
+    } else {
+        console.error("La bibliothèque Html5QrcodeScanner ne s'est pas chargée !");
+    }
+});
