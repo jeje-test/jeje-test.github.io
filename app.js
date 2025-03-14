@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function sendDataToGoogleSheet(scannedData) {
+
+        console.log("Données scannées :", scannedData); // Vérifier si la donnée est correcte
+
     const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // Remplace par ton URL
     const formData = new FormData();
     formData.append("data", scannedData);
