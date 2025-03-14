@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function sendToGoogleSheet(data) {
-    fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbzXq5ByP1a5Kz7HAHVJcL-3YMi8An3tsVeiVRAXKKOEcLv6BRPz94Hqz7AxYOBrdR6t/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qrData: data })
