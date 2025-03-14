@@ -11,7 +11,8 @@
 </head>
 <body>
     <h1>Scanner un QR Code</h1>
-    <div id="reader"></div>
+    <button id="scanButton">Démarrer le Scan</button>
+    <div id="reader" style="display: none;"></div>
     <p id="result">Scanne un code...</p>
 
     <button id="installButton" style="display: none;">Installer l'App</button>
@@ -33,6 +34,13 @@
                     console.log("L'utilisateur a installé l'app");
                 }
                 installButton.style.display = "none";
+            });
+        });
+
+        document.getElementById("scanButton").addEventListener("click", () => {
+            document.getElementById("reader").style.display = "block";
+            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render((decodedText) => {
+                document.getElementById("result").innerText = `QR Code: ${decodedText}`;
             });
         });
     </script>
