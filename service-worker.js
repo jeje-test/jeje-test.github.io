@@ -1,27 +1,23 @@
-self.addEventListener("install", event => {
+const CACHE_NAME = "qr-scanner-cache-v1";
+const urlsToCache = [
+    "/",
+    "/index.html",
+    "/style.css",
+    "/app.js",
+    "/manifest.json",
+    "/libs2/html5-qrcode.min.js",
+    "/icons/icon-192x192.png",
+    "/icons/icon-512x512.png"
+];
+
+self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open("qr-cache").then(cache => {
-            return cache.addAll([
-                "index.html",
-                "app.js",
-                "style.css",
-                "manifest.json",
-                "libs/html5-qrcode.min.js"
-            ]);
-        })
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                return cache.addAll(urlsToCache);
+            })
+            .catch((error) => {
+                console.error("Échec du cache :", error);
+            })
     );
 });
-
-self.addEventListener("fetch", event => {
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        })
-    );
-});
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").then(() => {
-        console.log("Service Worker enregistré !");
-    });
-}
