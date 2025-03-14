@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 function sendDataToGoogleSheet(scannedData) {
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzXq5ByP1a5Kz7HAHVJcL-3YMi8An3tsVeiVRAXKKOEcLv6BRPz94Hqz7AxYOBrdR6t/exec"; // Remplace par ton URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // Remplace par ton URL
     const formData = new FormData();
     formData.append("data", scannedData);
 
