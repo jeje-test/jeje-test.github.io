@@ -1,3 +1,11 @@
+// Fonction appelée lorsqu'un QR Code est scanné
+function onScanSuccess(qrCodeMessage) {
+    console.log("Scan réussi :", qrCodeMessage); // Vérifier si cette ligne s'affiche
+    sendDataToGoogleSheet(qrCodeMessage);
+}
+
+
+
 // Initialisation du scanner QR Code
 console.log("Initialisation du scanner...");
 var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
@@ -5,11 +13,6 @@ var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 
 html5QrcodeScanner.render(onScanSuccess);
 console.log("Scanner lancé !");
 
-// Fonction appelée lorsqu'un QR Code est scanné
-function onScanSuccess(qrCodeMessage) {
-    console.log("Scan réussi :", qrCodeMessage); // Vérifier si cette ligne s'affiche
-    sendDataToGoogleSheet(qrCodeMessage);
-}
 
 // Fonction pour envoyer les données scannées à Google Sheets
 function sendDataToGoogleSheet(scannedData) {
