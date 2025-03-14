@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <script src="libs/html5-qrcode.min.js"></script>
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <h1>Scanner un QR Code</h1>
+    <div id="reader"></div>
+    <p id="result">Scanne un code...</p>
+
+    <button id="installButton" style="display: none;">Installer l'App</button>
+
+    <script>
+        let deferredPrompt;
+        const installButton = document.getElementById("installButton");
+
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = "block";
+        });
+
+        installButton.addEventListener("click", () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(choiceResult => {
+                if (choiceResult.outcome === "accepted") {
+                    console.log("L'utilisateur a installé l'app");
+                }
+                installButton.style.display = "none";
+            });
+        });
+    </script>
+</body>
+</html>
