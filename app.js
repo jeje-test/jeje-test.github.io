@@ -1,107 +1,109 @@
-/**
- * 📌 QR Code Scanner App
- * Version : 1.1.1
- * Auteur : [Ton Nom]
- * Mise à jour : 2025-03-14
- */
+// 📌 Version du script
+const VERSION = "1.1.0";
+
+// 📌 URL du Google Apps Script
+const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec";
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🚀 Script chargé (Version 1.1.1)");
+    console.log("🚀 Début du script (Version " + VERSION + ")");
 
     const startScanBtn = document.getElementById("startScan");
     const stopScanBtn = document.getElementById("stopScan");
     const fetchDataBtn = document.getElementById("fetchData");
     const scannerContainer = document.getElementById("scannerContainer");
+    const reader = document.getElementById("reader");
     const dataContainer = document.getElementById("dataContainer");
 
     let scanner;
-    const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // ✅ URL correcte
 
-    // 📸 Démarrer le scanner QR Code
-    startScanBtn.addEventListener("click", () => {
-        console.log("📸 Démarrage du scanner...");
+    // 🔹 Démarrer le scanner
+    startScanBtn.addEventListener("click", function () {
+        console.log("📸 Scanner demandé...");
         scannerContainer.style.display = "block";
+
         scanner = new Html5Qrcode("reader");
+        scanner.start(
+            { facingMode: "environment" }, // Caméra arrière
+            {
+                fps: 10,
+                qrbox: 250
+            },
+            (qrCodeMessage) => {
+                console.log("✅ QR Code détecté :", qrCodeMessage);
+                alert("QR Code détecté : " + qrCodeMessage);
 
-        // 🔍 Récupération des caméras disponibles
-        Html5Qrcode.getCameras().then(devices => {
-            if (devices.length > 0) {
-                // 📷 Sélection de la caméra arrière par défaut
-                const backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];
-                const cameraId = backCamera.id;
-
-                console.log("✅ Caméra sélectionnée :", backCamera.label);
-
-                scanner.start(
-                    cameraId,
-                    { fps: 10, qrbox: 250 },
-                    (decodedText) => {
-                        console.log("✅ QR Code détecté :", decodedText);
-                        alert("✅ QR Code détecté : " + decodedText);
-                        sendToGoogleSheet(decodedText);
-                    },
-                    (errorMessage) => {
-                        console.warn("⚠️ Erreur de scan :", errorMessage);
-                    }
-                ).then(() => {
-                    console.log("📸 Scanner lancé !");
-                }).catch(err => {
-                    console.error("❌ Erreur lors du démarrage du scanner :", err);
-                });
-
-            } else {
-                console.error("❌ Aucune caméra détectée !");
-                alert("❌ Aucune caméra détectée !");
+                sendData(qrCodeMessage);
+            },
+            (errorMessage) => {
+                console.warn("⚠️ Erreur de scan :", errorMessage);
             }
+        ).then(() => {
+            console.log("📸 Scanner lancé !");
         }).catch(err => {
-            console.error("❌ Erreur lors de la récupération des caméras :", err);
-            alert("❌ Impossible d'accéder aux caméras !");
+            console.error("❌ Erreur lors du démarrage du scanner :", err);
         });
     });
 
-    // ❌ Arrêter le scanner
-    stopScanBtn.addEventListener("click", () => {
+    // 🔹 Arrêter le scanner
+    stopScanBtn.addEventListener("click", function () {
         if (scanner) {
             scanner.stop().then(() => {
-                console.log("📴 Scanner arrêté !");
+                console.log("🛑 Scanner arrêté.");
                 scannerContainer.style.display = "none";
-            }).catch(err => console.error("❌ Erreur lors de l'arrêt du scanner :", err));
+            }).catch(err => {
+                console.error("❌ Erreur lors de l'arrêt du scanner :", err);
+            });
         }
     });
 
-    // 📤 Envoyer les données à Google Sheets
-    function sendToGoogleSheet(qrCodeMessage) {
-        console.log("📤 Envoi des données à Google Sheets...");
-        const formData = new FormData();
-        formData.append("data", qrCodeMessage);
+    // 🔹 Fonction pour envoyer les données scannées à Google Sheets
+    function sendData(qrCodeMessage) {
+        console.log("📤 Envoi des données :", qrCodeMessage);
 
         fetch(scriptURL, {
             method: "POST",
-            body: formData
+            body: new URLSearchParams({ data: qrCodeMessage })
         })
         .then(response => response.text())
         .then(data => {
-            console.log("✅ Réponse Google Sheet :", data);
-            alert("📤 Scan envoyé avec succès !");
+            console.log("✅ Réponse Google Sheets :", data);
+            alert("📋 Données envoyées avec succès !");
         })
         .catch(error => {
             console.error("❌ Erreur lors de l'envoi des données :", error);
-            alert("❌ Erreur lors de l'envoi des données !");
+            alert("❌ Erreur d'envoi !");
         });
     }
 
-    // 📊 Récupérer les données de Google Sheets
-    fetchDataBtn.addEventListener("click", () => {
-        console.log("📥 Récupération des données...");
-        fetch(`${scriptURL}?action=getData`)
-            .then(response => response.json())
-            .then(data => {
-                console.log("✅ Données reçues :", data);
-                dataContainer.innerHTML = data.length ? data.map(row => `<p>${row}</p>`).join("") : "Aucune donnée trouvée.";
-            })
-            .catch(error => {
-                console.error("❌ Erreur lors de la récupération des données :", error);
-                dataContainer.innerHTML = "❌ Erreur lors de la récupération des données.";
-            });
+    // 🔹 Récupérer les données associées au QR Code
+    fetchDataBtn.addEventListener("click", function () {
+        const searchValue = prompt("🔎 Entrez la valeur à rechercher (C + D) :");
+        if (!searchValue) {
+            console.warn("⚠️ Recherche annulée.");
+            return;
+        }
+
+        console.log("🔍 Recherche des données pour :", searchValue);
+
+        fetch(scriptURL + "?data=" + encodeURIComponent(searchValue))
+        .then(response => response.json())
+        .then(results => {
+            console.log("📊 Données récupérées :", results);
+            if (results.length > 0) {
+                let content = "<ul>";
+                results.forEach(row => {
+                    content += `<li>${row.join(" | ")}</li>`;
+                });
+                content += "</ul>";
+                dataContainer.innerHTML = content;
+            } else {
+                dataContainer.innerHTML = "❌ Aucune donnée trouvée.";
+            }
+        })
+        .catch(error => {
+            console.error("❌ Erreur lors de la récupération des données :", error);
+            dataContainer.innerHTML = "❌ Erreur lors de la récupération des données.";
+        });
     });
+
 });
