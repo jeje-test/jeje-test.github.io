@@ -1,5 +1,5 @@
 // 🚀 Version de l'application
-const APP_VERSION = "1.2.2";
+const APP_VERSION = "1.2.3";
 console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
 
 // ✅ URL du script Google Apps Script
@@ -49,12 +49,21 @@ function onScanSuccess(qrCodeMessage) {
     document.getElementById("scannerContainer").style.display = "none";
 }
 
-// ✅ Fonction pour mettre à jour l'affichage des scans
+// ✅ Fonction pour mettre à jour l'affichage des 5 derniers scans
 function updateScanHistory() {
     const dataContainer = document.getElementById("dataContainer");
-    dataContainer.innerHTML = lastScans.length > 0 
-        ? lastScans.map(scan => `<p>${scan}</p>`).join("")
-        : "Aucune donnée envoyée.";
+    dataContainer.innerHTML = ""; // Effacer le contenu actuel
+
+    if (lastScans.length === 0) {
+        dataContainer.innerHTML = "<p>Aucune donnée envoyée.</p>";
+        return;
+    }
+
+    lastScans.forEach(scan => {
+        let p = document.createElement("p");
+        p.textContent = scan;
+        dataContainer.appendChild(p);
+    });
 }
 
 // ▶️ Démarrer le scanner au clic sur le bouton
