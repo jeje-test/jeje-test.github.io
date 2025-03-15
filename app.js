@@ -33,7 +33,7 @@ function onScanSuccess(qrCodeMessage) {
     });
 
     // 🚀 Relancer automatiquement le scanner après l'envoi
-    setTimeout(() => scanner.render(onScanSuccess), 2000);
+    //setTimeout(() => scanner.render(onScanSuccess), 2000);
 }
 
 // ▶️ Démarrer le scanner au clic sur le bouton
