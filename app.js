@@ -39,23 +39,25 @@ Html5Qrcode.getCameras().then(devices => {
     console.error("❌ Erreur en détectant la caméra :", err);
 });
 
-console.log("🚀 Initialisation du scanner... !!!");
+console.log("🚀 Initialisation du scanner... ");
 
-const scanner = new Html5Qrcode("reader");
+setTimeout(() => {
+    const scanner = new Html5Qrcode("reader");
 
-scanner.start(
-    { facingMode: "environment" }, 
-    {
-        fps: 5,    // Diminue la fréquence d'analyse pour éviter l'erreur
-        qrbox: { width: 350, height: 350 } // Augmente la zone de scan
-    },
-    (decodedText) => {
-        console.log("✅ QR Code détecté :", decodedText);
-        alert("QR Code détecté : " + decodedText);
-    },
-    (errorMessage) => {
-        console.warn("⚠️ Erreur de scan :", errorMessage);
-    }
-).catch(err => console.error("❌ Erreur lors du démarrage du scanner :", err));
+    scanner.start(
+        { facingMode: "environment" }, 
+        {
+            fps: 5,    
+            qrbox: { width: 400, height: 400 }
+        },
+        (decodedText) => {
+            console.log("✅ QR Code détecté :", decodedText);
+            alert("QR Code détecté : " + decodedText);
+        },
+        (errorMessage) => {
+            console.warn("⚠️ Erreur de scan :", errorMessage);
+        }
+    ).catch(err => console.error("❌ Erreur lors du démarrage du scanner :", err));
+}, 1000); // Délai de 1 seconde
 
 console.log("🔎 Attente d'un scan...");
