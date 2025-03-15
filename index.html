@@ -4,28 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR Code PWA</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSS pour le design -->
-    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie de scan -->
+    <link rel="stylesheet" href="style.css"> <!-- Style CSS -->
+    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie QR Code -->
 </head>
 <body>
     <h1>📷 Scanner un QR Code</h1>
-    <p id="version">Version : 1.1.1</p> <!-- Affichage de la version -->
 
-    <!-- Bouton pour scanner -->
-    <div class="buttons">
-        <button id="startScan">📸 Scanner un QR Code</button>
-    </div>
+    <!-- Bouton pour scanner et envoyer les données -->
+    <button id="startScan">📸 Scanner et envoyer</button>
 
-    <!-- Zone de scanner (initialement cachée) -->
+    <!-- Zone du scanner (initialement cachée) -->
     <div id="scannerContainer" style="display: none;">
         <div id="reader"></div>
         <button id="stopScan">❌ Arrêter le scanner</button>
     </div>
 
-    <!-- Zone d'affichage des données envoyées -->
-    <h2>📊 Données envoyées</h2>
-    <div id="dataContainer">Aucune donnée envoyée.</div>
+    <!-- Zone d'affichage de la version -->
+    <footer>
+        <p id="appVersion">Version : </p>
+    </footer>
 
-    <script src="app.js"></script>
+    <script src="app.js"></script> <!-- Script principal -->
 </body>
 </html>
