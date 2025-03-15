@@ -1,4 +1,4 @@
-console.log("🚀 Début du script");
+console.log("🚀 Début du script 3");
 
 // 🔹 Vérification si BarcodeDetector est supporté (on ne l'utilisera pas)
 if (!("BarcodeDetector" in window)) {
