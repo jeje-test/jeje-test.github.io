@@ -1,5 +1,5 @@
 // 📌 Version actuelle du script
-const VERSION = "1.1.2";
+const VERSION = "1.1.2.1";
 console.log(`🚀 Chargement de app.js - Version ${VERSION}`);
 
 // 📌 URL du Google Apps Script
