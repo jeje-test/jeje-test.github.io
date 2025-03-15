@@ -1,52 +1,35 @@
-console.log("🚀 Début du script");
+console.log("🚀 Début du script 2");
 
-// Vérifier si Html5QrcodeScanner est bien défini
-if (typeof Html5QrcodeScanner === "undefined") {
-    console.error("❌ Erreur : La bibliothèque html5-qrcode.min.js n'est pas chargée !");
+// Vérifier que Html5Qrcode est bien chargé
+if (typeof Html5Qrcode === "undefined") {
+    console.error("❌ Erreur : Html5Qrcode non défini !");
 } else {
-    console.log("✅ Bibliothèque Html5QrcodeScanner chargée !");
+    console.log("✅ Html5Qrcode bien défini !");
 }
 
-// Vérifier si l'élément HTML existe
+// Vérifier que l'élément HTML existe
 if (document.getElementById("reader")) {
     console.log("✅ Élément #reader trouvé !");
 } else {
     console.error("❌ Erreur : L'élément #reader est introuvable !");
 }
 
-// Initialisation du scanner
-console.log("🚀 Initialisation du scanner...");
-const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+// Démarrage du scanner
+const scanner = new Html5Qrcode("reader");
 
-console.log("📸 Scanner créé :", scanner);
-
-scanner.render(
-    (qrCodeMessage) => {
-        console.log("✅ QR Code détecté :", qrCodeMessage);
-
-        // Envoi des données scannées vers Google Sheets
-        const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // Remplace par ton lien Google Apps Script
-        const formData = new FormData();
-        formData.append("data", qrCodeMessage);
-
-        fetch(scriptURL, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log("✅ Réponse Google Sheet :", data);
-            alert("✅ Scan envoyé avec succès !");
-        })
-        .catch(error => {
-            console.error("❌ Erreur lors de l'envoi des données :", error);
-            alert("❌ Erreur lors de l'envoi des données !");
-        });
-
+scanner.start(
+    { facingMode: "environment" }, // Utiliser la caméra arrière du téléphone
+    {
+        fps: 10,
+        qrbox: { width: 250, height: 250 }
+    },
+    (decodedText) => {
+        console.log("✅ QR Code détecté :", decodedText);
+        alert("QR Code détecté : " + decodedText);
     },
     (errorMessage) => {
         console.warn("⚠️ Erreur de scan :", errorMessage);
     }
-);
+).catch(err => console.error("❌ Erreur lors du démarrage du scanner :", err));
 
 console.log("📸 Scanner lancé !");
