@@ -1,7 +1,7 @@
 // Fonction appelée lorsqu'un QR Code est scanné
 function onScanSuccess(qrCodeMessage) {
-    console.log("Scan réussi :", qrCodeMessage); // Vérifier si cette ligne s'affiche
-
+  console.log("✅ Fonction onScanSuccess appelée !");
+    console.log("Scan réussi :", qrCodeMessage);
     const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec"; // Remplace par ton URL
 
     // Construire l'objet JSON à envoyer
