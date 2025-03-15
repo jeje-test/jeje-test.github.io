@@ -29,7 +29,15 @@ function onScanSuccess(qrCodeMessage) {
 
 // Initialisation du scanner QR Code
 
-
+Html5Qrcode.getCameras().then(devices => {
+    if (devices.length > 0) {
+        console.log("📸 Caméras détectées :", devices);
+    } else {
+        console.log("❌ Aucune caméra détectée !");
+    }
+}).catch(err => {
+    console.error("❌ Erreur en détectant la caméra :", err);
+});
 
 
 console.log("🚀 Avant d'initialiser le scanner...");
