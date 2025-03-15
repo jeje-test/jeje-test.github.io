@@ -1,22 +1,50 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.buttons {
     margin: 20px;
 }
 
-#reader {
-    width: 300px;
-    margin: auto;
-}
-
 button {
-    background-color: #28a745;
-    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
     border: none;
-    padding: 10px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #218838;
+#startScan {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#fetchData {
+    background-color: #2196F3;
+    color: white;
+}
+
+#stopScan {
+    background-color: #f44336;
+    color: white;
+    margin-top: 10px;
+}
+
+#scannerContainer {
+    margin-top: 20px;
+}
+
+#dataContainer {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    min-height: 50px;
 }
