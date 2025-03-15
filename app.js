@@ -1,108 +1,102 @@
-// 🌟 Version : 1.1.0
 console.log("🚀 Début du script - Version 1.1.0");
 
-// URL du script Google Apps Script
+// 📌 URL du script Google Apps Script
 const scriptURL = "https://script.google.com/macros/s/AKfycbyXggS-vyVeLEQd4ymd8nj2NwT2QvCJVX1gB4hzp6ES0UBEy8afoHodg7MfkUjncyr6/exec";
 
-// Vérification de la disponibilité de Html5Qrcode
-if (typeof Html5Qrcode === "undefined") {
-    console.error("❌ Html5Qrcode non défini !");
-} else {
-    console.log("✅ Html5Qrcode bien chargé !");
-}
-
-// 🎨 Affichage de la version sur la page
-document.addEventListener("DOMContentLoaded", function () {
-    const versionElement = document.createElement("p");
-    versionElement.textContent = "📌 Version : 1.1.0";
-    versionElement.style.textAlign = "center";
-    versionElement.style.fontWeight = "bold";
-    document.body.appendChild(versionElement);
-});
-
-// Fonction de scan
-function startScanner() {
-    console.log("📸 Démarrage du scanner...");
-    document.getElementById("scannerContainer").style.display = "block";
-
-    const scanner = new Html5Qrcode("reader");
-    const cameraConfig = { fps: 10, qrbox: 250, rememberLastUsedCamera: true };
-
-    Html5Qrcode.getCameras().then(cameras => {
-        if (cameras.length > 0) {
-            const backCamera = cameras.find(camera => camera.label.toLowerCase().includes("back")) || cameras[0];
-
-            scanner.start(
-                backCamera.id,
-                cameraConfig,
-                qrCodeMessage => {
-                    console.log("✅ QR Code détecté :", qrCodeMessage);
-                    scanner.stop();
-                    sendScanToGoogleSheet(qrCodeMessage);
-                },
-                errorMessage => {
-                    console.warn("⚠️ Erreur de scan :", errorMessage);
-                }
-            ).then(() => {
-                console.log("📸 Scanner lancé !");
-            }).catch(err => {
-                console.error("❌ Erreur lors du démarrage du scanner :", err);
-            });
-        } else {
-            console.error("❌ Aucune caméra détectée !");
-        }
-    }).catch(err => console.error("❌ Erreur lors de la récupération des caméras :", err));
-}
-
-// Fonction d'envoi des données scannées à Google Sheets
-function sendScanToGoogleSheet(qrCodeData) {
-    console.log("📤 Envoi des données :", qrCodeData);
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("✅ DOM chargé !");
     
-    const formData = new FormData();
-    formData.append("data", qrCodeData);
+    const startScanBtn = document.getElementById("startScan");
+    const stopScanBtn = document.getElementById("stopScan");
+    const fetchDataBtn = document.getElementById("fetchData");
+    const scannerContainer = document.getElementById("scannerContainer");
+    const reader = document.getElementById("reader");
+    let html5QrCode;
 
-    fetch(scriptURL, {
-        method: "POST",
-        body: formData
-    })
-    .then(response => response.text())
-    .then(data => {
-        console.log("✅ Réponse Google Sheet :", data);
-        alert("📋 Données envoyées avec succès !");
-    })
-    .catch(error => {
-        console.error("❌ Erreur d'envoi :", error);
-        alert("❌ Erreur lors de l'envoi des données !");
+    // Fonction pour démarrer le scanner
+    function startScanner() {
+        scannerContainer.style.display = "block";
+        console.log("📸 Scanner en cours d'initialisation...");
+
+        html5QrCode = new Html5Qrcode("reader");
+        Html5Qrcode.getCameras().then(cameras => {
+            if (cameras.length > 0) {
+                let backCamera = cameras.find(cam => cam.label.toLowerCase().includes("back")) || cameras[0];
+                console.log("✅ Utilisation de la caméra arrière :", backCamera.label);
+                html5QrCode.start(
+                    backCamera.id,
+                    { fps: 10, qrbox: 250 },
+                    qrCodeMessage => {
+                        console.log("✅ QR Code détecté :", qrCodeMessage);
+                        html5QrCode.stop();
+                        scannerContainer.style.display = "none";
+                        sendDataToSheet(qrCodeMessage);
+                    },
+                    errorMessage => console.warn("⚠️ Erreur de scan :", errorMessage)
+                );
+            } else {
+                console.error("❌ Aucune caméra détectée !");
+            }
+        }).catch(err => console.error("⚠️ Erreur lors de la récupération des caméras :", err));
+    }
+
+    // Fonction pour envoyer les données au Google Sheet
+    function sendDataToSheet(scannedData) {
+        console.log("📤 Envoi des données :", scannedData);
+        fetch(scriptURL, {
+            method: "POST",
+            body: new URLSearchParams({ action: "addData", data: scannedData })
+        })
+        .then(response => response.text())
+        .then(responseText => {
+            console.log("✅ Réponse Google Sheet :", responseText);
+            alert("📋 Données envoyées !");
+        })
+        .catch(error => console.error("⚠️ Erreur d'envoi :", error));
+    }
+
+    // Fonction pour récupérer les données en fonction du QR Code
+    function fetchDataFromSheet() {
+        scannerContainer.style.display = "block";
+        html5QrCode = new Html5Qrcode("reader");
+        console.log("📊 Prêt à scanner pour récupérer des données...");
+
+        Html5Qrcode.getCameras().then(cameras => {
+            if (cameras.length > 0) {
+                let backCamera = cameras.find(cam => cam.label.toLowerCase().includes("back")) || cameras[0];
+                console.log("✅ Utilisation de la caméra arrière :", backCamera.label);
+                html5QrCode.start(
+                    backCamera.id,
+                    { fps: 10, qrbox: 250 },
+                    scannedData => {
+                        console.log("📊 Recherche de :", scannedData);
+                        html5QrCode.stop();
+                        scannerContainer.style.display = "none";
+
+                        fetch(scriptURL + "?action=getData&data=" + encodeURIComponent(scannedData))
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("📊 Données récupérées :", data);
+                            document.getElementById("dataContainer").innerText = data.length ? JSON.stringify(data, null, 2) : "Aucune donnée trouvée.";
+                            startScanner(); // 🔄 Relancer le scanner après récupération
+                        })
+                        .catch(error => console.error("⚠️ Erreur de récupération :", error));
+                    },
+                    errorMessage => console.warn("⚠️ Erreur de scan :", errorMessage)
+                );
+            } else {
+                console.error("❌ Aucune caméra détectée !");
+            }
+        }).catch(err => console.error("⚠️ Erreur lors de la récupération des caméras :", err));
+    }
+
+    // 🎯 Événements des boutons
+    startScanBtn.addEventListener("click", startScanner);
+    fetchDataBtn.addEventListener("click", fetchDataFromSheet);
+    stopScanBtn.addEventListener("click", () => {
+        if (html5QrCode) html5QrCode.stop();
+        scannerContainer.style.display = "none";
     });
-}
 
-// Fonction de récupération des données depuis Google Sheets
-function fetchDataFromGoogleSheet() {
-    console.log("📥 Récupération des données...");
-
-    fetch(scriptURL + "?action=getData")
-    .then(response => response.json())
-    .then(data => {
-        console.log("✅ Données récupérées :", data);
-
-        let tableHTML = "<table border='1'><tr><th>Date</th><th>Donnée</th></tr>";
-        data.forEach(row => {
-            tableHTML += `<tr><td>${row.date}</td><td>${row.value}</td></tr>`;
-        });
-        tableHTML += "</table>";
-
-        document.getElementById("dataContainer").innerHTML = tableHTML;
-    })
-    .catch(error => {
-        console.error("❌ Erreur de récupération :", error);
-        alert("❌ Erreur lors de la récupération des données !");
-    });
-}
-
-// Ajout des événements aux boutons
-document.getElementById("startScan").addEventListener("click", startScanner);
-document.getElementById("fetchData").addEventListener("click", fetchDataFromGoogleSheet);
-document.getElementById("stopScan").addEventListener("click", () => {
-    document.getElementById("scannerContainer").style.display = "none";
-    console.log("❌ Scanner arrêté !");
+    console.log("📸 Scanner prêt !");
 });
