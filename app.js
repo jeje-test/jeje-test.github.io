@@ -1,4 +1,4 @@
-console.log("🚀 Début du script 2");
+console.log("🚀 Début du script");
 
 // Vérifier que Html5Qrcode est bien chargé
 if (typeof Html5Qrcode === "undefined") {
@@ -14,22 +14,58 @@ if (document.getElementById("reader")) {
     console.error("❌ Erreur : L'élément #reader est introuvable !");
 }
 
-// Démarrage du scanner
+// Vérifier l'accès à la caméra
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+        console.log("✅ Accès à la caméra accordé !");
+        stream.getTracks().forEach(track => track.stop()); // Ferme la caméra après le test
+    })
+    .catch((error) => {
+        console.error("❌ Erreur d'accès à la caméra :", error);
+    });
+
+// Initialisation du scanner
 const scanner = new Html5Qrcode("reader");
 
-scanner.start(
-    { facingMode: "environment" }, // Utiliser la caméra arrière du téléphone
-    {
-        fps: 10,
-        qrbox: { width: 250, height: 250 }
-    },
-    (decodedText) => {
-        console.log("✅ QR Code détecté :", decodedText);
-        alert("QR Code détecté : " + decodedText);
-    },
-    (errorMessage) => {
-        console.warn("⚠️ Erreur de scan :", errorMessage);
-    }
-).catch(err => console.error("❌ Erreur lors du démarrage du scanner :", err));
+Html5Qrcode.getCameras().then(devices => {
+    if (devices.length > 0) {
+        console.log("✅ Caméras détectées :", devices);
 
-console.log("📸 Scanner lancé !");
+        // Lancer le scanner avec la première caméra détectée
+        scanner.start(
+            devices[0].id, // ID de la caméra
+            { fps: 10, qrbox: 250 },
+            (decodedText) => {
+                console.log("✅ QR Code détecté :", decodedText);
+                alert("✅ QR Code détecté : " + decodedText);
+
+                // Envoi des données scannées à Google Sheets
+                const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec";
+                const formData = new FormData();
+                formData.append("data", decodedText);
+
+                fetch(scriptURL, {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log("✅ Réponse Google Sheet :", data);
+                    alert("📤 Scan envoyé avec succès !");
+                })
+                .catch(error => {
+                    console.error("❌ Erreur lors de l'envoi des données :", error);
+                    alert("❌ Erreur lors de l'envoi des données !");
+                });
+
+            },
+            (errorMessage) => {
+                console.warn("⚠️ Erreur de scan :", errorMessage);
+            }
+        ).catch(err => console.error("❌ Erreur lors du démarrage du scanner :", err));
+
+        console.log("📸 Scanner lancé !");
+    } else {
+        console.error("❌ Aucune caméra détectée !");
+    }
+}).catch(err => console.error("❌ Erreur lors de la récupération des caméras :", err));
