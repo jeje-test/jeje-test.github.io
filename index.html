@@ -3,46 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner PWA</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <script src="libs/html5-qrcode.min.js"></script>
-    <script defer src="app.js"></script>
+    <title>Scanner QR Code PWA</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Ajout d'un CSS pour le design -->
+    <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <h1>Scanner un QR Code 3</h1>
-    <button id="scanButton">Démarrer le Scan</button>
-    <div id="reader" style="display: none;"></div>
-    <p id="result">Scanne un code...</p>
+    <h1>📷 Scanner un QR Code</h1>
 
-    <button id="installButton" style="display: none;">Installer l'App</button>
+    <!-- Boutons d'action -->
+    <div class="buttons">
+        <button id="startScan">📸 Scanner un QR Code</button>
+        <button id="fetchData">📊 Récupérer les données</button>
+    </div>
 
-    <script>
-        let deferredPrompt;
-        const installButton = document.getElementById("installButton");
+    <!-- Zone de scanner (initialement cachée) -->
+    <div id="scannerContainer" style="display: none;">
+        <div id="reader"></div>
+        <button id="stopScan">❌ Arrêter le scanner</button>
+    </div>
 
-        window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.style.display = "block";
-        });
+    <!-- Zone d'affichage des données récupérées -->
+    <h2>📊 Données enregistrées</h2>
+    <div id="dataContainer">Aucune donnée récupérée.</div>
 
-        installButton.addEventListener("click", () => {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(choiceResult => {
-                if (choiceResult.outcome === "accepted") {
-                    console.log("L'utilisateur a installé l'app");
-                }
-                installButton.style.display = "none";
-            });
-        });
-
-        document.getElementById("scanButton").addEventListener("click", () => {
-            document.getElementById("reader").style.display = "block";
-            new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 }).render((decodedText) => {
-                document.getElementById("result").innerText = `QR Code: ${decodedText}`;
-            });
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
