@@ -4,14 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR Code PWA</title>
-    <link rel="stylesheet" href="style.css"> <!-- Style CSS -->
-    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie QR Code -->
+    <link rel="stylesheet" href="style.css"> <!-- Chargement du style -->
+    <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
     <h1>📷 Scanner un QR Code</h1>
 
-    <!-- Bouton pour scanner et envoyer les données -->
-    <button id="startScan">📸 Scanner et envoyer</button>
+    <!-- Affichage de la version -->
+    <p id="appVersion">Version : Chargement...</p>
+
+    <!-- Bouton pour démarrer le scan -->
+    <button id="startScan">📸 Scanner un QR Code</button>
 
     <!-- Zone du scanner (initialement cachée) -->
     <div id="scannerContainer" style="display: none;">
@@ -19,11 +22,21 @@
         <button id="stopScan">❌ Arrêter le scanner</button>
     </div>
 
-    <!-- Zone d'affichage de la version -->
-    <footer>
-        <p id="appVersion">Version : </p>
-    </footer>
+    <!-- Zone d'affichage des résultats -->
+    <h2>📊 Résultat du scan</h2>
+    <div id="scanResult">Aucun QR Code scanné.</div>
 
-    <script src="app.js"></script> <!-- Script principal -->
+    <script src="app.js"></script> <!-- Chargement du script principal -->
+
+    <script>
+        // Attendre que `app.js` charge et mettre à jour la version
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof appVersion !== "undefined") {
+                document.getElementById("appVersion").textContent = "Version : " + appVersion;
+            } else {
+                document.getElementById("appVersion").textContent = "Version : Erreur de chargement";
+            }
+        });
+    </script>
 </body>
 </html>
