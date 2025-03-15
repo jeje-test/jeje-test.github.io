@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -9,30 +8,33 @@
     <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <h1>📷 Scanner un QR Code</h1>
+    <header>
+        <h1>📷 Scanner un QR Code</h1>
+    </header>
 
-    <!-- Bouton pour démarrer le scan -->
-    <button id="startScan">📸 Scanner un QR Code</button>
+    <main>
+        <!-- Bouton pour démarrer le scan -->
+        <div class="button-container">
+            <button id="startScan">📸 Scanner un QR Code</button>
+        </div>
 
-    <!-- Zone du scanner (initialement cachée) -->
-    <div id="scannerContainer" style="display: none;">
-        <div id="reader"></div>
-        <button id="stopScan">❌ Arrêter le scanner</button>
-    </div>
+        <!-- Zone du scanner (initialement cachée) -->
+        <div id="scannerContainer" style="display: none;">
+            <div id="reader"></div>
+            <button id="stopScan">❌ Arrêter le scanner</button>
+        </div>
 
-    <!-- Zone d'affichage des résultats -->
-    <h2>📊 Résultat du scan</h2>
-    <div id="scanResult">Aucun QR Code scanné.</div>
+        <!-- Zone d'affichage des résultats -->
+        <section id="resultContainer">
+            <h2>📊 Résultat du scan</h2>
+            <div id="scanResult">Aucun QR Code scanné.</div>
+        </section>
+    </main>
 
-    <script>
-        // Attendre que `app.js` charge et mettre à jour la version
-        document.addEventListener("DOMContentLoaded", function() {
-            if (typeof appVersion !== "undefined") {
-                document.getElementById("appVersion").textContent = "Version : " + appVersion;
-            } else {
-                document.getElementById("appVersion").textContent = "Version : Erreur de chargement";
-            }
-        });
-    </script>
+    <footer>
+        <p>Version : <span id="appVersion">1.0.0</span></p> <!-- Version dynamique -->
+    </footer>
+
+    <script src="app.js"></script> <!-- Chargement du script principal -->
 </body>
 </html>
