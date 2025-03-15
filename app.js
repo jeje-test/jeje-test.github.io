@@ -40,7 +40,7 @@ Html5Qrcode.getCameras().then(devices => {
 });
 
 
-console.log("🚀 Initialisation du scanner... !");
+console.log("🚀 Initialisation du scanner... !!!");
 
 const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
 
