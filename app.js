@@ -1,84 +1,97 @@
-// 📌 Version de l'application
-const APP_VERSION = "1.1.1";
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("version").innerText = "Version : " + APP_VERSION;
-});
+// 📌 Version actuelle du script
+const VERSION = "1.1.2";
+console.log(`🚀 Chargement de app.js - Version ${VERSION}`);
 
-// 📌 URL du script Google Apps Script
+// 📌 URL du Google Apps Script
 const scriptURL = "https://script.google.com/macros/s/AKfycbyXggS-vyVeLEQd4ymd8nj2NwT2QvCJVX1gB4hzp6ES0UBEy8afoHodg7MfkUjncyr6/exec";
 
-// 📸 Initialisation du scanner QR Code
-let scanner = new Html5Qrcode("reader");
+// 📌 Sélection des éléments HTML
+const startScanButton = document.getElementById("startScan");
+const stopScanButton = document.getElementById("stopScan");
+const scannerContainer = document.getElementById("scannerContainer");
+const dataContainer = document.getElementById("dataContainer");
 
-// 📌 Fonction de scan et récupération des données
+// 📌 Initialisation du scanner
+let html5QrCode = new Html5Qrcode("reader");
+let isScanning = false;
+
+// 📌 Fonction de démarrage du scanner (avec caméra arrière)
+function startScanner() {
+    console.log("📸 Démarrage du scanner...");
+    scannerContainer.style.display = "block";
+    
+    Html5Qrcode.getCameras()
+        .then(devices => {
+            if (devices && devices.length) {
+                // 📌 Sélectionner la caméra arrière (si disponible)
+                let backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];
+                let cameraId = backCamera.id;
+                console.log("✅ Caméra arrière sélectionnée :", backCamera.label);
+
+                html5QrCode.start(
+                    cameraId,
+                    { fps: 10, qrbox: 250 },
+                    onScanSuccess,
+                    onScanError
+                );
+                isScanning = true;
+            } else {
+                console.error("⚠️ Aucune caméra disponible !");
+                alert("Aucune caméra détectée !");
+            }
+        })
+        .catch(err => console.error("⚠️ Erreur lors de la détection des caméras :", err));
+}
+
+// 📌 Fonction de scan réussi
 function onScanSuccess(qrCodeMessage) {
     console.log("✅ QR Code détecté :", qrCodeMessage);
-    
-    // Envoyer la requête à Google Apps Script pour récupérer les données
+
+    // Envoyer les données au Google Sheet
+    const formData = new FormData();
+    formData.append("data", qrCodeMessage);
+
     fetch(scriptURL, {
         method: "POST",
-        body: new URLSearchParams({
-            action: "recherche_fiche",
-            data: qrCodeMessage
-        })
+        body: formData
     })
-    .then(response => response.json())
+    .then(response => response.text())
     .then(data => {
-        if (data.status === "success" && data.results.length > 0) {
-            displayData(data.results);
-        } else {
-            document.getElementById("dataContainer").innerText = "Aucune donnée trouvée.";
-        }
-        restartScanner(); // Réactiver le scanner
+        console.log("✅ Réponse Google Sheet :", data);
+        dataContainer.innerHTML = `✅ Données envoyées : ${qrCodeMessage}`;
+        alert("📤 Données envoyées avec succès !");
     })
     .catch(error => {
-        console.error("⚠️ Erreur lors de la récupération :", error);
-        document.getElementById("dataContainer").innerText = "Erreur lors de la récupération des données.";
-        restartScanner();
+        console.error("❌ Erreur lors de l'envoi des données :", error);
+        alert("❌ Erreur lors de l'envoi des données !");
     });
+
+    stopScanner(); // Arrêter le scanner après un scan réussi
 }
 
-// 📌 Fonction pour afficher les données récupérées
-function displayData(results) {
-    let container = document.getElementById("dataContainer");
-    container.innerHTML = "<h3>📊 Résultats trouvés :</h3>";
-    let list = document.createElement("ul");
-    results.forEach(row => {
-        let listItem = document.createElement("li");
-        listItem.textContent = row.join(" | "); // Afficher toutes les colonnes
-        list.appendChild(listItem);
-    });
-    container.appendChild(list);
+// 📌 Fonction de gestion des erreurs de scan
+function onScanError(errorMessage) {
+    console.warn("⚠️ Erreur de scan :", errorMessage);
 }
 
-// 📌 Démarrer le scanner
-function startScanner() {
-    document.getElementById("scannerContainer").style.display = "block";
-    scanner.start(
-        { facingMode: "environment" }, // Utilisation de la caméra arrière
-        { fps: 10, qrbox: 250 },
-        onScanSuccess,
-        errorMessage => console.warn("⚠️ Erreur de scan :", errorMessage)
-    )
-    .then(() => console.log("📸 Scanner lancé !"))
-    .catch(err => console.error("❌ Impossible d'ouvrir la caméra :", err));
-}
-
-// 📌 Arrêter le scanner
+// 📌 Fonction pour arrêter le scanner
 function stopScanner() {
-    scanner.stop().then(() => {
-        document.getElementById("scannerContainer").style.display = "none";
-        console.log("❌ Scanner arrêté !");
-    }).catch(err => console.warn("⚠️ Erreur lors de l'arrêt :", err));
+    if (isScanning) {
+        html5QrCode.stop()
+            .then(() => {
+                console.log("🛑 Scanner arrêté !");
+                scannerContainer.style.display = "none";
+                isScanning = false;
+            })
+            .catch(err => console.error("⚠️ Erreur lors de l'arrêt du scanner :", err));
+    }
 }
 
-// 📌 Redémarrer le scanner après une recherche
-function restartScanner() {
-    stopScanner();
-    setTimeout(startScanner, 1000); // Petite pause avant relancer
-}
+// 📌 Gestion des événements des boutons
+startScanButton.addEventListener("click", startScanner);
+stopScanButton.addEventListener("click", stopScanner);
 
-// 📌 Écouteurs d'événements pour les boutons
-document.getElementById("startScan").addEventListener("click", startScanner);
-document.getElementById("stopScan").addEventListener("click", stopScanner);
-document.getElementById("fetchData").addEventListener("click", startScanner);
+// 📌 Afficher la version sur la page
+document.getElementById("version").innerText = `Version : ${VERSION}`;
+
+console.log("✅ Script chargé avec succès !");
