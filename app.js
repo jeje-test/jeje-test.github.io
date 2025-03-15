@@ -1,97 +1,57 @@
-// 📌 Version actuelle du script
-const VERSION = "1.1.2.1";
-console.log(`🚀 Chargement de app.js - Version ${VERSION}`);
+// 🚀 Version de l'application
+const APP_VERSION = "1.2.0";
+console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
 
-// 📌 URL du Google Apps Script
+// ✅ URL du script Google Apps Script
 const scriptURL = "https://script.google.com/macros/s/AKfycbyiwWCwq-lDemCUq58llRQ1lt_qqfT22AVtR37-bM8X0Nr5HN4ypTQH6ps5lfGTZUTP/exec";
 
-// 📌 Sélection des éléments HTML
-const startScanButton = document.getElementById("startScan");
-const stopScanButton = document.getElementById("stopScan");
-const scannerContainer = document.getElementById("scannerContainer");
-const dataContainer = document.getElementById("dataContainer");
+// 📸 Initialisation du scanner avec la caméra arrière
+let scanner = new Html5QrcodeScanner("reader", {
+    fps: 10,
+    qrbox: 250,
+    rememberLastUsedCamera: true,
+    supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+});
 
-// 📌 Initialisation du scanner
-let html5QrCode = new Html5Qrcode("reader");
-let isScanning = false;
-
-// 📌 Fonction de démarrage du scanner (avec caméra arrière)
-function startScanner() {
-    console.log("📸 Démarrage du scanner...");
-    scannerContainer.style.display = "block";
-    
-    Html5Qrcode.getCameras()
-        .then(devices => {
-            if (devices && devices.length) {
-                // 📌 Sélectionner la caméra arrière (si disponible)
-                let backCamera = devices.find(device => device.label.toLowerCase().includes("back")) || devices[0];
-                let cameraId = backCamera.id;
-                console.log("✅ Caméra arrière sélectionnée :", backCamera.label);
-
-                html5QrCode.start(
-                    cameraId,
-                    { fps: 10, qrbox: 250 },
-                    onScanSuccess,
-                    onScanError
-                );
-                isScanning = true;
-            } else {
-                console.error("⚠️ Aucune caméra disponible !");
-                alert("Aucune caméra détectée !");
-            }
-        })
-        .catch(err => console.error("⚠️ Erreur lors de la détection des caméras :", err));
-}
-
-// 📌 Fonction de scan réussi
+// ✅ Fonction appelée lorsqu'un QR Code est scanné
 function onScanSuccess(qrCodeMessage) {
-    console.log("✅ QR Code détecté :", qrCodeMessage);
+    console.log("✅ Scan réussi :", qrCodeMessage);
 
-    // Envoyer les données au Google Sheet
-    const formData = new FormData();
-    formData.append("data", qrCodeMessage);
-
+    // Envoi des données au Google Sheet
     fetch(scriptURL, {
         method: "POST",
-        body: formData
+        body: new URLSearchParams({ data: qrCodeMessage })
     })
-    .then(response => response.text())
+    .then(response => response.json())
     .then(data => {
         console.log("✅ Réponse Google Sheet :", data);
-        dataContainer.innerHTML = `✅ Données envoyées : ${qrCodeMessage}`;
-        alert("📤 Données envoyées avec succès !");
+        alert("✅ Données envoyées avec succès !");
     })
     .catch(error => {
         console.error("❌ Erreur lors de l'envoi des données :", error);
-        alert("❌ Erreur lors de l'envoi des données !");
+        alert("❌ Erreur d'envoi !");
     });
 
-    stopScanner(); // Arrêter le scanner après un scan réussi
+    // 🚀 Relancer automatiquement le scanner après l'envoi
+    setTimeout(() => scanner.render(onScanSuccess), 2000);
 }
 
-// 📌 Fonction de gestion des erreurs de scan
-function onScanError(errorMessage) {
-    console.warn("⚠️ Erreur de scan :", errorMessage);
-}
+// ▶️ Démarrer le scanner au clic sur le bouton
+document.getElementById("startScan").addEventListener("click", () => {
+    document.getElementById("scannerContainer").style.display = "block";
+    scanner.render(onScanSuccess);
+});
 
-// 📌 Fonction pour arrêter le scanner
-function stopScanner() {
-    if (isScanning) {
-        html5QrCode.stop()
-            .then(() => {
-                console.log("🛑 Scanner arrêté !");
-                scannerContainer.style.display = "none";
-                isScanning = false;
-            })
-            .catch(err => console.error("⚠️ Erreur lors de l'arrêt du scanner :", err));
-    }
-}
+// ❌ Arrêter le scanner
+document.getElementById("stopScan").addEventListener("click", () => {
+    scanner.clear();
+    document.getElementById("scannerContainer").style.display = "none";
+});
 
-// 📌 Gestion des événements des boutons
-startScanButton.addEventListener("click", startScanner);
-stopScanButton.addEventListener("click", stopScanner);
-
-// 📌 Afficher la version sur la page
-document.getElementById("version").innerText = `Version : ${VERSION}`;
-
-console.log("✅ Script chargé avec succès !");
+// ✅ Afficher la version dans la page
+document.addEventListener("DOMContentLoaded", () => {
+    const versionElement = document.createElement("p");
+    versionElement.textContent = `Version : ${APP_VERSION}`;
+    document.body.appendChild(versionElement);
+    console.log("✅ Version affichée :", APP_VERSION);
+});
