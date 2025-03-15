@@ -42,24 +42,31 @@ setTimeout(() => {
         if (devices.length > 0) {
             console.log("✅ Caméras détectées :", devices);
 
+      
+            
             scanner.start(
-                devices[0].id,
-                { fps: 10, qrbox: 250 },
-                (decodedText) => {
-                    console.log("✅ QR Code détecté :", decodedText);
-                    alert("✅ QR Code détecté : " + decodedText);
-                    
-                    // 🔹 Envoyer les données à Google Sheets
-                    sendToGoogleSheet(decodedText);
-                },
-                (errorMessage) => {
-                    console.warn("⚠️ Erreur de scan :", errorMessage);
-                }
-            ).then(() => {
-                console.log("📸 Scanner lancé !");
-            }).catch(err => {
-                console.error("❌ Erreur lors du démarrage du scanner :", err);
-            });
+    devices[0].id,
+    { fps: 10, qrbox: 250 },
+    (decodedText) => {
+        console.log("✅ QR Code détecté :", decodedText);
+        alert("✅ QR Code détecté : " + decodedText);
+        sendToGoogleSheet(decodedText);
+    },
+    (errorMessage) => {
+        // 🔹 On filtre les erreurs répétitives pour éviter le spam dans la console
+        if (
+            !errorMessage.includes("No barcode or QR code detected") &&
+            !errorMessage.includes("No MultiFormat Readers were able to detect the code")
+        ) {
+            console.warn("⚠️ Erreur de scan :", errorMessage);
+        }
+    }
+).then(() => {
+    console.log("📸 Scanner lancé !");
+}).catch(err => {
+    console.error("❌ Erreur lors du démarrage du scanner :", err);
+});
+
 
         } else {
             console.error("❌ Aucune caméra détectée !");
