@@ -1,13 +1,22 @@
 console.log("🚀 Début du script");
 
-// Vérification si BarcodeDetector est supporté
+// 🔹 Vérification si BarcodeDetector est supporté (on ne l'utilisera pas)
 if (!("BarcodeDetector" in window)) {
-    console.error("❌ BarcodeDetector n'est pas supporté par ce navigateur !");
+    console.warn("⚠️ BarcodeDetector n'est pas supporté par ce navigateur.");
 } else {
     console.log("✅ BarcodeDetector est bien supporté !");
 }
 
-// Vérification de l'accès à la caméra
+// 🔹 Vérification et affichage de l'élément #reader
+const readerElement = document.getElementById("reader");
+if (readerElement) {
+    readerElement.style.display = "block"; // ✅ S'assurer que l'élément est visible
+    console.log("📸 #reader - Forcé en display: block");
+} else {
+    console.error("❌ Erreur : L'élément #reader est introuvable !");
+}
+
+// 🔹 Vérification de l'accès à la caméra
 navigator.mediaDevices.getUserMedia({ video: true })
     .then((stream) => {
         console.log("✅ Accès à la caméra accordé !");
@@ -17,27 +26,18 @@ navigator.mediaDevices.getUserMedia({ video: true })
         console.error("❌ Erreur d'accès à la caméra :", error);
     });
 
-// Vérification de l'élément #reader
-const readerElement = document.getElementById("reader");
-if (readerElement) {
-    const style = window.getComputedStyle(readerElement);
-    console.log("📸 #reader - Display:", style.display, "Visibility:", style.visibility);
-} else {
-    console.error("❌ Erreur : L'élément #reader est introuvable !");
-}
-
-// Initialisation du scanner QR Code
+// 🔹 Initialisation du scanner QR Code
 console.log("🚀 Initialisation du scanner...");
 const scanner = new Html5Qrcode("reader", { 
-    supportedScanTypes: [Html5QrcodeScanType.CAMERA] // Forcer l'utilisation de la caméra
+    supportedScanTypes: [Html5QrcodeScanType.CAMERA] // ✅ On force l'utilisation de la caméra
 });
 
 console.log("📸 Scanner créé :", scanner);
 
-// Attendre que la caméra soit prête avant de lancer le scanner
+// 🔹 Attendre que la caméra soit prête avant de démarrer le scanner
 setTimeout(() => {
     console.log("⏳ Attente avant démarrage du scanner...");
-    
+
     Html5Qrcode.getCameras().then(devices => {
         if (devices.length > 0) {
             console.log("✅ Caméras détectées :", devices);
@@ -49,7 +49,7 @@ setTimeout(() => {
                     console.log("✅ QR Code détecté :", decodedText);
                     alert("✅ QR Code détecté : " + decodedText);
                     
-                    // Envoyer les données à Google Sheets
+                    // 🔹 Envoyer les données à Google Sheets
                     sendToGoogleSheet(decodedText);
                 },
                 (errorMessage) => {
@@ -68,7 +68,7 @@ setTimeout(() => {
 
 }, 2000);
 
-// Fonction pour envoyer les données à Google Sheets
+// 🔹 Fonction pour envoyer les données à Google Sheets
 function sendToGoogleSheet(qrCodeMessage) {
     console.log("📤 Envoi des données à Google Sheets...");
     const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec";
