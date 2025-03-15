@@ -40,8 +40,7 @@ Html5Qrcode.getCameras().then(devices => {
 });
 
 
-console.log("🚀 Initialisation du scanner... !!!");
-
+console.log("🚀 Initialisation du scanner... ");
 const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
 
 scanner.render(
@@ -50,7 +49,7 @@ scanner.render(
         alert("QR Code détecté : " + qrCodeMessage);
     },
     (errorMessage) => {
-        // Ne pas afficher les erreurs mineures pour éviter trop de logs
+        console.warn("⚠️ Erreur de scan :", errorMessage);
     }
 );
 
