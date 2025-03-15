@@ -54,4 +54,4 @@ try {
 
 
 
-console.log("🎯 Scanner rendu !");
+console.log("🎯 Scanner rendu !!");
