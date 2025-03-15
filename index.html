@@ -4,37 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR Code PWA</title>
-    <link rel="stylesheet" href="style.css"> <!-- Chargement du style -->
-    <script src="libs/html5-qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css"> <!-- CSS pour le design -->
+    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie de scan -->
 </head>
 <body>
-    <header>
-        <h1>📷 Scanner un QR Code</h1>
-    </header>
+    <h1>📷 Scanner un QR Code</h1>
+    <p id="version">Version : 1.1.1</p> <!-- Affichage de la version -->
 
-    <main>
-        <!-- Bouton pour démarrer le scan -->
-        <div class="button-container">
-            <button id="startScan">📸 Scanner un QR Code</button>
-        </div>
+    <!-- Bouton pour scanner -->
+    <div class="buttons">
+        <button id="startScan">📸 Scanner un QR Code</button>
+    </div>
 
-        <!-- Zone du scanner (initialement cachée) -->
-        <div id="scannerContainer" style="display: none;">
-            <div id="reader"></div>
-            <button id="stopScan">❌ Arrêter le scanner</button>
-        </div>
+    <!-- Zone de scanner (initialement cachée) -->
+    <div id="scannerContainer" style="display: none;">
+        <div id="reader"></div>
+        <button id="stopScan">❌ Arrêter le scanner</button>
+    </div>
 
-        <!-- Zone d'affichage des résultats -->
-        <section id="resultContainer">
-            <h2>📊 Résultat du scan</h2>
-            <div id="scanResult">Aucun QR Code scanné.</div>
-        </section>
-    </main>
+    <!-- Zone d'affichage des données envoyées -->
+    <h2>📊 Données envoyées</h2>
+    <div id="dataContainer">Aucune donnée envoyée.</div>
 
-    <footer>
-        <p>Version : <span id="appVersion">1.0.0</span></p> <!-- Version dynamique -->
-    </footer>
-
-    <script src="app.js"></script> <!-- Chargement du script principal -->
+    <script src="app.js"></script>
 </body>
 </html>
