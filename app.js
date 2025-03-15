@@ -28,8 +28,12 @@ function onScanSuccess(qrCodeMessage) {
 }
 
 // Initialisation du scanner QR Code
-console.log("Initialisation du scanner... !! ");
-var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
 
+
+
+
+console.log("🚀 Avant d'initialiser le scanner...");
+var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+console.log("📸 Scanner initialisé !");
 html5QrcodeScanner.render(onScanSuccess);
-console.log("Scanner lancé !");
+console.log("🎯 Scanner rendu !");
