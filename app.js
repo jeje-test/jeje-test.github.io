@@ -25,7 +25,7 @@ function onScanSuccess(qrCodeMessage) {
 }
 
 // Initialisation du scanner QR Code
-console.log("Initialisation du scanner...");
+console.log("Initialisation du scanner... ! ");
 var html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
 
 html5QrcodeScanner.render(onScanSuccess);
