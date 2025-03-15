@@ -46,8 +46,8 @@ const scanner = new Html5Qrcode("reader");
 scanner.start(
     { facingMode: "environment" }, 
     {
-        fps: 10,    
-        qrbox: { width: 300, height: 300 } 
+        fps: 5,    // Diminue la fréquence d'analyse pour éviter l'erreur
+        qrbox: { width: 350, height: 350 } // Augmente la zone de scan
     },
     (decodedText) => {
         console.log("✅ QR Code détecté :", decodedText);
