@@ -1,3 +1,6 @@
+console.log("Vérification de Html5QrcodeScanner :", typeof Html5QrcodeScanner);
+
+
 // Fonction appelée lorsqu'un QR Code est scanné
 function onScanSuccess(qrCodeMessage) {
   console.log("✅ Fonction onScanSuccess appelée !");
