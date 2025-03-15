@@ -1,14 +1,24 @@
-// Vérifier si la bibliothèque est bien chargée
+console.log("🚀 Début du script");
+
+// Vérifier si Html5QrcodeScanner est bien défini
 if (typeof Html5QrcodeScanner === "undefined") {
     console.error("❌ Erreur : La bibliothèque html5-qrcode.min.js n'est pas chargée !");
 } else {
     console.log("✅ Bibliothèque Html5QrcodeScanner chargée !");
 }
 
+// Vérifier si l'élément HTML existe
+if (document.getElementById("reader")) {
+    console.log("✅ Élément #reader trouvé !");
+} else {
+    console.error("❌ Erreur : L'élément #reader est introuvable !");
+}
+
 // Initialisation du scanner
 console.log("🚀 Initialisation du scanner...");
-
 const scanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+
+console.log("📸 Scanner créé :", scanner);
 
 scanner.render(
     (qrCodeMessage) => {
