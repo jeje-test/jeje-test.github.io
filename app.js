@@ -39,7 +39,7 @@ Html5Qrcode.getCameras().then(devices => {
     console.error("❌ Erreur en détectant la caméra :", err);
 });
 
-console.log("🚀 Initialisation du scanner... !!");
+console.log("🚀 Initialisation du scanner... !!!");
 
 const scanner = new Html5Qrcode("reader");
 
