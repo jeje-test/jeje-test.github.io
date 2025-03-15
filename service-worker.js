@@ -5,7 +5,7 @@ const urlsToCache = [
     "/style.css",
     "/app.js",
     "/manifest.json",
-    "/libs2/html5-qrcode.min.js"
+    "/libs/html5-qrcode.min.js"
 ];
 
 self.addEventListener("install", (event) => {
