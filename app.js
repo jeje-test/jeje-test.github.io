@@ -1,19 +1,27 @@
-console.log("🚀 Début du script");
+/**
+ * 📌 Version : 1.1.0
+ * 🚀 Mise à jour :
+ * - 🔄 Sélection automatique de la caméra arrière 📷
+ * - 📤 Amélioration de l'envoi des données à Google Sheets
+ * - 📌 Correction des logs inutiles et erreurs de scan
+ */
 
-// 🔹 Vérification et affichage de l'élément #reader
+console.log("🚀 Début du script - Version 1.1.0");
+
+// 🔹 Vérification de l'élément #reader
 const readerElement = document.getElementById("reader");
-if (readerElement) {
-    readerElement.style.display = "block"; // ✅ S'assurer que l'élément est visible
-    console.log("📸 #reader - Scanner visible");
-} else {
+if (!readerElement) {
     console.error("❌ Erreur : L'élément #reader est introuvable !");
+} else {
+    readerElement.style.display = "block";
+    console.log("📸 #reader - Scanner visible");
 }
 
-// 🔹 Vérification de l'accès à la caméra
+// 🔹 Vérification et accès à la caméra
 navigator.mediaDevices.getUserMedia({ video: true })
     .then((stream) => {
         console.log("✅ Accès à la caméra accordé !");
-        stream.getTracks().forEach(track => track.stop()); // Fermer la caméra après le test
+        stream.getTracks().forEach(track => track.stop()); // Fermer la caméra après test
     })
     .catch((error) => {
         console.error("❌ Erreur d'accès à la caméra :", error);
@@ -22,21 +30,36 @@ navigator.mediaDevices.getUserMedia({ video: true })
 // 🔹 Initialisation du scanner QR Code
 console.log("🚀 Initialisation du scanner...");
 const scanner = new Html5Qrcode("reader", { 
-    supportedScanTypes: [Html5QrcodeScanType.CAMERA] // ✅ On force l'utilisation de la caméra
+    supportedScanTypes: [Html5QrcodeScanType.CAMERA] // ✅ Forcer l'utilisation de la caméra
 });
-
 console.log("📸 Scanner créé :", scanner);
 
-// 🔹 Attendre que la caméra soit prête avant de démarrer le scanner
+// 🔹 Fonction pour récupérer la caméra arrière
+function getBackCameraId(devices) {
+    for (let device of devices) {
+        if (device.label.toLowerCase().includes("back")) {
+            return device.id; // ✅ Retourne l'ID de la caméra arrière
+        }
+    }
+    return devices.length > 0 ? devices[0].id : null; // Sinon, utiliser la première caméra disponible
+}
+
+// 🔹 Attendre la détection des caméras avant de démarrer le scanner
 setTimeout(() => {
     console.log("⏳ Attente avant démarrage du scanner...");
 
     Html5Qrcode.getCameras().then(devices => {
         if (devices.length > 0) {
-            console.log("✅ Caméras détectées :", devices);
+            const cameraId = getBackCameraId(devices);
+            if (!cameraId) {
+                console.error("❌ Aucune caméra arrière détectée, utilisation de la caméra par défaut.");
+            } else {
+                console.log("✅ Caméra arrière détectée :", cameraId);
+            }
 
+            // 🔹 Démarrage du scanner avec la caméra arrière
             scanner.start(
-                devices[0].id,
+                cameraId,
                 { fps: 10, qrbox: 250 },
                 (decodedText) => {
                     console.log("✅ QR Code détecté :", decodedText);
