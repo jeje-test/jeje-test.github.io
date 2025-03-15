@@ -2,7 +2,7 @@
 console.log("🚀 Début du script - Version 1.1.0");
 
 // URL du script Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbwigngwYHN6bR5pnRIr4wsk8egM2JrFailsv3IFfQYiSTbU-FZUdLFCF-xZudMdvVzS/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbyXggS-vyVeLEQd4ymd8nj2NwT2QvCJVX1gB4hzp6ES0UBEy8afoHodg7MfkUjncyr6/exec";
 
 // Vérification de la disponibilité de Html5Qrcode
 if (typeof Html5Qrcode === "undefined") {
