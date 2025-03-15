@@ -3,7 +3,7 @@ const VERSION = "1.1.2";
 console.log(`🚀 Chargement de app.js - Version ${VERSION}`);
 
 // 📌 URL du Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbyXggS-vyVeLEQd4ymd8nj2NwT2QvCJVX1gB4hzp6ES0UBEy8afoHodg7MfkUjncyr6/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbz9a6m-fEN6Th4j-o4qtdHhcQi2ZYmB0fU6Ql9owxzhEkqzdS4S35_p1gIbQdio-3i-/exec";
 
 // 📌 Sélection des éléments HTML
 const startScanButton = document.getElementById("startScan");
