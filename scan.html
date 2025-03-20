@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR Code</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSS pour le design -->
-    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie de scan -->
+    <link rel="stylesheet" href="style.css">
+    <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
     <h1>📷 Scanner un QR Code</h1>
     
-    <!-- Bouton pour démarrer le scanner -->
+    <!-- Boutons -->
     <div class="buttons">
         <button id="startScan">📸 Scanner un QR Code</button>
         <button id="backButton">⬅️ Retour</button>
@@ -19,6 +19,7 @@
     <!-- Zone de scanner (cachée par défaut) -->
     <div id="scannerContainer" style="display: none;">
         <div id="reader"></div>
+        <button id="stopScan">❌ Arrêter le scanner</button>
     </div>
 
     <!-- Zone d'affichage des résultats -->
