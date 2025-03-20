@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let html5QrCode;
 
+    // 🔹 Récupération et affichage de la version depuis manifest.json
     function fetchVersion() {
         fetch("manifest.json")
             .then(response => response.json())
@@ -16,18 +17,22 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Erreur de récupération de la version:", error));
     }
 
+    // 🔹 Fonction appelée après un scan réussi
     function onScanSuccess(decodedText) {
         console.log(`QR Code détecté: ${decodedText}`);
 
+        // Arrêter le scanner après un scan réussi
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
                 console.log("Scanner arrêté.");
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
 
+        // Rechercher les données dans Google Sheets
         fetchDataFromGoogleSheet(decodedText);
     }
 
+    // 🔹 Récupérer les données depuis Google Sheets
     function fetchDataFromGoogleSheet(qrData) {
         fetch(scriptURL + "?q=" + encodeURIComponent(qrData))
             .then(response => response.json())
@@ -48,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    // 🔹 Démarrer le scanner QR Code
     function startScanner() {
         scannerDiv.style.display = "block";
         resultDiv.innerHTML = "Scan en cours...";
@@ -60,9 +66,11 @@ document.addEventListener("DOMContentLoaded", function () {
         ).catch(err => console.error("Erreur lors du démarrage du scanner:", err));
     }
 
+    // Charger la version et démarrer le scanner au chargement de la page
     fetchVersion();
     startScanner();
 
+    // 🔹 Bouton retour vers index.html
     backButton.addEventListener("click", function () {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
