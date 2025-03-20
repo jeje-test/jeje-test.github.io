@@ -1,18 +1,20 @@
 {
-    "name": "QR Scanner PWA",
+    "name": "Scanner QR Code PWA",
     "short_name": "QR Scanner",
+    "version": "1.0.0",
+    "description": "Application PWA pour scanner des QR Codes et récupérer des informations.",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#000000",
     "icons": [
         {
-            "src": "assets/icon.png",
+            "src": "icon-192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "assets/icon.png",
+            "src": "icon-512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
