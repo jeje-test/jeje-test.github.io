@@ -4,10 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const resultDiv = document.getElementById("dataContainer");
     const backButton = document.getElementById("backButton");
     const startScanButton = document.getElementById("startScan");
+    const stopScanButton = document.getElementById("stopScan");
     const versionDiv = document.getElementById("appVersion");
     const scriptURL = "https://script.google.com/macros/s/AKfycbyiwWCwq-lDemCUq58llRQ1lt_qqfT22AVtR37-bM8X0Nr5HN4ypTQH6ps5lfGTZUTP/exec";
 
-    let html5QrCode;
+    let html5QrCode = null;
 
     function fetchVersion() {
         fetch("manifest.json")
@@ -27,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
 
+        scannerContainer.style.display = "none";
         fetchDataFromGoogleSheet(decodedText);
     }
 
@@ -62,18 +64,22 @@ document.addEventListener("DOMContentLoaded", function () {
         ).catch(err => console.error("Erreur lors du démarrage du scanner:", err));
     }
 
-    // Chargement de la version
-    fetchVersion();
-
-    // Démarrer le scanner au clic sur le bouton
-    startScanButton.addEventListener("click", startScanner);
-
-    // Retour à la page principale
-    backButton.addEventListener("click", function () {
+    function stopScanner() {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
-                console.log("Scanner arrêté avant retour.");
-                window.location.href = "index.html";
+                console.log("Scanner arrêté.");
+                scannerContainer.style.display = "none";
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
-        } else {
-            window.location.href = "index.html
+        }
+    }
+
+    fetchVersion();
+
+    startScanButton.addEventListener("click", startScanner);
+    stopScanButton.addEventListener("click", stopScanner);
+
+    backButton.addEventListener("click", function () {
+        stopScanner();
+        window.location.href = "index.html";
+    });
+});
