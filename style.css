@@ -1,50 +1,52 @@
+/* Style général */
 body {
+    background-color: #FFFAF0; /* Fond orange clair pour une meilleure lisibilité */
+    color: #333; /* Texte sombre pour un bon contraste */
     font-family: Arial, sans-serif;
     text-align: center;
+    margin: 0;
     padding: 20px;
 }
 
-h1, h2 {
-    color: #333;
-}
-
-.buttons {
-    margin: 20px;
-}
-
+/* Style des boutons */
 button {
-    font-size: 18px;
-    padding: 10px 20px;
-    margin: 10px;
+    background-color: #FF8C00; /* Orange vif */
+    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 16px;
     cursor: pointer;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    margin: 5px;
 }
 
-#startScan {
-    background-color: #4CAF50;
-    color: white;
+button:hover {
+    background-color: #E07B00; /* Orange foncé au survol */
 }
 
-#fetchData {
-    background-color: #2196F3;
-    color: white;
+/* Conteneur des boutons */
+.buttons {
+    margin-bottom: 20px;
 }
 
-#stopScan {
-    background-color: #f44336;
-    color: white;
-    margin-top: 10px;
-}
-
+/* Zone du scanner */
 #scannerContainer {
-    margin-top: 20px;
+    background-color: #FFE4B5; /* Fond orangé doux */
+    border: 2px solid #FF8C00; /* Bordure orange vif */
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 15px;
 }
 
+/* Zone d'affichage des données */
 #dataContainer {
-    margin-top: 10px;
+    background: #FFDAB9; /* Fond orangé clair */
+    border: 1px solid #FF8C00;
     padding: 10px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
-    min-height: 50px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 15px;
 }
