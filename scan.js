@@ -16,11 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Erreur de récupération de la version:", error));
     }
 
-            // 🚀 Version de l'application
-        const APP_VERSION = data.version";
-        console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
-
-
     function onScanSuccess(decodedText) {
         console.log(`QR Code détecté: ${decodedText}`);
 
@@ -67,16 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchVersion();
     startScanner();
-
-// ✅ Afficher la version dans la page
-document.addEventListener("DOMContentLoaded", () => {
-    const versionElement = document.createElement("p");
-    versionElement.textContent = `Version : ${APP_VERSION}`;
-    document.body.appendChild(versionElement);
-    console.log("✅ Version affichée :", APP_VERSION);
-});
-
-    
 
     backButton.addEventListener("click", function () {
         if (html5QrCode) {
