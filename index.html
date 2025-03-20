@@ -10,9 +10,10 @@
 <body>
     <h1>📷 Scanner un QR Code 2</h1>
     
-    <!-- Bouton pour scanner -->
+    <!-- Boutons pour scanner et récupérer info -->
     <div class="buttons">
         <button id="startScan">📸 Scanner un QR Code</button>
+        <button id="fetchInfo" style="background-color: #FFA500; color: white;">🔄 Récupérer Information</button>
     </div>
 
     <!-- Zone de scanner (initialement cachée) -->
@@ -24,11 +25,6 @@
     <!-- Zone d'affichage des données envoyées -->
     <h2>📊 Historique envoyées</h2>
     <div id="dataContainer">Aucune donnée envoyée.</div>
-    
-    <!-- Bouton pour aller à la nouvelle page -->
-    <div class="buttons">
-        <button onclick="window.location.href='scan.html'">🔄 Récupérer Information</button>
-    </div>
 
     <script src="app.js"></script>
 </body>
