@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner QR Code - Récupération</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="libs/html5-qrcode.min.js"></script>
+</head>
+<body>
+    <h1>📷 Récupérer Information</h1>
+
+    <!-- Zone de scanner -->
+    <div id="scannerContainer">
+        <div id="reader"></div>
+    </div>
+
+    <!-- Zone d'affichage des résultats -->
+    <h2>📊 Résultats</h2>
+    <div id="dataContainer">Scannez un QR Code pour afficher les données.</div>
+
+    <!-- Bouton retour -->
+    <div class="buttons">
+        <button onclick="window.location.href='index.html'">🔙 Retour</button>
+    </div>
+
+    <script src="scan.js"></script>
+</body>
+</html>
