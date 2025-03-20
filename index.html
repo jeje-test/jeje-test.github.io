@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scanner QR Code PWA</title>
-    <link rel="stylesheet" href="style.css"> <!-- CSS pour le design -->
-    <script src="libs/html5-qrcode.min.js"></script> <!-- Librairie de scan -->
+    <link rel="stylesheet" href="style.css">
+    <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <h1>📷 Tango Young Scanner</h1>
+    <h1>📷 Scanner un QR Code</h1>
     
-    <!-- Bouton pour scanner -->
+    <!-- Boutons -->
     <div class="buttons">
         <button id="startScan">📸 Scanner un QR Code</button>
-        <button onclick="window.location.href='scan.html'">🔄 Récupérer Information</button>
-
+        <button id="retrieveInfo">🔄 Récupérer Information</button>
+        <button id="openForm">📝 Remplir un Formulaire</button>
     </div>
 
     <!-- Zone de scanner (initialement cachée) -->
@@ -24,10 +24,18 @@
     </div>
 
     <!-- Zone d'affichage des données envoyées -->
-    <h2>📊 Historique envoyées</h2>
+    <h2>📊 Données envoyées</h2>
     <div id="dataContainer">Aucune donnée envoyée.</div>
 
+    <p id="appVersion"></p>
 
     <script src="app.js"></script>
+
+    <script>
+        document.getElementById("openForm").addEventListener("click", function() {
+            window.location.href = "form.html";
+        });
+    </script>
+
 </body>
 </html>
