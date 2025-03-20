@@ -63,6 +63,16 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchVersion();
     startScanner();
 
+// ✅ Afficher la version dans la page
+document.addEventListener("DOMContentLoaded", () => {
+    const versionElement = document.createElement("p");
+    versionElement.textContent = `Version : ${APP_VERSION}`;
+    document.body.appendChild(versionElement);
+    console.log("✅ Version affichée :", APP_VERSION);
+});
+
+    
+
     backButton.addEventListener("click", function () {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
