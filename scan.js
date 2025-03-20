@@ -78,8 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    backButton.addEventListener("click", function () {
-        stopScanner();
+   backButton.addEventListener("click", function () {
+    stopScanner();
+    setTimeout(() => {
         window.location.href = "index.html";
-    });
+    }, 300); // Petit délai pour s'assurer que le scanner s'arrête avant de changer de page
+});
 });
