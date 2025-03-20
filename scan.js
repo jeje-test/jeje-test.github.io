@@ -16,6 +16,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Erreur de récupération de la version:", error));
     }
 
+            // 🚀 Version de l'application
+        const APP_VERSION = data.version";
+        console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
+
+
     function onScanSuccess(decodedText) {
         console.log(`QR Code détecté: ${decodedText}`);
 
