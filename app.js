@@ -1,5 +1,3 @@
-// 🚀 Version de l'application
-const APP_VERSION = "1.2.3";
 console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
 
 // ✅ URL du script Google Apps Script
@@ -78,10 +76,15 @@ document.getElementById("stopScan").addEventListener("click", () => {
     document.getElementById("scannerContainer").style.display = "none";
 });
 
-// ✅ Afficher la version dans la page
-document.addEventListener("DOMContentLoaded", () => {
-    const versionElement = document.createElement("p");
-    versionElement.textContent = `Version : ${APP_VERSION}`;
-    document.body.appendChild(versionElement);
-    console.log("✅ Version affichée :", APP_VERSION);
-});
+
+    // Fonction pour récupérer la version
+    function fetchVersion() {
+        fetch("manifest.json")
+            .then(response => response.json())
+            .then(data => {
+                versionDiv.textContent = "Version: " + data.version;
+            })
+            .catch(error => console.error("Erreur de récupération de la version:", error));
+    }
+
+);
