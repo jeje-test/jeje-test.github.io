@@ -34,17 +34,21 @@ document.addEventListener("DOMContentLoaded", function () {
         fetchDataFromGoogleSheet(decodedText); // Passer les données du QR Code
     }
 
-    // Fonction pour récupérer les données depuis Google Sheets
+    // Fonction pour récupérer les données depuis Google Sheets avec tableau vertical
     function fetchDataFromGoogleSheet(qrData) {
         fetch(scriptURL + encodeURIComponent(qrData))
             .then(response => response.json())
             .then(data => {
                 if (data && data.result) {
-                    resultDiv.innerHTML = `<strong>Résultat :</strong><br>
-                    🔹 E: ${data.result.E}<br>
-                    🔹 F: ${data.result.F}<br>
-                    🔹 G: ${data.result.G}<br>
-                    🔹 H: ${data.result.H}`;
+                    let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
+                    for (let key in data.result) {
+                        resultHTML += `<tr>
+                            <th>${key}</th>
+                            <td>${data.result[key]}</td>
+                        </tr>`;
+                    }
+                    resultHTML += `</tbody></table>`;
+                    resultDiv.innerHTML = resultHTML;
                 } else {
                     resultDiv.innerHTML = "Aucune donnée trouvée.";
                 }
