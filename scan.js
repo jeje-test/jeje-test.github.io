@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const versionDiv = document.getElementById("appVersion");
     const loader = document.getElementById("loader");
 
+    // Boutons d'action après affichage
+    const actionsContainer = document.getElementById("actionsContainer");
+    const decrementBtn = document.getElementById("decrementBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+
     const scriptURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
     let html5QrCode = null;
 
@@ -39,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function fetchDataFromGoogleSheet(qrData) {
         loader.style.display = "block"; // Affiche le spinner
         resultDiv.innerHTML = ""; // Nettoie les anciens résultats
+        actionsContainer.style.display = "none"; // Cache les boutons par défaut
 
         fetch(scriptURL + encodeURIComponent(qrData))
             .then(response => response.json())
@@ -54,14 +60,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     resultHTML += `</tbody></table>`;
                     resultDiv.innerHTML = resultHTML;
+
+                    // Afficher les boutons d'action
+                    actionsContainer.style.display = "flex";
+                    actionsContainer.style.gap = "10px";
                 } else {
                     resultDiv.innerHTML = "Aucune donnée trouvée.";
+                    actionsContainer.style.display = "none";
                 }
             })
             .catch(error => {
-                loader.style.display = "none"; // Cache le spinner en cas d'erreur aussi
+                loader.style.display = "none";
                 console.error("Erreur lors de la récupération des données :", error);
                 resultDiv.innerHTML = "Erreur de récupération des données.";
+                actionsContainer.style.display = "none";
             });
     }
 
@@ -69,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function startScanner() {
         scannerContainer.style.display = "block";
         resultDiv.innerHTML = "Scan en cours...";
+        actionsContainer.style.display = "none";
 
         html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
@@ -87,6 +100,17 @@ document.addEventListener("DOMContentLoaded", function () {
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
     }
+
+    // Événement pour le bouton "Décompter 1 cours"
+    decrementBtn.addEventListener("click", function () {
+        alert("Décompte de cours à implémenter !");
+        actionsContainer.style.display = "none";
+    });
+
+    // Événement pour le bouton "Annuler"
+    cancelBtn.addEventListener("click", function () {
+        actionsContainer.style.display = "none";
+    });
 
     // Récupérer la version de l'app
     fetchVersion();
