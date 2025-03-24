@@ -87,6 +87,11 @@ document.getElementById("stopScan").addEventListener("click", () => {
     document.getElementById("scannerContainer").style.display = "none";
 });
 
+
+        // Récupérer la version de l'app
+    fetchVersion();
+
+
 });
 
 
