@@ -1,3 +1,13 @@
+    // Fonction pour récupérer la version
+    function fetchVersion() {
+        fetch("manifest.json")
+            .then(response => response.json())
+            .then(data => {
+                versionDiv.textContent = "Version: " + data.version;
+            })
+            .catch(error => console.error("Erreur de récupération de la version:", error));
+    }
+
 console.log(`🚀 Chargement de l'application - Version `+ data.version);
 
 // ✅ URL du script Google Apps Script
@@ -77,12 +87,3 @@ document.getElementById("stopScan").addEventListener("click", () => {
 });
 
 
-    // Fonction pour récupérer la version
-    function fetchVersion() {
-        fetch("manifest.json")
-            .then(response => response.json())
-            .then(data => {
-                versionDiv.textContent = "Version: " + data.version;
-            })
-            .catch(error => console.error("Erreur de récupération de la version:", error));
-    }
