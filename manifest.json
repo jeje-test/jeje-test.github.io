@@ -1,7 +1,7 @@
 {
   "name": "Scanner QR Code PWA",
   "short_name": "QR Scanner",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "Une application PWA pour scanner des QR Codes",
   "start_url": "index.html",
   "display": "standalone",
@@ -18,5 +18,6 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "scriptURL": "https://script.google.com/macros/s/AKfycbyF6LQBjJjlpVDeglyMr7rqO7bAIBHxL5FY0Xb1CC7n00vSrEyeXx8Gj6a6hhRkeUAw/exec"
 }
