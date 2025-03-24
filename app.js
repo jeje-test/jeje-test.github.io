@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const versionDiv = document.getElementById("appVersion");
 // ✅ URL du script Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbwDL17qaZz12ftwBbjB2yHz5ta3CJ4VYh15ROiXiqFgCKO7-tDGHwhXJbJyvFkac0Tn/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec";
     // Fonction pour récupérer la version
     function fetchVersion() {
         fetch("manifest.json")
