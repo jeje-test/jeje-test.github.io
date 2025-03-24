@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const stopScanButton = document.getElementById("stopScan");
     const versionDiv = document.getElementById("appVersion");
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec?action=getData&q=";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwDL17qaZz12ftwBbjB2yHz5ta3CJ4VYh15ROiXiqFgCKO7-tDGHwhXJbJyvFkac0Tn/exec?action=getData&q=";
     let html5QrCode = null;
 
     // Fonction pour récupérer la version
