@@ -8,15 +8,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const versionDiv = document.getElementById("appVersion");
     const loader = document.getElementById("loader");
 
-    // Boutons d'action après affichage
     const actionsContainer = document.getElementById("actionsContainer");
     const decrementBtn = document.getElementById("decrementBtn");
     const cancelBtn = document.getElementById("cancelBtn");
 
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
-    let html5QrCode = null;
+    const getURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
+    const postURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec";
 
-    // Fonction pour récupérer la version
+    let html5QrCode = null;
+    let lastScannedCode = null;
+
+    // Récupération version de l'app
     function fetchVersion() {
         fetch("manifest.json")
             .then(response => response.json())
@@ -26,9 +28,10 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Erreur de récupération de la version:", error));
     }
 
-    // Fonction après le scan du QR code
+    // Après scan réussi
     function onScanSuccess(decodedText) {
         console.log(`QR Code détecté: ${decodedText}`);
+        lastScannedCode = decodedText;
 
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
@@ -37,31 +40,27 @@ document.addEventListener("DOMContentLoaded", function () {
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
 
-        fetchDataFromGoogleSheet(decodedText); // Passer les données du QR Code
+        fetchDataFromGoogleSheet(decodedText);
     }
 
-    // Fonction pour récupérer les données depuis Google Sheets avec tableau vertical
+    // Récupération des infos depuis Google Sheet
     function fetchDataFromGoogleSheet(qrData) {
-        loader.style.display = "block"; // Affiche le spinner
-        resultDiv.innerHTML = ""; // Nettoie les anciens résultats
-        actionsContainer.style.display = "none"; // Cache les boutons par défaut
+        loader.style.display = "block";
+        resultDiv.innerHTML = "";
+        actionsContainer.style.display = "none";
 
-        fetch(scriptURL + encodeURIComponent(qrData))
+        fetch(getURL + encodeURIComponent(qrData))
             .then(response => response.json())
             .then(data => {
-                loader.style.display = "none"; // Cache le spinner
+                loader.style.display = "none";
                 if (data && data.result) {
                     let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
                     for (let key in data.result) {
-                        resultHTML += `<tr>
-                            <th>${key}</th>
-                            <td>${data.result[key]}</td>
-                        </tr>`;
+                        resultHTML += `<tr><th>${key}</th><td>${data.result[key]}</td></tr>`;
                     }
                     resultHTML += `</tbody></table>`;
                     resultDiv.innerHTML = resultHTML;
 
-                    // Afficher les boutons d'action
                     actionsContainer.style.display = "flex";
                     actionsContainer.style.gap = "10px";
                 } else {
@@ -77,7 +76,27 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // Fonction pour démarrer le scanner
+    // Envoi de la donnée vers Google Sheet
+    function sendDataToGoogleSheet(scannedData) {
+        fetch(postURL, {
+            method: "POST",
+            body: JSON.stringify({ data: scannedData }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.text())
+        .then(responseText => {
+            alert("✅ Donnée envoyée avec succès !");
+            actionsContainer.style.display = "none";
+        })
+        .catch(error => {
+            console.error("Erreur lors de l'envoi :", error);
+            alert("❌ Échec de l'envoi des données.");
+        });
+    }
+
+    // Lancer le scanner
     function startScanner() {
         scannerContainer.style.display = "block";
         resultDiv.innerHTML = "Scan en cours...";
@@ -85,13 +104,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
-            { facingMode: "environment" },  // Caméra arrière
+            { facingMode: "environment" },
             { fps: 10, qrbox: { width: 250, height: 250 } },
             onScanSuccess
         ).catch(err => console.error("Erreur lors du démarrage du scanner:", err));
     }
 
-    // Fonction pour arrêter le scanner
+    // Arrêter le scanner
     function stopScanner() {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
@@ -101,25 +120,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Événement pour le bouton "Décompter 1 cours"
+    // Bouton : Décompter 1 cours
     decrementBtn.addEventListener("click", function () {
-        alert("Décompte de cours à implémenter !");
-        actionsContainer.style.display = "none";
+        if (lastScannedCode) {
+            sendDataToGoogleSheet(lastScannedCode);
+        } else {
+            alert("Aucune donnée à envoyer.");
+        }
     });
 
-    // Événement pour le bouton "Annuler"
+    // Bouton : Annuler
     cancelBtn.addEventListener("click", function () {
         actionsContainer.style.display = "none";
     });
 
-    // Récupérer la version de l'app
-    fetchVersion();
-
-    // Écouteurs d'événements pour les boutons
+    // Boutons de navigation
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    // Retour à la page principale (correctif pour arrêter proprement le scanner)
     backButton.addEventListener("click", function () {
         if (html5QrCode) {
             html5QrCode.stop().finally(() => {
@@ -129,4 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "index.html";
         }
     });
+
+    // Initialisation
+    fetchVersion();
 });
