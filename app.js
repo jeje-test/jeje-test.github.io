@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const versionDiv = document.getElementById("appVersion");
+// ✅ URL du script Google Apps Script
+const scriptURL = "https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec";
     // Fonction pour récupérer la version
     function fetchVersion() {
         fetch("manifest.json")
@@ -9,9 +13,6 @@
     }
 
 
-
-// ✅ URL du script Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec";
 
 // 📌 Stockage des 5 derniers scans
 let lastScans = [];
@@ -85,5 +86,8 @@ document.getElementById("stopScan").addEventListener("click", () => {
     scanner.clear();
     document.getElementById("scannerContainer").style.display = "none";
 });
+
+}
+    
 
 
