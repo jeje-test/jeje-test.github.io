@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const startScanButton = document.getElementById("startScan");
     const stopScanButton = document.getElementById("stopScan");
     const versionDiv = document.getElementById("appVersion");
+    const loader = document.getElementById("loader");
 
     const scriptURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
     let html5QrCode = null;
@@ -36,9 +37,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Fonction pour récupérer les données depuis Google Sheets avec tableau vertical
     function fetchDataFromGoogleSheet(qrData) {
+        loader.style.display = "block"; // Affiche le spinner
+        resultDiv.innerHTML = ""; // Nettoie les anciens résultats
+
         fetch(scriptURL + encodeURIComponent(qrData))
             .then(response => response.json())
             .then(data => {
+                loader.style.display = "none"; // Cache le spinner
                 if (data && data.result) {
                     let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
                     for (let key in data.result) {
@@ -54,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             })
             .catch(error => {
+                loader.style.display = "none"; // Cache le spinner en cas d'erreur aussi
                 console.error("Erreur lors de la récupération des données :", error);
                 resultDiv.innerHTML = "Erreur de récupération des données.";
             });
