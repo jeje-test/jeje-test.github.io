@@ -27,10 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
                 console.log("Scanner arrêté.");
+                scannerContainer.style.display = "none";
             }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
 
-        scannerContainer.style.display = "none";
         fetchDataFromGoogleSheet(decodedText); // Passer les données du QR Code
     }
 
@@ -89,11 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    // Retour à la page principale
+    // Retour à la page principale (correctif pour arrêter proprement le scanner)
     backButton.addEventListener("click", function () {
-        stopScanner();
-        setTimeout(() => {
+        if (html5QrCode) {
+            html5QrCode.stop().finally(() => {
+                window.location.href = "index.html";
+            });
+        } else {
             window.location.href = "index.html";
-        }, 300); // Petit délai pour s'assurer que le scanner s'arrête avant de changer de page
+        }
     });
 });
