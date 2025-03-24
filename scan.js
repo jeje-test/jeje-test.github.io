@@ -11,22 +11,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const actionsContainer = document.getElementById("actionsContainer");
     const decrementBtn = document.getElementById("decrementBtn");
     const cancelBtn = document.getElementById("cancelBtn");
-
     const confirmationMessage = document.getElementById("confirmationMessage");
-
-    const getURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
-    const postURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec";
 
     let html5QrCode = null;
     let lastScannedCode = null;
+    let getURL = "";
+    let postURL = "";
 
-    function fetchVersion() {
+    // Chargement depuis manifest.json (version + URLs)
+    function fetchManifestAndInit() {
         fetch("manifest.json")
             .then(response => response.json())
             .then(data => {
                 versionDiv.textContent = "Version: " + data.version;
+
+                const scriptBase = data.scriptURL;
+                getURL = scriptBase + "?action=getData&q=";
+                postURL = scriptBase;
+
+                attachEventListeners(); // Une fois prêt, brancher les boutons
             })
-            .catch(error => console.error("Erreur de récupération de la version:", error));
+            .catch(error => {
+                console.error("Erreur manifest.json :", error);
+                versionDiv.textContent = "Version inconnue";
+            });
     }
 
     function onScanSuccess(decodedText) {
@@ -35,9 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
-                console.log("Scanner arrêté.");
                 scannerContainer.style.display = "none";
-            }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
+            }).catch(err => console.error("Erreur arrêt scanner:", err));
         }
 
         fetchDataFromGoogleSheet(decodedText);
@@ -65,14 +72,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     actionsContainer.style.gap = "10px";
                 } else {
                     resultDiv.innerHTML = "Aucune donnée trouvée.";
-                    actionsContainer.style.display = "none";
                 }
             })
             .catch(error => {
                 loader.style.display = "none";
-                console.error("Erreur lors de la récupération des données :", error);
-                resultDiv.innerHTML = "Erreur de récupération des données.";
-                actionsContainer.style.display = "none";
+                console.error("Erreur récupération données :", error);
+                resultDiv.innerHTML = "Erreur lors de la récupération des données.";
             });
     }
 
@@ -88,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
             actionsContainer.style.display = "none";
         })
         .catch(error => {
-            console.error("❌ Erreur lors de l'envoi des données :", error);
+            console.error("❌ Erreur d'envoi :", error);
             showConfirmationMessage("❌ Échec de l'envoi des données.", false);
         });
     }
@@ -115,42 +120,44 @@ document.addEventListener("DOMContentLoaded", function () {
             { facingMode: "environment" },
             { fps: 10, qrbox: { width: 250, height: 250 } },
             onScanSuccess
-        ).catch(err => console.error("Erreur lors du démarrage du scanner:", err));
+        ).catch(err => console.error("Erreur démarrage scanner:", err));
     }
 
     function stopScanner() {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
-                console.log("Scanner arrêté.");
                 scannerContainer.style.display = "none";
-            }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
+            }).catch(err => console.error("Erreur arrêt scanner:", err));
         }
     }
 
-    decrementBtn.addEventListener("click", function () {
-        if (lastScannedCode) {
-            sendDataToGoogleSheet(lastScannedCode);
-        } else {
-            showConfirmationMessage("Aucune donnée à envoyer.", false);
-        }
-    });
+    function attachEventListeners() {
+        startScanButton.addEventListener("click", startScanner);
+        stopScanButton.addEventListener("click", stopScanner);
 
-    cancelBtn.addEventListener("click", function () {
-        actionsContainer.style.display = "none";
-    });
+        decrementBtn.addEventListener("click", function () {
+            if (lastScannedCode) {
+                sendDataToGoogleSheet(lastScannedCode);
+            } else {
+                showConfirmationMessage("Aucune donnée à envoyer.", false);
+            }
+        });
 
-    startScanButton.addEventListener("click", startScanner);
-    stopScanButton.addEventListener("click", stopScanner);
+        cancelBtn.addEventListener("click", function () {
+            actionsContainer.style.display = "none";
+        });
 
-    backButton.addEventListener("click", function () {
-        if (html5QrCode) {
-            html5QrCode.stop().finally(() => {
+        backButton.addEventListener("click", function () {
+            if (html5QrCode) {
+                html5QrCode.stop().finally(() => {
+                    window.location.href = "index.html";
+                });
+            } else {
                 window.location.href = "index.html";
-            });
-        } else {
-            window.location.href = "index.html";
-        }
-    });
+            }
+        });
+    }
 
-    fetchVersion();
+    // Initialisation complète
+    fetchManifestAndInit();
 });
