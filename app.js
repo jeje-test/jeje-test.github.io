@@ -1,4 +1,4 @@
-console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
+console.log(`🚀 Chargement de l'application - Version `+ data.version);
 
 // ✅ URL du script Google Apps Script
 const scriptURL = "https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec";
