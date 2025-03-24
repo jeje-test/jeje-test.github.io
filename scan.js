@@ -7,99 +7,90 @@ document.addEventListener("DOMContentLoaded", function () {
     const stopScanButton = document.getElementById("stopScan");
     const versionDiv = document.getElementById("appVersion");
 
-    // ✅ URL de ton Google Apps Script (mise à jour)
     const scriptURL = "https://script.google.com/macros/s/AKfycbyiwWCwq-lDemCUq58llRQ1lt_qqfT22AVtR37-bM8X0Nr5HN4ypTQH6ps5lfGTZUTP/exec?action=getData&q=";
 
     let html5QrCode = null;
 
-    // ✅ Fonction pour récupérer la version depuis manifest.json
+    // Fonction pour récupérer la version
     function fetchVersion() {
         fetch("manifest.json")
             .then(response => response.json())
             .then(data => {
                 versionDiv.textContent = "Version: " + data.version;
             })
-            .catch(error => console.error("❌ Erreur de récupération de la version:", error));
+            .catch(error => console.error("Erreur de récupération de la version:", error));
     }
 
-    // ✅ Fonction exécutée après un scan réussi
+    // Fonction après le scan du QR code
     function onScanSuccess(decodedText) {
-        console.log(`✅ QR Code détecté: ${decodedText}`);
+        console.log(`QR Code détecté: ${decodedText}`);
 
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
-                console.log("🛑 Scanner arrêté.");
-            }).catch(err => console.error("❌ Erreur d'arrêt du scanner:", err));
+                console.log("Scanner arrêté.");
+            }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
 
         scannerContainer.style.display = "none";
-
-        // 🚀 Ajout d’un délai pour éviter les bugs sur certains téléphones
-        setTimeout(() => {
-            fetchDataFromGoogleSheet(decodedText);
-        }, 500);
+        fetchDataFromGoogleSheet(decodedText); // Passer les données du QR Code
     }
 
-    // ✅ Fonction pour récupérer les données depuis Google Sheets
+    // Fonction pour récupérer les données depuis Google Sheets
     function fetchDataFromGoogleSheet(qrData) {
         fetch(scriptURL + encodeURIComponent(qrData))
             .then(response => response.json())
             .then(data => {
-                if (data && data.result && data.result.length > 0) {
-                    let output = `<strong>📊 Résultats trouvés :</strong><br>`;
-                    data.result.forEach((row, index) => {
-                        output += `📌 Ligne ${index + 1}: <br>
-                                   🔹 E: ${row.E} <br>
-                                   🔹 F: ${row.F} <br>
-                                   🔹 G: ${row.G} <br>
-                                   🔹 H: ${row.H} <br><hr>`;
-                    });
-                    resultDiv.innerHTML = output;
+                if (data && data.result) {
+                    resultDiv.innerHTML = `<strong>Résultat :</strong><br>
+                    🔹 E: ${data.result.E}<br>
+                    🔹 F: ${data.result.F}<br>
+                    🔹 G: ${data.result.G}<br>
+                    🔹 H: ${data.result.H}`;
                 } else {
-                    resultDiv.innerHTML = "⚠️ Aucune donnée trouvée.";
+                    resultDiv.innerHTML = "Aucune donnée trouvée.";
                 }
             })
             .catch(error => {
-                console.error("❌ Erreur lors de la récupération des données :", error);
-                resultDiv.innerHTML = "❌ Erreur de récupération des données.";
+                console.error("Erreur lors de la récupération des données :", error);
+                resultDiv.innerHTML = "Erreur de récupération des données.";
             });
     }
 
-    // ✅ Fonction pour démarrer le scanner
+    // Fonction pour démarrer le scanner
     function startScanner() {
         scannerContainer.style.display = "block";
-        resultDiv.innerHTML = "📡 Scan en cours...";
+        resultDiv.innerHTML = "Scan en cours...";
 
         html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
-            { facingMode: "environment" },  // 📸 Utilisation de la caméra arrière
+            { facingMode: "environment" },  // Caméra arrière
             { fps: 10, qrbox: { width: 250, height: 250 } },
             onScanSuccess
-        ).catch(err => console.error("❌ Erreur lors du démarrage du scanner:", err));
+        ).catch(err => console.error("Erreur lors du démarrage du scanner:", err));
     }
 
-    // ✅ Fonction pour arrêter le scanner
+    // Fonction pour arrêter le scanner
     function stopScanner() {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
-                console.log("🛑 Scanner arrêté.");
+                console.log("Scanner arrêté.");
                 scannerContainer.style.display = "none";
-            }).catch(err => console.error("❌ Erreur d'arrêt du scanner:", err));
+            }).catch(err => console.error("Erreur d'arrêt du scanner:", err));
         }
     }
 
-    // ✅ Charger la version
+    // Récupérer la version de l'app
     fetchVersion();
 
-    // 🎯 Ajout des écouteurs d'événements
+    // Écouteurs d'événements pour les boutons
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    // 🔙 Bouton retour
+    // Retour à la page principale
     backButton.addEventListener("click", function () {
         stopScanner();
         setTimeout(() => {
             window.location.href = "index.html";
-        }, 300); // ⏳ Petit délai pour éviter des bugs
+        }, 300); // Petit délai pour s'assurer que le scanner s'arrête avant de changer de page
     });
 });
