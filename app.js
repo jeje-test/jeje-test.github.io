@@ -86,5 +86,3 @@ document.getElementById("stopScan").addEventListener("click", () => {
             })
             .catch(error => console.error("Erreur de récupération de la version:", error));
     }
-
-);
