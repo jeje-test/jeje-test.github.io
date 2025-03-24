@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const decrementBtn = document.getElementById("decrementBtn");
     const cancelBtn = document.getElementById("cancelBtn");
 
+    const confirmationMessage = document.getElementById("confirmationMessage");
+
     const getURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec?action=getData&q=";
     const postURL = "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec";
 
@@ -45,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         loader.style.display = "block";
         resultDiv.innerHTML = "";
         actionsContainer.style.display = "none";
+        confirmationMessage.style.display = "none";
 
         fetch(getURL + encodeURIComponent(qrData))
             .then(response => response.json())
@@ -81,19 +84,31 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             console.log("✅ Réponse Google Sheet :", data);
-            alert("✅ Donnée envoyée avec succès !");
+            showConfirmationMessage("✅ Donnée envoyée avec succès !");
             actionsContainer.style.display = "none";
         })
         .catch(error => {
             console.error("❌ Erreur lors de l'envoi des données :", error);
-            alert("❌ Échec de l'envoi des données.");
+            showConfirmationMessage("❌ Échec de l'envoi des données.", false);
         });
+    }
+
+    function showConfirmationMessage(message, success = true) {
+        confirmationMessage.textContent = message;
+        confirmationMessage.style.display = "block";
+        confirmationMessage.style.color = success ? "green" : "red";
+
+        setTimeout(() => {
+            confirmationMessage.style.display = "none";
+            confirmationMessage.textContent = "";
+        }, 4000);
     }
 
     function startScanner() {
         scannerContainer.style.display = "block";
         resultDiv.innerHTML = "Scan en cours...";
         actionsContainer.style.display = "none";
+        confirmationMessage.style.display = "none";
 
         html5QrCode = new Html5Qrcode("reader");
         html5QrCode.start(
@@ -116,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (lastScannedCode) {
             sendDataToGoogleSheet(lastScannedCode);
         } else {
-            alert("Aucune donnée à envoyer.");
+            showConfirmationMessage("Aucune donnée à envoyer.", false);
         }
     });
 
