@@ -3,7 +3,7 @@ const APP_VERSION = "1.2.3";
 console.log(`🚀 Chargement de l'application - Version ${APP_VERSION}`);
 
 // ✅ URL du script Google Apps Script
-const scriptURL = "https://script.google.com/macros/s/AKfycbx00xnHZMVdT3TOTdL_An7qM1AWmbAcHQK2lvmpgrdomX5s0WoPD3GK_FH0OaqCtXuB/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec";
 
 // 📌 Stockage des 5 derniers scans
 let lastScans = [];
