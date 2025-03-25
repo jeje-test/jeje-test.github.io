@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📜 Historique des scans</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>📜 Historique des derniers scans</h1>
+  <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
+  <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+
+  <script>
+    const container = document.getElementById("historyContainer");
+
+    fetch('https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec?action=history')
+      .then(res => res.json())
+      .then(data => {
+        if (!data || data.length === 0) {
+          container.innerHTML = "Aucune donnée trouvée.";
+          return;
+        }
+
+        const html = `
+          <table>
+            <thead>
+              <tr>
+                <th>🕒 Date</th>
+                <th>📦 QR Code</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(row => `
+                <tr>
+                  <td>${row.date}</td>
+                  <td>${row.qrcode}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>`;
+        container.innerHTML = html;
+      })
+      .catch(() => container.innerHTML = "Erreur lors du chargement de l'historique.");
+  </script>
+</body>
+</html>
