@@ -122,7 +122,8 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
-    //hide(statusMessage);
+    // Retirer cette ligne pour ne pas masquer le bloc de statut
+    // hide(statusMessage);
 
     fetch(getURL + encodeURIComponent(qrData))
       .then(response => response.json())
@@ -162,7 +163,8 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
-    //hide(statusMessage);
+    // Retirer cette ligne pour ne pas masquer le bloc de statut
+    // hide(statusMessage);
 
     fetch(postURL, {
       method: "POST",
@@ -184,37 +186,34 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-function showStatusMessage(message, isSuccess = true) {
-  console.log("🔔 Notification affichée :", message); // Vérification dans la console
+  function showStatusMessage(message, isSuccess = true) {
+    console.log("🔔 Notification affichée :", message); // Vérification dans la console
 
-  const statusMessage = document.getElementById("statusMessage");
+    const statusMessage = document.getElementById("statusMessage");
 
-  // Appliquer le message et les styles
-  statusMessage.textContent = message;
-  statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
-  statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
-  statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
+    // Appliquer le message et les styles
+    statusMessage.textContent = message;
+    statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
+    statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+    statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
 
-  // Afficher le message
-  statusMessage.style.display = "block";  // Forcer l'affichage du message
-}
+    // Afficher le message
+    statusMessage.style.display = "block";  // Forcer l'affichage du message
+  }
 
+  function startScanner() {
+    show(scannerContainer);
+    resultDiv.innerHTML = "Scan en cours...";
+    showStatusMessage("Scan en cours..."); // Affichage du message "Scan en cours..."
 
-function startScanner() {
-  show(scannerContainer);
-  resultDiv.innerHTML = "Scan en cours...";
-  hide(actionsContainer);
-
-  // Ne pas cacher le bloc de statut
-  // hide(statusMessage);  // Retire cette ligne si elle est présente
-
-  html5QrCode = new Html5Qrcode("reader");
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: { width: 250, height: 250 } },
-    onScanSuccess
-  ).catch(err => console.error("Erreur démarrage scanner:", err));
-}
+    hide(actionsContainer);
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onScanSuccess
+    ).catch(err => console.error("Erreur démarrage scanner:", err));
+  }
 
   function stopScanner() {
     if (html5QrCode) {
