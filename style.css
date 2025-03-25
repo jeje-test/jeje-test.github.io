@@ -155,3 +155,8 @@ button:hover {
 .hidden {
   display: none !important;
 }
+
+.image-container img {
+  max-width: 30%;
+  height: auto;
+}
