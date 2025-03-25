@@ -166,8 +166,7 @@ if ("serviceWorker" in navigator) {
 
 
 
-  // Fonction pour envoyer les données au script Google Apps
-function sendDataToGoogleSheet(scannedData) {
+sendDataToGoogleSheet(scannedData) {
   show(loader);
   resultDiv.innerHTML = "";
   hide(actionsContainer);
@@ -179,11 +178,13 @@ function sendDataToGoogleSheet(scannedData) {
     .then(response => response.json())
     .then(data => {
       if (data.status === "success" || data.status === "ignored") {
-        // Affiche un message de succès si le décompte a été effectué avec succès
-        showStatusMessage("✅ Cours décompté et données mises à jour !");
-        fetchDataFromGoogleSheet(scannedData);
+        showStatusMessage("✅ Cours décompté, récupération à jour...");
+        
+        // ✅ Attendre 500ms avant de récupérer les données (donner le temps à Sheets de finir)
+        setTimeout(() => {
+          fetchDataFromGoogleSheet(scannedData);
+        }, 500);
       } else {
-        // Affiche un message d'erreur si quelque chose ne va pas
         showStatusMessage("❌ " + (data.message || "Erreur lors du décompte."), false);
       }
     })
@@ -192,8 +193,8 @@ function sendDataToGoogleSheet(scannedData) {
       showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
       console.error("Erreur POST :", error);
     });
-
 }
+
 
   function showStatusMessage(message, isSuccess = true) {
     console.log("🔔 Notification affichée :", message); // Vérification dans la console
