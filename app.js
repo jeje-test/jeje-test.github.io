@@ -184,26 +184,27 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function showStatusMessage(message, isSuccess = true) {
-    console.log("🔔 Notification affichée :", message); // Vérification dans la console
+function showStatusMessage(message, isSuccess = true) {
+  console.log("🔔 Notification affichée :", message); // Vérification dans la console
 
-    const statusMessage = document.getElementById("statusMessage");
+  const statusMessage = document.getElementById("statusMessage");
 
-    // Mettre à jour le message et les styles
-    statusMessage.textContent = message;
-    statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
-    statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
-    statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
+  // Appliquer le message et les styles
+  statusMessage.textContent = message;
+  statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
+  statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+  statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
 
-    // Afficher le message
-    statusMessage.style.display = "block"; // Forcer l'affichage
+  // Le bloc de statut est toujours visible
+  statusMessage.style.display = "block";  // S'assurer qu'il est visible
 
-    // Masquer après 4 secondes
-    setTimeout(() => {
-      statusMessage.style.display = "none"; // Cacher le message
-      statusMessage.textContent = ""; // Effacer le texte
-    }, 4000); // Message affiché pendant 4 secondes
-  }
+  // Enlever le contenu après quelques secondes si besoin (optionnel)
+  setTimeout(() => {
+    statusMessage.style.display = "none"; // Masquer après 4 secondes
+    statusMessage.textContent = ""; // Effacer le texte
+  }, 4000); // Message affiché pendant 4 secondes
+}
+
 
   function startScanner() {
     show(scannerContainer);
