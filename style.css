@@ -1,90 +1,121 @@
-/* Style général */
 body {
-    background-color: #FFFAF0; /* Fond orange clair pour une meilleure lisibilité */
-    color: #333; /* Texte sombre pour un bon contraste */
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 20px;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 1rem;
 }
 
-/* Style des boutons */
+:root {
+  --bg-color: #f2f2f2;
+  --text-color: #222;
+  --card-bg: #ffffff;
+  --button-bg: #007bff;
+  --button-hover: #0056b3;
+  --table-header: #f0f0f0;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --card-bg: #1e1e1e;
+  --button-bg: #444;
+  --button-hover: #666;
+  --table-header: #2a2a2a;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
 button {
-    background-color: #FF8C00; /* Orange vif */
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background 0.3s ease;
-    margin: 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #E07B00; /* Orange foncé au survol */
+  background-color: var(--button-hover);
 }
 
-/* Conteneur des boutons */
-.buttons {
-    margin-bottom: 20px;
+#stopScan {
+  margin-top: 10px;
+  background-color: #dc3545;
 }
 
-/* Zone du scanner */
+#stopScan:hover {
+  background-color: #a82330;
+}
+
 #scannerContainer {
-    background-color: #FFE4B5; /* Fond orangé doux */
-    border: 2px solid #FF8C00; /* Bordure orange vif */
-    padding: 15px;
-    border-radius: 10px;
-    display: inline-block;
-    margin-top: 15px;
+  margin-top: 15px;
 }
 
-/* Zone d'affichage des données */
+#reader {
+  width: 100%;
+  max-width: 350px;
+  margin: auto;
+  border: 2px dashed var(--button-bg);
+  border-radius: 10px;
+  padding: 10px;
+  background-color: white;
+}
+
 #dataContainer {
-    background: #FFDAB9; /* Fond orangé clair */
-    border: 1px solid #FF8C00;
-    padding: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-    display: inline-block;
-    margin-top: 15px;
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem auto;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .result-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.result-table th, 
+.result-table th,
 .result-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
 .result-table th {
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: left;
-    width: 40%;
+  background-color: var(--table-header);
+  font-weight: bold;
 }
 
-.result-table td {
-    background-color: #fafafa;
-    width: 60%;
+#confirmationMessage {
+  font-weight: bold;
+  font-size: 1rem;
 }
 
-/* Spinner de chargement */
 .loader {
   border: 6px solid #f3f3f3;
-  border-top: 6px solid #3498db;
+  border-top: 6px solid var(--button-bg);
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   animation: spin 1s linear infinite;
   margin: 20px auto;
-  display: none; /* caché par défaut */
 }
 
 @keyframes spin {
@@ -92,3 +123,8 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
+#appVersion {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 20px;
+}
