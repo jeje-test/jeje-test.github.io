@@ -187,10 +187,12 @@ function sendDataToGoogleSheet(scannedData) {
 
 
 function showConfirmationMessage(message, success = true) {
-  console.log("🔔 Notification affichée :", message); // 🔍 Vérif console
+  console.log("🔔 Notification affichée :", message);
 
   confirmationMessage.textContent = message;
-  confirmationMessage.style.color = success ? "green" : "red";
+  confirmationMessage.style.color = success ? "#155724" : "#721c24";
+  confirmationMessage.style.backgroundColor = success ? "#d4edda" : "#f8d7da";
+  confirmationMessage.style.border = "1px solid " + (success ? "#c3e6cb" : "#f5c6cb");
   confirmationMessage.style.display = "block";
 
   setTimeout(() => {
@@ -198,6 +200,7 @@ function showConfirmationMessage(message, success = true) {
     confirmationMessage.textContent = "";
   }, 4000);
 }
+
 
 
   function startScanner() {
