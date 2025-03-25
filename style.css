@@ -123,8 +123,31 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
+/* ✅ Ajout pour encadrer proprement les résultats */
+.result-box {
+  background-color: var(--card-bg);
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  line-height: 1.6;
+  font-family: monospace;
+  white-space: pre-wrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 1rem auto;
+  max-width: 500px;
+}
+
+/* ✅ Zone des boutons install/thème/version tout en bas */
+#pwaControls {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 #appVersion {
   font-size: 0.85rem;
   color: #666;
-  margin-top: 20px;
+  margin-top: 5px;
 }
