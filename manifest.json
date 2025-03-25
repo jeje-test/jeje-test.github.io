@@ -1,23 +1,26 @@
 {
   "name": "Scanner QR Code PWA",
   "short_name": "QR Scanner",
-  "version": "1.3.1",
-  "description": "Une application PWA pour scanner des QR Codes",
+  "description": "Une application PWA pour scanner des QR Codes et interagir avec Google Sheets",
+  "version": "2.0.0",
   "start_url": "index.html",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "scriptURL": "https://script.google.com/macros/s/AKfycbzNZa7lRsn6241gplHQmgRjph9RycbE3lGt3l6oMaomrZAiMtK1JmNbLqk8wZIz0AVA/exec"
+  "scriptURL": "https://script.google.com/macros/s/AKfycbxqBUT3bkwY2UL_6Gcl7s2fVBN-MQH0wYFzUI1S8ItPeUt3tLf075d9Zs6SIvOO0ZeQ/exec"
 }
