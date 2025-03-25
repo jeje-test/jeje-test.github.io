@@ -12,17 +12,35 @@
   <button onclick="window.location.href='index.html'">⬅️ Retour</button>
 
   <script>
-    const container = document.getElementById("historyContainer");
+    async function loadScriptURL() {
+      try {
+        const response = await fetch('manifest.json');
+        const manifest = await response.json();
+        return manifest.scriptURL;
+      } catch (err) {
+        console.error("Erreur chargement manifest:", err);
+        return null;
+      }
+    }
 
-    fetch('https://script.google.com/macros/s/AKfycbx573h17nUKgmFA1V0iZdDQRXV_V8BpJTeH2oOZY3b9WRwC5xyQlUhEX__pwrjPBq_R/exec?action=history')
-      .then(res => res.json())
-      .then(data => {
-        if (!data || data.length === 0) {
-          container.innerHTML = "Aucune donnée trouvée.";
+    async function loadHistory() {
+      const container = document.getElementById("historyContainer");
+      const scriptURL = await loadScriptURL();
+      if (!scriptURL) {
+        container.innerHTML = "❌ Impossible de récupérer l'URL du script.";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${scriptURL}?action=history`);
+        const data = await response.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          container.innerHTML = "Aucun scan trouvé.";
           return;
         }
 
-        const html = `
+        const table = `
           <table>
             <thead>
               <tr>
@@ -35,12 +53,19 @@
                 <tr>
                   <td>${row.date}</td>
                   <td>${row.qrcode}</td>
-                </tr>`).join('')}
+                </tr>
+              `).join('')}
             </tbody>
-          </table>`;
-        container.innerHTML = html;
-      })
-      .catch(() => container.innerHTML = "Erreur lors du chargement de l'historique.");
+          </table>
+        `;
+        container.innerHTML = table;
+      } catch (err) {
+        console.error("Erreur chargement historique:", err);
+        container.innerHTML = "❌ Erreur lors du chargement des données.";
+      }
+    }
+
+    loadHistory();
   </script>
 </body>
 </html>
