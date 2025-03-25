@@ -172,8 +172,7 @@ function sendDataToGoogleSheet(scannedData) {
     .then(response => response.json())
     .then(data => {
       if (data.status === "success" || data.status === "ignored") {
-        showConfirmationMessage("✅ Donnée envoyée avec succès !");
-        // 🆕 Ensuite : on recharge les données pour les voir à jour
+        showConfirmationMessage("✅ Cours décompté et données mises à jour !");
         fetchDataFromGoogleSheet(scannedData);
       } else {
         showConfirmationMessage("❌ " + (data.message || "Erreur."), false);
@@ -187,16 +186,20 @@ function sendDataToGoogleSheet(scannedData) {
 }
 
 
-  function showConfirmationMessage(message, success = true) {
-    confirmationMessage.textContent = message;
-    show(confirmationMessage);
-    confirmationMessage.style.color = success ? "green" : "red";
 
-    setTimeout(() => {
-      hide(confirmationMessage);
-      confirmationMessage.textContent = "";
-    }, 4000);
-  }
+function showConfirmationMessage(message, success = true) {
+  confirmationMessage.textContent = message;
+  confirmationMessage.style.color = success ? "green" : "red";
+  confirmationMessage.classList.add("visible");
+  show(confirmationMessage);
+
+  setTimeout(() => {
+    confirmationMessage.classList.remove("visible");
+    hide(confirmationMessage);
+    confirmationMessage.textContent = "";
+  }, 4000);
+}
+
 
   function startScanner() {
     show(scannerContainer);
