@@ -2,50 +2,61 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="manifest" href="manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📷 Scanner un QR Code</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
-  <script src="app.js" defer></script>
-  <title>📷 Scanner un QR Code 2</title>
 </head>
 <body>
-  <main>
-    <h1>📷 Scanner un QR Code 2</h1>
+  <h1>📷 Scanner un QR Code</h1>
 
-    <div class="image-container">
-      <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
-           alt="Logo TY" />
-    </div>
+  <!-- Logo sous le titre -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
+         alt="Logo TY" />
+  </div>
 
-    <button id="scanButton">📸 Scanner un QR Code</button>
-    <button id="stopButton" style="display: none;">❌ Arrêter le scanner</button>
+  <!-- Boutons principaux -->
+  <div class="buttons">
+    <button id="startScan">📸 Scanner un QR Code</button>
+    <button onclick="window.location.href='form.html'">📝 Remplir un formulaire</button>
+    <button id="refreshCacheBtn">♻️ Recharger l’application</button>
+    <button id="toggleThemeBtn">🌙 Mode sombre</button>
+    <button id="installBtn" style="display:none;">📲 Installer l’application</button>
+  </div>
 
+  <!-- Zone de scanner -->
+  <div id="scannerContainer" style="display: none;">
     <div id="reader"></div>
+    <button id="stopScan">❌ Arrêter le scanner</button>
+  </div>
 
-    <section id="resultSection">
-      <h2>📊 Données envoyées</h2>
-      <div class="result-box">
-        <pre id="result"></pre>
-      </div>
-      <div id="actionButtons">
-        <button id="confirmButton">✅ Décompter 1 cours</button>
-        <button id="cancelButton">❌ Annuler</button>
-      </div>
-    </section>
+  <!-- Loader -->
+  <div id="loader" class="loader" style="display: none;"></div>
 
-    <div id="updateBanner">
-      🔄 Nouvelle version disponible. <button id="reloadButton">Recharger</button>
-    </div>
-  </main>
+  <!-- Zone d'affichage des résultats -->
+  <h2>📊 Résultats</h2>
+  <div id="dataContainer" class="result-box">Aucune donnée scannée.</div>
 
-  <!-- Footer avec contrôles PWA, bouton thème en bas et affichage de la version -->
+  <!-- Message de confirmation -->
+  <div id="confirmationMessage" style="display: none; margin-top: 10px; text-align: center;"></div>
+
+  <!-- Actions -->
+  <div id="actionsContainer" style="display: none; justify-content: center; gap: 10px; margin-top: 10px;">
+    <button id="decrementBtn">✅ Décompter 1 cours</button>
+    <button id="cancelBtn">❌ Annuler</button>
+  </div>
+
+  <!-- Footer avec version et contrôles PWA -->
   <footer>
     <div id="pwaControls">
-      <button id="installButton" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
-      <button id="themeToggle">🌓 Changer de thème</button>
-      <p id="appVersion" style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;"></p>
+      <button id="toggleThemeBtnFooter">🌓 Changer de thème</button>
+      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
+      <p id="appVersion"></p>
     </div>
   </footer>
+
+  <!-- JS principal -->
+  <script src="app.js"></script>
 </body>
 </html>
