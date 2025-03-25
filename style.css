@@ -63,9 +63,6 @@ button:hover {
   background-color: #a82330;
 }
 
-#scannerContainer {
-  margin-top: 15px;
-}
 
 #reader {
   width: 100%;
@@ -150,6 +147,7 @@ button:hover {
 #statusMessage {
   font-size: 1.2em;
   font-weight: bold;
+  display: block; /* Toujours affiché */
   padding: 15px;
   margin-top: 20px;
   border-radius: 8px;
@@ -157,8 +155,15 @@ button:hover {
   text-align: center;
   max-width: 90%;  /* Pour s'assurer que ça tient bien sur les écrans mobiles */
   margin: 20px auto;
-  display: block; /* Toujours affiché */
+  z-index: 10;  /* Forcer à s'afficher au-dessus des autres éléments */
+  position: relative; /* Ajout de positionnement pour utiliser z-index */
 }
+
+#scannerContainer {
+  z-index: 5; /* Assure que le scanner soit en dessous du message de statut */
+  position: relative; /* Si ce n'est pas déjà le cas */
+}
+
 
 #statusMessage.success {
   background-color: #d4edda;
