@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
-    hide(statusMessage);
+    //hide(statusMessage);
 
     fetch(getURL + encodeURIComponent(qrData))
       .then(response => response.json())
@@ -162,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
-    hide(statusMessage);
+    //hide(statusMessage);
 
     fetch(postURL, {
       method: "POST",
@@ -195,10 +195,10 @@ function showStatusMessage(message, isSuccess = true) {
   statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
   statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
 
-  // Le bloc de statut est toujours visible
-  statusMessage.style.display = "block";  // S'assurer qu'il est visible
+  // Afficher le message
+  statusMessage.style.display = "block";  // Forcer l'affichage du message
 
-  // Enlever le contenu après quelques secondes si besoin (optionnel)
+  // S'assurer que #statusMessage est bien visible même après l'affichage des résultats
   setTimeout(() => {
     statusMessage.style.display = "none"; // Masquer après 4 secondes
     statusMessage.textContent = ""; // Effacer le texte
