@@ -187,20 +187,24 @@ function sendDataToGoogleSheet(scannedData) {
 
 
 function showConfirmationMessage(message, success = true) {
-  console.log("🔔 Notification affichée :", message);  // Vérifie si la fonction est bien appelée
+  console.log("🔔 Notification affichée :", message); // Vérification du log
 
+  const confirmationMessage = document.getElementById("confirmationMessage");
+
+  // Appliquer le message et les styles
   confirmationMessage.textContent = message;
   confirmationMessage.style.color = success ? "#155724" : "#721c24";
   confirmationMessage.style.backgroundColor = success ? "#d4edda" : "#f8d7da";
-  
-  // Ajout de la classe pour la rendre visible
-  confirmationMessage.classList.add("visible");
+  confirmationMessage.style.border = "1px solid " + (success ? "#c3e6cb" : "#f5c6cb");
 
-  // Supprimer la classe après 4 secondes
+  // FORCER l'affichage du message
+  confirmationMessage.style.display = "block";  // Forcer l'affichage
+
+  // Masquer après 4 secondes
   setTimeout(() => {
-    confirmationMessage.classList.remove("visible");
-    confirmationMessage.textContent = "";
-  }, 4000);
+    confirmationMessage.style.display = "none";
+    confirmationMessage.textContent = ""; // Effacer le texte
+  }, 4000);  // Message affiché pendant 4 secondes
 }
 
 
