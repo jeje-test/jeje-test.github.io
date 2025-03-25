@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner QR Code PWA</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="libs/html5-qrcode.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📷 Scanner un QR Code</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
-    <h1>📷 Scanner un QR Code new 3</h1>
-    
-    <!-- Boutons -->
-    <div class="buttons">
-        <button id="startScan">📸 Scanner un QR Code</button>
-        <button onclick="window.location.href='scan.html'">🔄 Récupérer Information</button>
-        <button id="openForm">📝 Remplir un Formulaire</button>
-    </div>
+  <h1>📷 Scanner un QR Code</h1>
 
-    <!-- Zone de scanner (initialement cachée) -->
-    <div id="scannerContainer" style="display: none;">
-        <div id="reader"></div>
-        <button id="stopScan">❌ Arrêter le scanner</button>
-    </div>
+  <!-- Boutons principaux -->
+  <div class="buttons">
+    <button id="startScan">📸 Scanner un QR Code</button>
+    <button onclick="window.location.href='form.html'">📝 Remplir un formulaire</button>
+    <button id="refreshCacheBtn">♻️ Recharger l’application</button>
+  </div>
 
-    <!-- Zone d'affichage des données envoyées -->
-    <h2>📊 Données envoyées</h2>
-    <div id="dataContainer">Aucune donnée envoyée.</div>
+  <!-- Zone de scanner -->
+  <div id="scannerContainer" style="display: none;">
+    <div id="reader"></div>
+    <button id="stopScan">❌ Arrêter le scanner</button>
+  </div>
 
-    <p id="appVersion"></p>
+  <!-- Zone de résultats -->
+  <h2>📊 Données envoyées</h2>
+  <div id="dataContainer">Aucune donnée envoyée.</div>
 
-    <script src="app.js"></script>
+  <!-- Version -->
+  <p id="appVersion"></p>
 
-    <script>
-        document.getElementById("openForm").addEventListener("click", function() {
-            window.location.href = "form.html";
-        });
-    </script>
-
+  <!-- JS principal -->
+  <script src="app.js"></script>
 </body>
 </html>
