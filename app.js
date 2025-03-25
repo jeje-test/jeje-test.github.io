@@ -126,7 +126,9 @@ if ("serviceWorker" in navigator) {
 
   // Ajout du paramètre `timestamp` pour forcer la requête à être unique
   const timestamp = new Date().getTime();  // Utilise le timestamp actuel pour forcer une requête unique
-  fetch(getURL + encodeURIComponent(qrData) + "&timestamp=" + timestamp)
+fetch(getURL + encodeURIComponent(qrData), {
+  cache: "no-store"
+})
     .then(response => response.json())
     .then(data => {
       hide(loader);
