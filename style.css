@@ -151,3 +151,7 @@ button:hover {
   color: #666;
   margin-top: 5px;
 }
+
+.hidden {
+  display: none;
+}
