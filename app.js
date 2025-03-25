@@ -1,3 +1,11 @@
+// Helpers pour afficher/masquer des éléments
+function hide(el) {
+  el.classList.add("hidden");
+}
+function show(el) {
+  el.classList.remove("hidden");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const scannerDiv = document.getElementById("reader");
   const scannerContainer = document.getElementById("scannerContainer");
@@ -21,26 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
   let postURL = "";
 
   // 📦 Service Worker (PWA)
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(registration => {
-      console.log("✅ Service Worker enregistré");
-
-      // 🔄 Écoute l’update
-      registration.addEventListener("updatefound", () => {
-        const newWorker = registration.installing;
-
-        newWorker?.addEventListener("statechange", () => {
-          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-            showUpdateBanner();
-          }
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(registration => {
+        console.log("✅ Service Worker enregistré");
+        registration.addEventListener("updatefound", () => {
+          const newWorker = registration.installing;
+          newWorker?.addEventListener("statechange", () => {
+            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+              showUpdateBanner();
+            }
+          });
         });
-      });
-    })
-    .catch(err => console.error("❌ Erreur SW :", err));
-}
-
-
+      })
+      .catch(err => console.error("❌ Erreur SW :", err));
+  }
 
   // 🌓 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
@@ -76,13 +79,11 @@ if ("serviceWorker" in navigator) {
     }
   });
 
+  function showUpdateBanner() {
+    const banner = document.getElementById("updateBanner");
+    if (banner) banner.style.display = "block";
+  }
 
-function showUpdateBanner() {
-  const banner = document.getElementById("updateBanner");
-  if (banner) banner.style.display = "block";
-}
-
-  
   // 🔁 Chargement manifest
   function fetchManifestAndInit() {
     fetch("manifest.json")
@@ -99,14 +100,13 @@ function showUpdateBanner() {
       });
   }
 
-  // 📸 Scan
   function onScanSuccess(decodedText) {
     console.log("QR Code détecté:", decodedText);
     lastScannedCode = decodedText;
 
     if (html5QrCode) {
       html5QrCode.stop().then(() => {
-        scannerContainer.style.display = "none";
+        hide(scannerContainer);
       });
     }
 
@@ -114,15 +114,15 @@ function showUpdateBanner() {
   }
 
   function fetchDataFromGoogleSheet(qrData) {
-    loader.style.display = "block";
+    show(loader);
     resultDiv.innerHTML = "";
-    actionsContainer.style.display = "none";
-    confirmationMessage.style.display = "none";
+    hide(actionsContainer);
+    hide(confirmationMessage);
 
     fetch(getURL + encodeURIComponent(qrData))
       .then(response => response.json())
       .then(data => {
-        loader.style.display = "none";
+        hide(loader);
         if (data && data.result) {
           let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
@@ -130,13 +130,13 @@ function showUpdateBanner() {
           }
           resultHTML += `</tbody></table>`;
           resultDiv.innerHTML = resultHTML;
-          actionsContainer.style.display = "flex";
+          show(actionsContainer);
         } else {
           resultDiv.innerHTML = "Aucune donnée trouvée.";
         }
       })
       .catch(error => {
-        loader.style.display = "none";
+        hide(loader);
         resultDiv.innerHTML = "Erreur de récupération des données.";
         console.error("Erreur GET :", error);
       });
@@ -150,7 +150,7 @@ function showUpdateBanner() {
       .then(response => response.json())
       .then(data => {
         showConfirmationMessage("✅ Donnée envoyée avec succès !");
-        actionsContainer.style.display = "none";
+        hide(actionsContainer);
       })
       .catch(error => {
         showConfirmationMessage("❌ Erreur lors de l'envoi des données.", false);
@@ -160,20 +160,20 @@ function showUpdateBanner() {
 
   function showConfirmationMessage(message, success = true) {
     confirmationMessage.textContent = message;
-    confirmationMessage.style.display = "block";
+    show(confirmationMessage);
     confirmationMessage.style.color = success ? "green" : "red";
 
     setTimeout(() => {
-      confirmationMessage.style.display = "none";
+      hide(confirmationMessage);
       confirmationMessage.textContent = "";
     }, 4000);
   }
 
   function startScanner() {
-    scannerContainer.style.display = "block";
+    show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
-    confirmationMessage.style.display = "none";
-    actionsContainer.style.display = "none";
+    hide(confirmationMessage);
+    hide(actionsContainer);
 
     html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
@@ -186,7 +186,7 @@ function showUpdateBanner() {
   function stopScanner() {
     if (html5QrCode) {
       html5QrCode.stop().then(() => {
-        scannerContainer.style.display = "none";
+        hide(scannerContainer);
       });
     }
   }
@@ -204,7 +204,7 @@ function showUpdateBanner() {
     });
 
     cancelBtn.addEventListener("click", () => {
-      actionsContainer.style.display = "none";
+      hide(actionsContainer);
     });
 
     refreshCacheBtn?.addEventListener("click", () => {
