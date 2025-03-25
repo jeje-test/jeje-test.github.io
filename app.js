@@ -186,19 +186,21 @@ function sendDataToGoogleSheet(scannedData) {
 }
 
 
-
 function showConfirmationMessage(message, success = true) {
   confirmationMessage.textContent = message;
   confirmationMessage.style.color = success ? "green" : "red";
+
+  // Affiche l'élément avant d'ajouter l'animation
+  confirmationMessage.classList.remove("hidden");
   confirmationMessage.classList.add("visible");
-  show(confirmationMessage);
 
   setTimeout(() => {
     confirmationMessage.classList.remove("visible");
-    hide(confirmationMessage);
+    confirmationMessage.classList.add("hidden");
     confirmationMessage.textContent = "";
   }, 4000);
 }
+
 
 
   function startScanner() {
