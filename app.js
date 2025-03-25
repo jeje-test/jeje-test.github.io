@@ -29,22 +29,23 @@ document.addEventListener("DOMContentLoaded", function () {
   let getURL = "";
   let postURL = "";
 
-  // 📦 Service Worker (PWA)
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(registration => {
-        console.log("✅ Service Worker enregistré");
-        registration.addEventListener("updatefound", () => {
-          const newWorker = registration.installing;
-          newWorker?.addEventListener("statechange", () => {
-            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
-              showUpdateBanner();
-            }
-          });
-        });
-      })
-      .catch(err => console.error("❌ Erreur SW :", err));
-  }
+// Désactive l'enregistrement du Service Worker pour le débogage
+if ("serviceWorker" in navigator) {
+  // navigator.serviceWorker.register("service-worker.js")  // Commenté pour le débogage
+  //   .then(registration => {
+  //     console.log("✅ Service Worker enregistré");
+  //     registration.addEventListener("updatefound", () => {
+  //       const newWorker = registration.installing;
+  //       newWorker?.addEventListener("statechange", () => {
+  //         if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+  //           showUpdateBanner();
+  //         }
+  //       });
+  //     });
+  //   })
+  //   .catch(err => console.error("❌ Erreur SW :", err));
+}
+
 
   // 🌓 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
