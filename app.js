@@ -41,6 +41,7 @@ if ("serviceWorker" in navigator) {
 }
 
 
+
   // 🌓 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
@@ -75,6 +76,13 @@ if ("serviceWorker" in navigator) {
     }
   });
 
+
+function showUpdateBanner() {
+  const banner = document.getElementById("updateBanner");
+  if (banner) banner.style.display = "block";
+}
+
+  
   // 🔁 Chargement manifest
   function fetchManifestAndInit() {
     fetch("manifest.json")
