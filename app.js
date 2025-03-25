@@ -126,10 +126,21 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data && data.result) {
           let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
-            resultHTML += `<tr><th>${key}</th><td>${data.result[key]}</td></tr>`;
+                let value = data.result[key];
+                  let highlight = "";
+                
+                  if (key.toLowerCase().includes("restants") && !isNaN(value)) {
+                    const nb = parseInt(value);
+                    if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
+                    else if (nb <= 5) highlight = ' style="color: orange;"';
+                    }
+
+              resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;          
           }
           resultHTML += `</tbody></table>`;
           resultDiv.innerHTML = resultHTML;
+          resultDiv.classList.add("fade-in"); // 👈 animation
+          setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
           show(actionsContainer);
         } else {
           resultDiv.innerHTML = "Aucune donnée trouvée.";
