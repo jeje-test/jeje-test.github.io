@@ -197,12 +197,6 @@ function showStatusMessage(message, isSuccess = true) {
 
   // Afficher le message
   statusMessage.style.display = "block";  // Forcer l'affichage du message
-
-  // S'assurer que #statusMessage est bien visible même après l'affichage des résultats
-  setTimeout(() => {
-    statusMessage.style.display = "none"; // Masquer après 4 secondes
-    statusMessage.textContent = ""; // Effacer le texte
-  }, 4000); // Message affiché pendant 4 secondes
 }
 
 
