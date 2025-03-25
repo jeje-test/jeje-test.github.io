@@ -183,7 +183,7 @@ function sendDataToGoogleSheet(scannedData) {
         // ⏳ Attendre un peu que Google Sheets ait bien terminé
         setTimeout(() => {
           fetchDataFromGoogleSheet(scannedData);  // 🔁 Recharger les données après décompte
-        }, 600); // 600ms ≈ valeur sûre pour que flush côté Apps Script soit appliqué
+        }, 1000); // 1000ms ≈ valeur sûre pour que flush côté Apps Script soit appliqué
       } else {
         showStatusMessage("❌ " + (data.message || "Erreur lors du décompte."), false);
       }
