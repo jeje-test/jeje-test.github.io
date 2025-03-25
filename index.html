@@ -15,6 +15,7 @@
     <button id="startScan">📸 Scanner un QR Code</button>
     <button onclick="window.location.href='form.html'">📝 Remplir un formulaire</button>
     <button id="refreshCacheBtn">♻️ Recharger l’application</button>
+    <button id="installBtn" style="display:none;">📲 Installer l’application</button>
   </div>
 
   <!-- Zone de scanner -->
@@ -23,17 +24,17 @@
     <button id="stopScan">❌ Arrêter le scanner</button>
   </div>
 
-  <!-- Loader -->
+  <!-- Animation de chargement -->
   <div id="loader" class="loader" style="display: none;"></div>
 
   <!-- Zone d'affichage des résultats -->
   <h2>📊 Résultats</h2>
   <div id="dataContainer">Aucune donnée scannée.</div>
 
-  <!-- Zone de confirmation (ex: Donnée envoyée / Erreur) -->
+  <!-- Message de confirmation -->
   <div id="confirmationMessage" style="display: none; margin-top: 10px; text-align: center;"></div>
 
-  <!-- Boutons après résultat -->
+  <!-- Actions -->
   <div id="actionsContainer" style="display: none; justify-content: center; gap: 10px; margin-top: 10px;">
     <button id="decrementBtn">✅ Décompter 1 cours</button>
     <button id="cancelBtn">❌ Annuler</button>
