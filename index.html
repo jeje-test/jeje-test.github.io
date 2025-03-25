@@ -14,6 +14,7 @@
   <div class="buttons">
     <button id="startScan">📸 Scanner un QR Code</button>
     <button onclick="window.location.href='form.html'">📝 Remplir un formulaire</button>
+    <button onclick="window.location.href='scan.html'">🔄 Récupérer Information</button>
     <button id="refreshCacheBtn">♻️ Recharger l’application</button>
   </div>
 
@@ -23,14 +24,20 @@
     <button id="stopScan">❌ Arrêter le scanner</button>
   </div>
 
-  <!-- Zone de résultats -->
-  <h2>📊 Données envoyées</h2>
-  <div id="dataContainer">Aucune donnée envoyée.</div>
+  <!-- Animation de chargement -->
+  <div id="loader" class="loader" style="display: none;"></div>
+
+  <!-- Zone d'affichage des résultats -->
+  <h2>📊 Résultats</h2>
+  <div id="dataContainer">Aucune donnée scannée.</div>
+
+  <!-- Message de confirmation -->
+  <div id="confirmationMessage" style="display: none; margin-top: 10px; text-align: center;"></div>
 
   <!-- Version -->
   <p id="appVersion"></p>
 
-  <!-- JS principal -->
+  <!-- Script principal -->
   <script src="app.js"></script>
 </body>
 </html>
