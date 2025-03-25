@@ -103,10 +103,6 @@ button:hover {
   font-weight: bold;
 }
 
-#confirmationMessage {
-  font-weight: bold;
-  font-size: 1rem;
-}
 
 .loader {
   border: 6px solid #f3f3f3;
@@ -278,10 +274,7 @@ button:hover {
   font-weight: bold;
 }
 
-#confirmationMessage {
-  font-weight: bold;
-  font-size: 1rem;
-}
+
 
 .loader {
   border: 6px solid #f3f3f3;
@@ -349,13 +342,17 @@ button:hover {
 }
 
 #confirmationMessage {
-  font-size: 1.1rem;
+  font-size: 1.2em;
   font-weight: bold;
-  display: none;
+  display: none; /* Par défaut, caché */
   padding: 10px 15px;
   margin: 1rem auto;
   max-width: 400px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+#confirmationMessage.visible {
+  display: block; /* Visible quand la classe "visible" est ajoutée */
 }
 
