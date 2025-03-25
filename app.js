@@ -189,14 +189,10 @@ function sendDataToGoogleSheet(scannedData) {
 function showConfirmationMessage(message, success = true) {
   confirmationMessage.textContent = message;
   confirmationMessage.style.color = success ? "green" : "red";
-
-  // Affiche l'élément avant d'ajouter l'animation
-  confirmationMessage.classList.remove("hidden");
-  confirmationMessage.classList.add("visible");
+  confirmationMessage.style.display = "block"; // ✅ Forcer l'affichage
 
   setTimeout(() => {
-    confirmationMessage.classList.remove("visible");
-    confirmationMessage.classList.add("hidden");
+    confirmationMessage.style.display = "none";
     confirmationMessage.textContent = "";
   }, 4000);
 }
