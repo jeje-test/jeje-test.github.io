@@ -124,17 +124,15 @@ if ("serviceWorker" in navigator) {
   resultDiv.innerHTML = "";
   hide(actionsContainer);
 
-  // Ajout du paramètre `timestamp` pour forcer la requête à être unique
-  const timestamp = new Date().getTime();  // Utilise le timestamp actuel pour forcer une requête unique
-fetch(getURL + encodeURIComponent(qrData), {
-  cache: "no-store"
-})
+  fetch(getURL + encodeURIComponent(qrData), {
+    cache: "no-store"  // 🔁 Évite la mise en cache
+  })
     .then(response => response.json())
     .then(data => {
       hide(loader);
       if (data && data.result) {
         showStatusMessage("✅ Données récupérées !");
-        
+
         let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
         for (let key in data.result) {
           let value = data.result[key];
@@ -155,14 +153,17 @@ fetch(getURL + encodeURIComponent(qrData), {
         show(actionsContainer);
       } else {
         resultDiv.innerHTML = "Aucune donnée trouvée.";
+        showStatusMessage("❌ Aucune donnée trouvée.", false);
       }
     })
     .catch(error => {
       hide(loader);
       resultDiv.innerHTML = "Erreur de récupération des données.";
       console.error("Erreur GET :", error);
+      showStatusMessage("❌ Erreur lors de la récupération des données.", false);
     });
 }
+
 
 
   // Fonction pour envoyer les données au script Google Apps
