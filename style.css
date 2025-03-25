@@ -179,8 +179,3 @@ button:hover {
   transition: opacity 0.4s ease;
 }
 
-#confirmationMessage.visible {
-  opacity: 1;
-}
-
-
