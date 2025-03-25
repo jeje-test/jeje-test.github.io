@@ -161,32 +161,33 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function sendDataToGoogleSheet(scannedData) {
-    show(loader);
-    resultDiv.innerHTML = "";
-    hide(actionsContainer);
-    // Retirer cette ligne pour ne pas masquer le bloc de statut
-    // hide(statusMessage);
+  // Fonction pour envoyer les données au script Google Apps
+function sendDataToGoogleSheet(scannedData) {
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
 
-    fetch(postURL, {
-      method: "POST",
-      body: new URLSearchParams({ data: scannedData })
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({ data: scannedData })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success" || data.status === "ignored") {
+        // Affiche un message de succès si le décompte a été effectué avec succès
+        showStatusMessage("✅ Cours décompté et données mises à jour !");
+        fetchDataFromGoogleSheet(scannedData);
+      } else {
+        // Affiche un message d'erreur si quelque chose ne va pas
+        showStatusMessage("❌ " + (data.message || "Erreur lors du décompte."), false);
+      }
     })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success" || data.status === "ignored") {
-          showStatusMessage("✅ Cours décompté et données mises à jour !");
-          fetchDataFromGoogleSheet(scannedData);
-        } else {
-          showStatusMessage("❌ " + (data.message || "Erreur."), false);
-        }
-      })
-      .catch(error => {
-        hide(loader);
-        showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
-        console.error("Erreur POST :", error);
-      });
-  }
+    .catch(error => {
+      hide(loader);
+      showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
+      console.error("Erreur POST :", error);
+    });
+}
 
   function showStatusMessage(message, isSuccess = true) {
     console.log("🔔 Notification affichée :", message); // Vérification dans la console
@@ -229,21 +230,27 @@ document.addEventListener("DOMContentLoaded", function () {
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    decrementBtn.addEventListener("click", () => {
-      if (lastScannedCode) {
-                  showStatusMessage("");
-        sendDataToGoogleSheet(lastScannedCode);
-      } else {
-        showStatusMessage("Aucune donnée à envoyer.", false);
-      }
-    });
+decrementBtn.addEventListener("click", () => {
+  if (lastScannedCode) {
+    sendDataToGoogleSheet(lastScannedCode);  // Envoie la donnée pour décompter
+  } else {
+    // Affiche un message d'erreur si aucune donnée n'est scannée
+    showStatusMessage("❌ Aucune donnée à envoyer.", false);
+  }
+});
 
-  // Fonction pour réinitialiser les résultats et afficher "En attente" quand on abandonne
   cancelBtn.addEventListener("click", () => {
     resultDiv.innerHTML = "";  // Nettoie les résultats affichés
-    showStatusMessage("");  // Affiche "En attente"
+    
+    // Réinitialiser le message de statut en mode neutre (sans couleur ni fond)
+    statusMessage.textContent = "";
+    statusMessage.style.color = "";  // Retirer la couleur
+    statusMessage.style.backgroundColor = "";  // Retirer le fond coloré
+    statusMessage.style.border = "";  // Retirer la bordure
+  
+    showStatusMessage("");  // Affiche le message "En attente"
     hide(actionsContainer);  // Cache les actions
-   // show(scannerContainer);  // Réaffiche la zone de scan
+    //show(scannerContainer);  // Réaffiche la zone de scan
   });
 
     refreshCacheBtn?.addEventListener("click", () => {
