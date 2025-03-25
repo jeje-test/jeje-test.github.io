@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     decrementBtn.addEventListener("click", () => {
       if (lastScannedCode) {
+                  showStatusMessage("");
         sendDataToGoogleSheet(lastScannedCode);
       } else {
         showStatusMessage("Aucune donnée à envoyer.", false);
@@ -240,9 +241,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Fonction pour réinitialiser les résultats et afficher "En attente" quand on abandonne
   cancelBtn.addEventListener("click", () => {
     resultDiv.innerHTML = "";  // Nettoie les résultats affichés
-    showStatusMessage("En attente...");  // Affiche "En attente"
+    showStatusMessage("");  // Affiche "En attente"
     hide(actionsContainer);  // Cache les actions
-    show(scannerContainer);  // Réaffiche la zone de scan
+   // show(scannerContainer);  // Réaffiche la zone de scan
   });
 
     refreshCacheBtn?.addEventListener("click", () => {
