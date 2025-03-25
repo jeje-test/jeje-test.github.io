@@ -147,7 +147,6 @@ button:hover {
   margin-top: 5px;
 }
 
-/* Notification */
 #confirmationMessage {
   font-size: 1.2em;
   font-weight: bold;
@@ -156,15 +155,16 @@ button:hover {
   margin: 1rem auto;
   max-width: 400px;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 #confirmationMessage.visible {
-  display: block; /* Visible quand la classe "visible" est ajoutée */
+  display: block; /* Visible quand "visible" est ajouté */
   color: #155724;
   background-color: #d4edda; /* Vert clair pour succès */
   border: 1px solid #c3e6cb;
 }
+
 
 .hidden {
   display: none !important;
