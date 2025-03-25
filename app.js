@@ -206,19 +206,21 @@ function showStatusMessage(message, isSuccess = true) {
 }
 
 
-  function startScanner() {
-    show(scannerContainer);
-    resultDiv.innerHTML = "Scan en cours...";
-    hide(statusMessage);
-    hide(actionsContainer);
+function startScanner() {
+  show(scannerContainer);
+  resultDiv.innerHTML = "Scan en cours...";
+  hide(actionsContainer);
 
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      onScanSuccess
-    ).catch(err => console.error("Erreur démarrage scanner:", err));
-  }
+  // Ne pas cacher le bloc de statut
+  // hide(statusMessage);  // Retire cette ligne si elle est présente
+
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    onScanSuccess
+  ).catch(err => console.error("Erreur démarrage scanner:", err));
+}
 
   function stopScanner() {
     if (html5QrCode) {
