@@ -8,13 +8,12 @@
   <script src="libs/html5-qrcode.min.js"></script>
 </head>
 <body>
-  <h1>📷 Tango Young Scanner</h1>
+  <h1>📷 Scanner un QR Code</h1>
 
   <!-- Boutons principaux -->
   <div class="buttons">
     <button id="startScan">📸 Scanner un QR Code</button>
     <button onclick="window.location.href='form.html'">📝 Remplir un formulaire</button>
-    <button onclick="window.location.href='scan.html'">🔄 Récupérer Information</button>
     <button id="refreshCacheBtn">♻️ Recharger l’application</button>
   </div>
 
@@ -24,20 +23,26 @@
     <button id="stopScan">❌ Arrêter le scanner</button>
   </div>
 
-  <!-- Animation de chargement -->
+  <!-- Loader -->
   <div id="loader" class="loader" style="display: none;"></div>
 
   <!-- Zone d'affichage des résultats -->
   <h2>📊 Résultats</h2>
   <div id="dataContainer">Aucune donnée scannée.</div>
 
-  <!-- Message de confirmation -->
+  <!-- Zone de confirmation (ex: Donnée envoyée / Erreur) -->
   <div id="confirmationMessage" style="display: none; margin-top: 10px; text-align: center;"></div>
+
+  <!-- Boutons après résultat -->
+  <div id="actionsContainer" style="display: none; justify-content: center; gap: 10px; margin-top: 10px;">
+    <button id="decrementBtn">✅ Décompter 1 cours</button>
+    <button id="cancelBtn">❌ Annuler</button>
+  </div>
 
   <!-- Version -->
   <p id="appVersion"></p>
 
-  <!-- Script principal -->
+  <!-- JS principal -->
   <script src="app.js"></script>
 </body>
 </html>
