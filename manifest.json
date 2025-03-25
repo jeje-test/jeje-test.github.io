@@ -1,7 +1,7 @@
 {
   "name": "Scanner QR Code PWA",
   "short_name": "QR Scanner",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Une application PWA pour scanner des QR Codes",
   "start_url": "index.html",
   "display": "standalone",
