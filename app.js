@@ -129,4 +129,133 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
-          let resultHTML = `<strong>Résultat :</strong><br><
+          let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
+          for (let key in data.result) {
+            let value = data.result[key];
+            let highlight = "";
+
+            if (key.toLowerCase().includes("restants") && !isNaN(value)) {
+              const nb = parseInt(value);
+              if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
+              else if (nb <= 5) highlight = ' style="color: orange;"';
+            }
+
+            resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
+          }
+          resultHTML += `</tbody></table>`;
+          resultDiv.innerHTML = resultHTML;
+          resultDiv.classList.add("fade-in");
+          setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
+          show(actionsContainer);
+        } else {
+          resultDiv.innerHTML = "Aucune donnée trouvée.";
+        }
+      })
+      .catch(error => {
+        hide(loader);
+        resultDiv.innerHTML = "Erreur de récupération des données.";
+        console.error("Erreur GET :", error);
+      });
+  }
+
+  function sendDataToGoogleSheet(scannedData) {
+    show(loader);
+    resultDiv.innerHTML = "";
+    hide(actionsContainer);
+    hide(statusMessage);
+
+    fetch(postURL, {
+      method: "POST",
+      body: new URLSearchParams({ data: scannedData })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success" || data.status === "ignored") {
+          showStatusMessage("✅ Cours décompté et données mises à jour !");
+          fetchDataFromGoogleSheet(scannedData);
+        } else {
+          showStatusMessage("❌ " + (data.message || "Erreur."), false);
+        }
+      })
+      .catch(error => {
+        hide(loader);
+        showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
+        console.error("Erreur POST :", error);
+      });
+  }
+
+  function showStatusMessage(message, isSuccess = true) {
+    console.log("🔔 Notification affichée :", message); // Vérification dans la console
+
+    const statusMessage = document.getElementById("statusMessage");
+
+    // Mettre à jour le message et les styles
+    statusMessage.textContent = message;
+    statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
+    statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+    statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
+
+    // Afficher le message
+    statusMessage.style.display = "block"; // Forcer l'affichage
+
+    // Masquer après 4 secondes
+    setTimeout(() => {
+      statusMessage.style.display = "none"; // Cacher le message
+      statusMessage.textContent = ""; // Effacer le texte
+    }, 4000); // Message affiché pendant 4 secondes
+  }
+
+  function startScanner() {
+    show(scannerContainer);
+    resultDiv.innerHTML = "Scan en cours...";
+    hide(statusMessage);
+    hide(actionsContainer);
+
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onScanSuccess
+    ).catch(err => console.error("Erreur démarrage scanner:", err));
+  }
+
+  function stopScanner() {
+    if (html5QrCode) {
+      html5QrCode.stop().then(() => {
+        hide(scannerContainer);
+      });
+    }
+  }
+
+  function attachEventListeners() {
+    startScanButton.addEventListener("click", startScanner);
+    stopScanButton.addEventListener("click", stopScanner);
+
+    decrementBtn.addEventListener("click", () => {
+      if (lastScannedCode) {
+        sendDataToGoogleSheet(lastScannedCode);
+      } else {
+        showStatusMessage("Aucune donnée à envoyer.", false);
+      }
+    });
+
+    cancelBtn.addEventListener("click", () => {
+      hide(actionsContainer);
+    });
+
+    refreshCacheBtn?.addEventListener("click", () => {
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          for (let name of names) caches.delete(name);
+        }).then(() => {
+          alert("Le cache a été vidé. L'application va se recharger...");
+          window.location.reload(true);
+        }).catch(err => {
+          alert("Erreur lors du vidage du cache.");
+        });
+      }
+    });
+  }
+
+  fetchManifestAndInit();
+});
