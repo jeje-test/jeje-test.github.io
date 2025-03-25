@@ -81,6 +81,8 @@ button:hover {
   margin: 1rem auto;
   max-width: 500px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    z-index: 5; /* Rendre #dataContainer moins prioritaire que #statusMessage */
+
 }
 
 .result-table {
@@ -164,6 +166,9 @@ button:hover {
   position: relative; /* Si ce n'est pas déjà le cas */
 }
 
+#actionsContainer {
+  z-index: 5; /* Rendre #actionsContainer moins prioritaire */
+}
 
 #statusMessage.success {
   background-color: #d4edda;
