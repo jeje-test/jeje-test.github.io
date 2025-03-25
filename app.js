@@ -166,7 +166,7 @@ if ("serviceWorker" in navigator) {
 
 
 
-sendDataToGoogleSheet(scannedData) {
+function sendDataToGoogleSheet(scannedData) {
   show(loader);
   resultDiv.innerHTML = "";
   hide(actionsContainer);
@@ -178,12 +178,12 @@ sendDataToGoogleSheet(scannedData) {
     .then(response => response.json())
     .then(data => {
       if (data.status === "success" || data.status === "ignored") {
-        showStatusMessage("✅ Cours décompté, récupération à jour...");
-        
-        // ✅ Attendre 500ms avant de récupérer les données (donner le temps à Sheets de finir)
+        showStatusMessage("✅ Cours décompté, mise à jour en cours...");
+
+        // ⏳ Attendre un peu que Google Sheets ait bien terminé
         setTimeout(() => {
-          fetchDataFromGoogleSheet(scannedData);
-        }, 500);
+          fetchDataFromGoogleSheet(scannedData);  // 🔁 Recharger les données après décompte
+        }, 600); // 600ms ≈ valeur sûre pour que flush côté Apps Script soit appliqué
       } else {
         showStatusMessage("❌ " + (data.message || "Erreur lors du décompte."), false);
       }
@@ -194,6 +194,7 @@ sendDataToGoogleSheet(scannedData) {
       console.error("Erreur POST :", error);
     });
 }
+
 
 
   function showStatusMessage(message, isSuccess = true) {
