@@ -102,6 +102,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function onScanSuccess(decodedText) {
     console.log("QR Code détecté:", decodedText);
+          // 📳 Vibration si supportée
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
     lastScannedCode = decodedText;
 
     if (html5QrCode) {
