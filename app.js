@@ -119,47 +119,48 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function fetchDataFromGoogleSheet(qrData) {
-    show(loader);
-    resultDiv.innerHTML = "";
-    hide(actionsContainer);
-    // Retirer cette ligne pour ne pas masquer le bloc de statut
-    // hide(statusMessage);
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
 
-    fetch(getURL + encodeURIComponent(qrData))
-      .then(response => response.json())
-      .then(data => {
-        hide(loader);
-        if (data && data.result) {
-                  showStatusMessage("✅ Données récupérées !");
+  // Ajout du paramètre `timestamp` pour forcer la requête à être unique
+  const timestamp = new Date().getTime();  // Utilise le timestamp actuel pour forcer une requête unique
+  fetch(getURL + encodeURIComponent(qrData) + "&timestamp=" + timestamp)
+    .then(response => response.json())
+    .then(data => {
+      hide(loader);
+      if (data && data.result) {
+        showStatusMessage("✅ Données récupérées !");
+        
+        let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
+        for (let key in data.result) {
+          let value = data.result[key];
+          let highlight = "";
 
-          let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
-          for (let key in data.result) {
-            let value = data.result[key];
-            let highlight = "";
-
-            if (key.toLowerCase().includes("restants") && !isNaN(value)) {
-              const nb = parseInt(value);
-              if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
-              else if (nb <= 5) highlight = ' style="color: orange;"';
-            }
-
-            resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
+          if (key.toLowerCase().includes("restants") && !isNaN(value)) {
+            const nb = parseInt(value);
+            if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
+            else if (nb <= 5) highlight = ' style="color: orange;"';
           }
-          resultHTML += `</tbody></table>`;
-          resultDiv.innerHTML = resultHTML;
-          resultDiv.classList.add("fade-in");
-          setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
-          show(actionsContainer);
-        } else {
-          resultDiv.innerHTML = "Aucune donnée trouvée.";
+
+          resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
         }
-      })
-      .catch(error => {
-        hide(loader);
-        resultDiv.innerHTML = "Erreur de récupération des données.";
-        console.error("Erreur GET :", error);
-      });
-  }
+        resultHTML += `</tbody></table>`;
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.classList.add("fade-in");
+        setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
+        show(actionsContainer);
+      } else {
+        resultDiv.innerHTML = "Aucune donnée trouvée.";
+      }
+    })
+    .catch(error => {
+      hide(loader);
+      resultDiv.innerHTML = "Erreur de récupération des données.";
+      console.error("Erreur GET :", error);
+    });
+}
+
 
   // Fonction pour envoyer les données au script Google Apps
 function sendDataToGoogleSheet(scannedData) {
