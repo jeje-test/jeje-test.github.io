@@ -2,6 +2,7 @@
 function hide(el) {
   el.classList.add("hidden");
 }
+
 function show(el) {
   el.classList.remove("hidden");
 }
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const resultDiv = document.getElementById("dataContainer");
   const loader = document.getElementById("loader");
   const versionDiv = document.getElementById("appVersion");
-  const confirmationMessage = document.getElementById("confirmationMessage");
+  const statusMessage = document.getElementById("statusMessage");
   const actionsContainer = document.getElementById("actionsContainer");
   const decrementBtn = document.getElementById("decrementBtn");
   const cancelBtn = document.getElementById("cancelBtn");
@@ -90,9 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(response => response.json())
       .then(data => {
         versionDiv.textContent = "Version: " + data.version;
-      //  getURL = data.scriptURL + "?action=getData&q=";
         getURL = data.scriptURL + "?q=";
-
         postURL = data.scriptURL;
         attachEventListeners();
       })
@@ -104,10 +103,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function onScanSuccess(decodedText) {
     console.log("QR Code détecté:", decodedText);
-          // 📳 Vibration si supportée
-      if (navigator.vibrate) {
-        navigator.vibrate(200);
-      }
+    // 📳 Vibration si supportée
+    if (navigator.vibrate) {
+      navigator.vibrate(200);
+    }
     lastScannedCode = decodedText;
 
     if (html5QrCode) {
@@ -123,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
-    hide(confirmationMessage);
+    hide(statusMessage);
 
     fetch(getURL + encodeURIComponent(qrData))
       .then(response => response.json())
@@ -132,20 +131,20 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data && data.result) {
           let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
-                let value = data.result[key];
-                  let highlight = "";
-                
-                  if (key.toLowerCase().includes("restants") && !isNaN(value)) {
-                    const nb = parseInt(value);
-                    if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
-                    else if (nb <= 5) highlight = ' style="color: orange;"';
-                    }
+            let value = data.result[key];
+            let highlight = "";
 
-              resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;          
+            if (key.toLowerCase().includes("restants") && !isNaN(value)) {
+              const nb = parseInt(value);
+              if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
+              else if (nb <= 5) highlight = ' style="color: orange;"';
+            }
+
+            resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
           }
           resultHTML += `</tbody></table>`;
           resultDiv.innerHTML = resultHTML;
-          resultDiv.classList.add("fade-in"); // 👈 animation
+          resultDiv.classList.add("fade-in");
           setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
           show(actionsContainer);
         } else {
@@ -159,60 +158,57 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-function sendDataToGoogleSheet(scannedData) {
-  show(loader);
-  resultDiv.innerHTML = "";
-  hide(actionsContainer);
-  hide(confirmationMessage);
+  function sendDataToGoogleSheet(scannedData) {
+    show(loader);
+    resultDiv.innerHTML = "";
+    hide(actionsContainer);
+    hide(statusMessage);
 
-  fetch(postURL, {
-    method: "POST",
-    body: new URLSearchParams({ data: scannedData })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success" || data.status === "ignored") {
-        showConfirmationMessage("✅ Cours décompté et données mises à jour !");
-        fetchDataFromGoogleSheet(scannedData);
-      } else {
-        showConfirmationMessage("❌ " + (data.message || "Erreur."), false);
-      }
+    fetch(postURL, {
+      method: "POST",
+      body: new URLSearchParams({ data: scannedData })
     })
-    .catch(error => {
-      hide(loader);
-      showConfirmationMessage("❌ Erreur lors de l'envoi des données.", false);
-      console.error("Erreur POST :", error);
-    });
-}
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success" || data.status === "ignored") {
+          showStatusMessage("✅ Cours décompté et données mises à jour !");
+          fetchDataFromGoogleSheet(scannedData);
+        } else {
+          showStatusMessage("❌ " + (data.message || "Erreur."), false);
+        }
+      })
+      .catch(error => {
+        hide(loader);
+        showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
+        console.error("Erreur POST :", error);
+      });
+  }
 
+  function showStatusMessage(message, isSuccess = true) {
+    console.log("🔔 Notification affichée :", message); // Vérification du log
 
-function showConfirmationMessage(message, success = true) {
-  console.log("🔔 Notification affichée :", message); // Vérification du log
+    const statusMessage = document.getElementById("statusMessage");
 
-  const confirmationMessage = document.getElementById("confirmationMessage");
+    // Appliquer le message et les styles
+    statusMessage.textContent = message;
+    statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
+    statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+    statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
 
-  // Appliquer le message et les styles
-  confirmationMessage.textContent = message;
-  confirmationMessage.style.color = success ? "#155724" : "#721c24";
-  confirmationMessage.style.backgroundColor = success ? "#d4edda" : "#f8d7da";
-  confirmationMessage.style.border = "1px solid " + (success ? "#c3e6cb" : "#f5c6cb");
+    // Forcer l'affichage du message
+    statusMessage.style.display = "block";  // Forcer l'affichage immédiat
 
-  // Forcer l'affichage du message
-  confirmationMessage.style.display = "block";  // Forcer l'affichage immédiat
-
-  // Supprimer après 4 secondes
-  setTimeout(() => {
-    confirmationMessage.style.display = "none"; // Cacher le message
-    confirmationMessage.textContent = ""; // Vider le texte
-  }, 4000);  // Message visible pendant 4 secondes
-}
-
-
+    // Masquer après 4 secondes
+    setTimeout(() => {
+      statusMessage.style.display = "none"; // Cacher le message
+      statusMessage.textContent = ""; // Effacer le texte
+    }, 4000);  // Message affiché pendant 4 secondes
+  }
 
   function startScanner() {
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
-    hide(confirmationMessage);
+    hide(statusMessage);
     hide(actionsContainer);
 
     html5QrCode = new Html5Qrcode("reader");
@@ -239,7 +235,7 @@ function showConfirmationMessage(message, success = true) {
       if (lastScannedCode) {
         sendDataToGoogleSheet(lastScannedCode);
       } else {
-        showConfirmationMessage("Aucune donnée à envoyer.", false);
+        showStatusMessage("Aucune donnée à envoyer.", false);
       }
     });
 
