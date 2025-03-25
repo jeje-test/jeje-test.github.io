@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 📦 Service Worker (PWA)
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js")
+navigator.serviceWorker.register("service-worker.js")
       .then(() => console.log("✅ Service Worker enregistré"))
       .catch(err => console.error("❌ Erreur SW :", err));
   }
