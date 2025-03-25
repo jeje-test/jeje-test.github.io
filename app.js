@@ -184,26 +184,26 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function showStatusMessage(message, isSuccess = true) {
-    console.log("🔔 Notification affichée :", message); // Vérification du log
+function showStatusMessage(message, isSuccess = true) {
+  console.log("🔔 Notification affichée :", message); // Vérification dans la console
 
-    const statusMessage = document.getElementById("statusMessage");
+  const statusMessage = document.getElementById("statusMessage");
 
-    // Appliquer le message et les styles
-    statusMessage.textContent = message;
-    statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
-    statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
-    statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
+  // Mettre à jour le message et les styles
+  statusMessage.textContent = message;
+  statusMessage.style.color = isSuccess ? "#155724" : "#721c24";
+  statusMessage.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+  statusMessage.style.border = "1px solid " + (isSuccess ? "#c3e6cb" : "#f5c6cb");
 
-    // Forcer l'affichage du message
-    statusMessage.style.display = "block";  // Forcer l'affichage immédiat
+  // Afficher le message
+  statusMessage.style.display = "block";
 
-    // Masquer après 4 secondes
-    setTimeout(() => {
-      statusMessage.style.display = "none"; // Cacher le message
-      statusMessage.textContent = ""; // Effacer le texte
-    }, 4000);  // Message affiché pendant 4 secondes
-  }
+  // Masquer après 4 secondes
+  setTimeout(() => {
+    statusMessage.style.display = "none"; // Cacher le message
+    statusMessage.textContent = ""; // Effacer le texte
+  }, 4000); // Message affiché pendant 4 secondes
+}
 
   function startScanner() {
     show(scannerContainer);
