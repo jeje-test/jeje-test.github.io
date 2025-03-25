@@ -197,14 +197,14 @@ function showConfirmationMessage(message, success = true) {
   confirmationMessage.style.backgroundColor = success ? "#d4edda" : "#f8d7da";
   confirmationMessage.style.border = "1px solid " + (success ? "#c3e6cb" : "#f5c6cb");
 
-  // FORCER l'affichage du message
-  confirmationMessage.style.display = "block";  // Forcer l'affichage
+  // Forcer l'affichage du message
+  confirmationMessage.style.display = "block";  // Forcer l'affichage immédiat
 
-  // Masquer après 4 secondes
+  // Supprimer après 4 secondes
   setTimeout(() => {
-    confirmationMessage.style.display = "none";
-    confirmationMessage.textContent = ""; // Effacer le texte
-  }, 4000);  // Message affiché pendant 4 secondes
+    confirmationMessage.style.display = "none"; // Cacher le message
+    confirmationMessage.textContent = ""; // Vider le texte
+  }, 4000);  // Message visible pendant 4 secondes
 }
 
 
