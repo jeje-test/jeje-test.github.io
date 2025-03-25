@@ -130,6 +130,8 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
+                  showStatusMessage("✅ Données récupérées !");
+
           let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
             let value = data.result[key];
@@ -235,9 +237,13 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    cancelBtn.addEventListener("click", () => {
-      hide(actionsContainer);
-    });
+  // Fonction pour réinitialiser les résultats et afficher "En attente" quand on abandonne
+  cancelBtn.addEventListener("click", () => {
+    resultDiv.innerHTML = "";  // Nettoie les résultats affichés
+    showStatusMessage("En attente...");  // Affiche "En attente"
+    hide(actionsContainer);  // Cache les actions
+    show(scannerContainer);  // Réaffiche la zone de scan
+  });
 
     refreshCacheBtn?.addEventListener("click", () => {
       if ('caches' in window) {
