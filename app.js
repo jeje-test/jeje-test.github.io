@@ -232,6 +232,13 @@ function sendDataToGoogleSheet(scannedData) {
 
 decrementBtn.addEventListener("click", () => {
   if (lastScannedCode) {
+    // Réinitialiser le message de statut en mode neutre (sans couleur ni fond)
+    statusMessage.textContent = "";
+    statusMessage.style.color = "";  // Retirer la couleur
+    statusMessage.style.backgroundColor = "";  // Retirer le fond coloré
+    statusMessage.style.border = "";  // Retirer la bordure
+  
+   // showStatusMessage("");  // Affiche le message "En attente"
     sendDataToGoogleSheet(lastScannedCode);  // Envoie la donnée pour décompter
   } else {
     // Affiche un message d'erreur si aucune donnée n'est scannée
@@ -248,7 +255,7 @@ decrementBtn.addEventListener("click", () => {
     statusMessage.style.backgroundColor = "";  // Retirer le fond coloré
     statusMessage.style.border = "";  // Retirer la bordure
   
-    showStatusMessage("");  // Affiche le message "En attente"
+    //showStatusMessage("");  // Affiche le message "En attente"
     hide(actionsContainer);  // Cache les actions
     //show(scannerContainer);  // Réaffiche la zone de scan
   });
