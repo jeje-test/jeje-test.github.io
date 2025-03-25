@@ -11,13 +11,18 @@ const FILES_TO_CACHE = [
   "/icons/icon-512.png"
 ];
 
+
+
 // 🟢 Installation → mettre les fichiers en cache
 self.addEventListener("install", event => {
   console.log("📦 Service Worker installé");
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(FILES_TO_CACHE);
-    })
+  return cache.addAll(FILES_TO_CACHE);
+}).catch(err => {
+  console.error("Erreur lors de l'ajout au cache :", err);
+});
+
   );
   self.skipWaiting();
 });
