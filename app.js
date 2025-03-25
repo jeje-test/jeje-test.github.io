@@ -12,23 +12,63 @@ document.addEventListener("DOMContentLoaded", function () {
   const startScanButton = document.getElementById("startScan");
   const stopScanButton = document.getElementById("stopScan");
   const refreshCacheBtn = document.getElementById("refreshCacheBtn");
+  const toggleBtn = document.getElementById("toggleThemeBtn");
+  const installBtn = document.getElementById("installBtn");
 
   let html5QrCode = null;
   let lastScannedCode = null;
   let getURL = "";
   let postURL = "";
 
-  // 🔁 Récupération manifest + initialisation
+  // 📦 Service Worker (PWA)
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("✅ Service Worker enregistré"))
+      .catch(err => console.error("❌ Erreur SW :", err));
+  }
+
+  // 🌓 Thème clair/sombre
+  toggleBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    toggleBtn.textContent = isDark ? "☀️ Mode clair" : "🌙 Mode sombre";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+    toggleBtn.textContent = "☀️ Mode clair";
+  }
+
+  // 📲 Installation PWA
+  let deferredPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = "inline-block";
+  });
+
+  installBtn?.addEventListener("click", () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choice => {
+        if (choice.outcome === "accepted") {
+          console.log("✅ PWA installée");
+        }
+        installBtn.style.display = "none";
+        deferredPrompt = null;
+      });
+    }
+  });
+
+  // 🔁 Chargement manifest
   function fetchManifestAndInit() {
     fetch("manifest.json")
       .then(response => response.json())
       .then(data => {
         versionDiv.textContent = "Version: " + data.version;
-
-        const scriptBase = data.scriptURL;
-        getURL = scriptBase + "?action=getData&q=";
-        postURL = scriptBase;
-
+        getURL = data.scriptURL + "?action=getData&q=";
+        postURL = data.scriptURL;
         attachEventListeners();
       })
       .catch(error => {
@@ -37,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // 📸 Scan
   function onScanSuccess(decodedText) {
     console.log("QR Code détecté:", decodedText);
     lastScannedCode = decodedText;
@@ -60,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(response => response.json())
       .then(data => {
         loader.style.display = "none";
-
         if (data && data.result) {
           let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
@@ -147,14 +187,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     refreshCacheBtn?.addEventListener("click", () => {
       if ('caches' in window) {
-        caches.keys().then(function (names) {
-          for (let name of names) {
-            caches.delete(name);
-          }
+        caches.keys().then(names => {
+          for (let name of names) caches.delete(name);
         }).then(() => {
           alert("Le cache a été vidé. L'application va se recharger...");
           window.location.reload(true);
-        }).catch((err) => {
+        }).catch(err => {
           alert("Erreur lors du vidage du cache.");
         });
       }
