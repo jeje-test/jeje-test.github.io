@@ -187,16 +187,17 @@ function sendDataToGoogleSheet(scannedData) {
 
 
 function showConfirmationMessage(message, success = true) {
+  console.log("🔔 Notification affichée :", message); // 🔍 Vérif console
+
   confirmationMessage.textContent = message;
   confirmationMessage.style.color = success ? "green" : "red";
-  confirmationMessage.style.display = "block"; // ✅ Forcer l'affichage
+  confirmationMessage.style.display = "block";
 
   setTimeout(() => {
     confirmationMessage.style.display = "none";
     confirmationMessage.textContent = "";
   }, 4000);
 }
-
 
 
   function startScanner() {
