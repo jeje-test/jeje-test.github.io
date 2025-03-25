@@ -90,7 +90,9 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(response => response.json())
       .then(data => {
         versionDiv.textContent = "Version: " + data.version;
-        getURL = data.scriptURL + "?action=getData&q=";
+      //  getURL = data.scriptURL + "?action=getData&q=";
+        getURL = data.scriptURL + "?q=";
+
         postURL = data.scriptURL;
         attachEventListeners();
       })
