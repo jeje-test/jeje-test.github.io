@@ -21,11 +21,25 @@ document.addEventListener("DOMContentLoaded", function () {
   let postURL = "";
 
   // 📦 Service Worker (PWA)
-  if ("serviceWorker" in navigator) {
-navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker enregistré"))
-      .catch(err => console.error("❌ Erreur SW :", err));
-  }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js")
+    .then(registration => {
+      console.log("✅ Service Worker enregistré");
+
+      // 🔄 Écoute l’update
+      registration.addEventListener("updatefound", () => {
+        const newWorker = registration.installing;
+
+        newWorker?.addEventListener("statechange", () => {
+          if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+            showUpdateBanner();
+          }
+        });
+      });
+    })
+    .catch(err => console.error("❌ Erreur SW :", err));
+}
+
 
   // 🌓 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
