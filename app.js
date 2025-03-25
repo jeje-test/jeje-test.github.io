@@ -189,7 +189,6 @@ function sendDataToGoogleSheet(scannedData) {
       showStatusMessage("❌ Erreur lors de l'envoi des données.", false);
       console.error("Erreur POST :", error);
     });
-  window.location.reload(true);  // Forcer un rafraîchissement complet pour récupérer les dernières données
 
 }
 
