@@ -1,3 +1,80 @@
+/* Partie commune aux blocs */
+#dataContainer,
+#statusMessage {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem auto;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Bloc d'état (status) */
+.status-message {
+  font-size: 1.2em;
+  font-weight: bold;
+  display: block; /* Toujours affiché */
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 20px auto;
+  z-index: 10;
+  position: relative; /* Ajout de positionnement pour utiliser z-index */
+}
+
+/* Résultats */
+.result-box {
+  background-color: var(--card-bg);
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  line-height: 1.6;
+  font-family: monospace;
+  white-space: pre-wrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 1rem auto;
+  max-width: 500px;
+}
+
+/* Message de succès */
+#statusMessage.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Message d'erreur */
+#statusMessage.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Cache les éléments inutiles */
+.hidden {
+  display: none !important;
+}
+
+.separator {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin: 1.5rem auto;
+  max-width: 80%;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Partie globale de la mise en page */
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -63,6 +140,9 @@ button:hover {
   background-color: #a82330;
 }
 
+#scannerContainer {
+  margin-top: 15px;
+}
 
 #reader {
   width: 100%;
@@ -72,34 +152,6 @@ button:hover {
   border-radius: 10px;
   padding: 10px;
   background-color: white;
-}
-
-#dataContainer {
-  background-color: var(--card-bg);
-  padding: 1rem;
-  border-radius: 10px;
-  margin: 1rem auto;
-  max-width: 500px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 5; /* Rendre #dataContainer moins prioritaire que #statusMessage */
-
-}
-
-.result-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.result-table th,
-.result-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-}
-
-.result-table th {
-  background-color: var(--table-header);
-  font-weight: bold;
 }
 
 .loader {
@@ -117,21 +169,6 @@ button:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* ✅ Ajout pour encadrer proprement les résultats */
-.result-box {
-  background-color: var(--card-bg);
-  border: 2px solid #ccc;
-  border-radius: 12px;
-  padding: 1rem;
-  line-height: 1.6;
-  font-family: monospace;
-  white-space: pre-wrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  margin: 1rem auto;
-  max-width: 500px;
-}
-
-/* ✅ Style des boutons install/thème/version en bas */
 #pwaControls {
   margin-top: 2rem;
   display: flex;
@@ -145,43 +182,6 @@ button:hover {
   color: #666;
   margin-top: 5px;
 }
-
-#statusMessage {
-  font-size: 1.2em;
-  font-weight: bold;
-  display: block; /* Toujours affiché */
-  padding: 15px;
-  margin-top: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-width: 90%;  /* Pour s'assurer que ça tient bien sur les écrans mobiles */
-  margin: 20px auto;
-  z-index: 10;  /* Forcer à s'afficher au-dessus des autres éléments */
-  position: relative; /* Ajout de positionnement pour utiliser z-index */
-}
-
-#scannerContainer {
-  z-index: 5; /* Assure que le scanner soit en dessous du message de statut */
-  position: relative; /* Si ce n'est pas déjà le cas */
-}
-
-#actionsContainer {
-  z-index: 5; /* Rendre #actionsContainer moins prioritaire */
-}
-
-#statusMessage.success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-#statusMessage.error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
 
 .hidden {
   display: none !important;
