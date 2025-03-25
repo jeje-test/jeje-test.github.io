@@ -173,6 +173,189 @@ button:hover {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-#confirmationMessage {
-  font-size: 1.2em;
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  text-align: center;
+  padding: 1rem;
 }
+
+:root {
+  --bg-color: #f2f2f2;
+  --text-color: #222;
+  --card-bg: #ffffff;
+  --button-bg: #007bff;
+  --button-hover: #0056b3;
+  --table-header: #f0f0f0;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --card-bg: #1e1e1e;
+  --button-bg: #444;
+  --button-hover: #666;
+  --table-header: #2a2a2a;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--button-bg);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: var(--button-hover);
+}
+
+#stopScan {
+  margin-top: 10px;
+  background-color: #dc3545;
+}
+
+#stopScan:hover {
+  background-color: #a82330;
+}
+
+#scannerContainer {
+  margin-top: 15px;
+}
+
+#reader {
+  width: 100%;
+  max-width: 350px;
+  margin: auto;
+  border: 2px dashed var(--button-bg);
+  border-radius: 10px;
+  padding: 10px;
+  background-color: white;
+}
+
+#dataContainer {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem auto;
+  max-width: 500px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.result-table th,
+.result-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.result-table th {
+  background-color: var(--table-header);
+  font-weight: bold;
+}
+
+#confirmationMessage {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid var(--button-bg);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ✅ Ajout pour encadrer proprement les résultats */
+.result-box {
+  background-color: var(--card-bg);
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  line-height: 1.6;
+  font-family: monospace;
+  white-space: pre-wrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin: 1rem auto;
+  max-width: 500px;
+}
+
+/* ✅ Zone des boutons install/thème/version tout en bas */
+#pwaControls {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#appVersion {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 5px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.separator {
+  border: none;
+  height: 1px;
+  background-color: #ccc;
+  margin: 1.5rem auto;
+  max-width: 80%;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#confirmationMessage {
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: none;
+  padding: 10px 15px;
+  margin: 1rem auto;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
