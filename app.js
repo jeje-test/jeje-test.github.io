@@ -142,21 +142,33 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function sendDataToGoogleSheet(scannedData) {
-    fetch(postURL, {
-      method: "POST",
-      body: new URLSearchParams({ data: scannedData })
-    })
-      .then(response => response.json())
-      .then(data => {
+function sendDataToGoogleSheet(scannedData) {
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
+  hide(confirmationMessage);
+
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({ data: scannedData })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success" || data.status === "ignored") {
         showConfirmationMessage("✅ Donnée envoyée avec succès !");
-        hide(actionsContainer);
-      })
-      .catch(error => {
-        showConfirmationMessage("❌ Erreur lors de l'envoi des données.", false);
-        console.error("Erreur POST :", error);
-      });
-  }
+        // 🆕 Ensuite : on recharge les données pour les voir à jour
+        fetchDataFromGoogleSheet(scannedData);
+      } else {
+        showConfirmationMessage("❌ " + (data.message || "Erreur."), false);
+      }
+    })
+    .catch(error => {
+      hide(loader);
+      showConfirmationMessage("❌ Erreur lors de l'envoi des données.", false);
+      console.error("Erreur POST :", error);
+    });
+}
+
 
   function showConfirmationMessage(message, success = true) {
     confirmationMessage.textContent = message;
