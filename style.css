@@ -205,36 +205,42 @@ button:hover {
 }
 
 
+#historyContainer {
+  max-height: 70vh;
+  overflow: auto;
+}
 
- #historyContainer {
-    max-height: 70vh;
-    overflow: auto;
-  }
+#historyContainer table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
 
-  #historyContainer table {
-    width: 100%;
-    min-width: 600px;
-    border-collapse: collapse;
-  }
+#historyContainer th,
+#historyContainer td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
 
-  #historyContainer th,
-  #historyContainer td {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    text-align: center;
-  }
+#historyContainer::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
 
-  /* Scrollbars visibles sur tous navigateurs */
-  #historyContainer::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-  }
+#historyContainer::-webkit-scrollbar-thumb {
+  background: #999;
+  border-radius: 4px;
+}
 
-  #historyContainer::-webkit-scrollbar-thumb {
-    background: #999;
-    border-radius: 4px;
-  }
+#historyContainer::-webkit-scrollbar-track {
+  background: #eee;
+}
 
-  #historyContainer::-webkit-scrollbar-track {
-    background: #eee;
-  }
+.top-bar {
+  margin-bottom: 1rem;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
