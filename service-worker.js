@@ -1,4 +1,4 @@
-const CACHE_NAME = "qr-app-cache-v1.3.0";
+const CACHE_NAME = "qr-app-cache-v1.3.1";
 
 const FILES_TO_CACHE = [
   "./",
