@@ -119,13 +119,16 @@ if ("serviceWorker" in navigator) {
     fetchDataFromGoogleSheet(decodedText);
   }
 
-  function fetchDataFromGoogleSheet(qrData) {
+
+  
+function fetchDataFromGoogleSheet(qrData) {
   show(loader);
   resultDiv.innerHTML = "";
   hide(actionsContainer);
 
-  fetch(getURL + encodeURIComponent(qrData), {
-    cache: "no-store"  // 🔁 Évite la mise en cache
+  const cacheBuster = `&cacheBust=${Date.now()}`;
+  fetch(`${getURL}${encodeURIComponent(qrData)}${cacheBuster}`, {
+    cache: "no-store"
   })
     .then(response => response.json())
     .then(data => {
@@ -163,7 +166,6 @@ if ("serviceWorker" in navigator) {
       showStatusMessage("❌ Erreur lors de la récupération des données.", false);
     });
 }
-
 
 
 function sendDataToGoogleSheet(scannedData) {
