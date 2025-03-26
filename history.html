@@ -1,70 +1,26 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📜 Historique des scans</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--nav-bg, #eee);
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      margin-bottom: 1rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 0.5rem;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f0f0f0;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      nav {
-        background-color: #222;
-        color: #fff;
-      }
-      th {
-        background-color: #333;
-        color: #fff;
-      }
-      td {
-        background-color: #222;
-        color: #fff;
-      }
-    }
-  </style>
-</head>
+<!-- ... <head> et styles comme avant ... -->
 <body>
   <div class="container">
     <nav>
-      <h1>📜 Historique du jour</h1>
-      <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+      <h1>📜 Historique</h1>
+      <div class="nav-buttons">
+        <input type="date" id="datePicker" />
+        <button onclick="loadHistory()">📅 Valider</button>
+        <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+      </div>
     </nav>
 
     <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
   </div>
 
   <script>
+    // 📅 Initialiser le champ date avec aujourd’hui
+    window.addEventListener("DOMContentLoaded", () => {
+      const today = new Date().toISOString().split("T")[0];
+      document.getElementById("datePicker").value = today;
+      loadHistory(); // charger l'historique au démarrage
+    });
+
     async function loadScriptURL() {
       try {
         const response = await fetch('manifest.json');
@@ -76,14 +32,6 @@
       }
     }
 
-    function isToday(dateString) {
-      const today = new Date();
-      const date = new Date(dateString);
-      return date.getDate() === today.getDate() &&
-             date.getMonth() === today.getMonth() &&
-             date.getFullYear() === today.getFullYear();
-    }
-
     async function loadHistory() {
       const container = document.getElementById("historyContainer");
       const scriptURL = await loadScriptURL();
@@ -92,14 +40,20 @@
         return;
       }
 
+      const selectedDate = document.getElementById("datePicker").value;
+      if (!selectedDate) {
+        container.innerHTML = "❗ Merci de sélectionner une date.";
+        return;
+      }
+
+      container.innerHTML = "🔄 Chargement...";
+
       try {
-        const response = await fetch(`${scriptURL}?action=history`);
+        const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
         const data = await response.json();
 
-        const todayData = Array.isArray(data) ? data.filter(row => isToday(row.date)) : [];
-
-        if (todayData.length === 0) {
-          container.innerHTML = "Aucun scan trouvé aujourd'hui.";
+        if (!Array.isArray(data) || data.length === 0) {
+          container.innerHTML = "Aucun scan trouvé pour cette date.";
           return;
         }
 
@@ -109,17 +63,17 @@
               <tr>
                 <th>🕒 Date</th>
                 <th>📦 QR Code</th>
-                <th>🧑 Colonne C</th>
-                <th>🎓 Colonne D</th>
+                <th>⚙️ Action</th>
+                <th>✅ Résultat</th>
               </tr>
             </thead>
             <tbody>
-              ${todayData.map(row => `
+              ${data.map(row => `
                 <tr>
                   <td>${row.date}</td>
                   <td>${row.qrcode}</td>
-                  <td>${row.colC || '-'}</td>
-                  <td>${row.colD || '-'}</td>
+                  <td>${row.action}</td>
+                  <td>${row.resultat}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -131,8 +85,5 @@
         container.innerHTML = "❌ Erreur lors du chargement des données.";
       }
     }
-
-    loadHistory();
   </script>
 </body>
-</html>
