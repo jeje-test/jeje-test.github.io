@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>⚠️ Requête Exceptionnelle</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Bouton Retour -->
+  <button onclick="window.location.href='index.html'">🔙 Retour</button>
+
+  <h1>⚠️ Requête Exceptionnelle</h1>
+
+  <!-- Formulaire -->
+  <form id="exceptionForm">
+    <label for="qrCode">QR Code :</label>
+    <input type="text" id="qrCode" name="qrCode" required />
+
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" required />
+
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" required />
+
+    <label for="email">Email :</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="raison">Raison de la requête :</label>
+    <select id="raison" name="raison" required>
+      <option value="">--Sélectionner--</option>
+      <option value="prolonger_date">Prolonger date de fin</option>
+      <option value="erreur_annulation">Erreur annuler un cours</option>
+      <option value="autre">Autre</option>
+    </select>
+
+    <label for="commentaire">Commentaire :</label>
+    <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+
+    <div class="form-buttons">
+      <button type="reset">♻️ Réinitialiser</button>
+      <button type="submit">✅ Valider</button>
+    </div>
+  </form>
+
+  <script>
+    document.getElementById('exceptionForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Traitement spécifique à implémenter ici
+      alert('Formulaire soumis avec succès !');
+    });
+  </script>
+
+</body>
+</html>
