@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
-
 </head>
 <body>
   <h1>📜 Historique des scans</h1>
@@ -81,12 +80,15 @@
       }
 
       let [year, month, day] = selectedDate.split("-");
-      document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
+      const formattedDate = `${day}/${month}/${year}`;
       container.innerHTML = "🔄 Chargement...";
 
       try {
         const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
         const data = await response.json();
+
+        document.getElementById("selectedDateLabel").textContent =
+          `Résultats pour le ${formattedDate} – Nombre : ${data.length}`;
 
         if (!Array.isArray(data) || data.length === 0) {
           container.innerHTML = "Aucun scan trouvé pour cette date.";
