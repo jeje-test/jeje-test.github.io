@@ -30,7 +30,7 @@
       const todayStr = today.toISOString().split("T")[0];
 
       const pastDate = new Date();
-      pastDate.setDate(today.getDate() - 30);
+      pastDate.setDate(today.getDate() - 15);
       const pastStr = pastDate.toISOString().split("T")[0];
 
       datePicker.max = todayStr;
@@ -46,7 +46,7 @@
       const max = new Date(datePicker.max);
 
       if (selected < min || selected > max) {
-        alert("❌ La date doit être comprise dans le mois écoulé.");
+        alert("❌ La date doit être comprise dans les 15 jours.");
         const today = new Date().toISOString().split("T")[0];
         datePicker.value = today;
         document.getElementById("selectedDateLabel").textContent = "Résultats pour aujourd'hui";
