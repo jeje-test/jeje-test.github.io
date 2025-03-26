@@ -1,26 +1,29 @@
-<!-- ... <head> et styles comme avant ... -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📜 Historique des scans</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
-  <div class="container">
-    <nav>
-      <h1>📜 Historique</h1>
-      <div class="nav-buttons">
-        <input type="date" id="datePicker" />
-        <button onclick="loadHistory()">📅 Valider</button>
-        <button onclick="window.location.href='index.html'">⬅️ Retour</button>
-      </div>
-    </nav>
+  <h1>📜 Historique des scans</h1>
 
-    <h2 id="selectedDateLabel">Résultats pour ...</h2>
-<div id="historyContainer" class="result-box">Chargement de l'historique...</div>
-    <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
+  <div style="margin-bottom: 1rem;">
+    <input type="date" id="datePicker" />
+    <button onclick="loadHistory()">📅 Valider</button>
+    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
 
+  <h2 id="selectedDateLabel">Résultats pour ...</h2>
+  <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
+
   <script>
-    // 📅 Initialiser le champ date avec aujourd’hui
+    // 📅 Initialiser date par défaut à aujourd’hui
     window.addEventListener("DOMContentLoaded", () => {
       const today = new Date().toISOString().split("T")[0];
       document.getElementById("datePicker").value = today;
-      loadHistory(); // charger l'historique au démarrage
+      loadHistory();
     });
 
     async function loadScriptURL() {
@@ -34,64 +37,62 @@
       }
     }
 
-async function loadHistory() {
-  const container = document.getElementById("historyContainer");
-  const scriptURL = await loadScriptURL();
-  if (!scriptURL) {
-    container.innerHTML = "❌ Impossible de récupérer l'URL du script.";
-    return;
-  }
+    async function loadHistory() {
+      const container = document.getElementById("historyContainer");
+      const scriptURL = await loadScriptURL();
+      if (!scriptURL) {
+        container.innerHTML = "❌ Impossible de récupérer l'URL du script.";
+        return;
+      }
 
-  let selectedDate = document.getElementById("datePicker").value;
-  if (!selectedDate) {
-    container.innerHTML = "❗ Merci de sélectionner une date.";
-    return;
-  }
+      let selectedDate = document.getElementById("datePicker").value;
+      if (!selectedDate) {
+        container.innerHTML = "❗ Merci de sélectionner une date.";
+        return;
+      }
 
-  // 🔁 Afficher la date sélectionnée sous format FR
-  let [year, month, day] = selectedDate.split("-");
-  document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
+      // 🕒 Affichage lisible de la date sélectionnée
+      let [year, month, day] = selectedDate.split("-");
+      document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
+      container.innerHTML = "🔄 Chargement...";
 
-  container.innerHTML = "🔄 Chargement...";
+      try {
+        const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
+        const data = await response.json();
 
-  try {
-    const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
-    const data = await response.json();
+        if (!Array.isArray(data) || data.length === 0) {
+          container.innerHTML = "Aucun scan trouvé pour cette date.";
+          return;
+        }
 
-    if (!Array.isArray(data) || data.length === 0) {
-      container.innerHTML = "Aucun scan trouvé pour cette date.";
-      return;
+        const table = `
+          <table>
+            <thead>
+              <tr>
+                <th>🕒 Date</th>
+                <th>📦 QR Code</th>
+                <th>⚙️ Action</th>
+                <th>✅ Résultat</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${data.map(row => `
+                <tr>
+                  <td>${row.date}</td>
+                  <td>${row.qrcode}</td>
+                  <td>${row.action}</td>
+                  <td>${row.resultat}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `;
+        container.innerHTML = table;
+      } catch (err) {
+        console.error("Erreur chargement historique:", err);
+        container.innerHTML = "❌ Erreur lors du chargement des données.";
+      }
     }
-
-    const table = `
-      <table>
-        <thead>
-          <tr>
-            <th>🕒 Date</th>
-            <th>📦 QR Code</th>
-            <th>⚙️ Action</th>
-            <th>✅ Résultat</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.map(row => `
-            <tr>
-              <td>${row.date}</td>
-              <td>${row.qrcode}</td>
-              <td>${row.action}</td>
-              <td>${row.resultat}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    `;
-    container.innerHTML = table;
-  } catch (err) {
-    console.error("Erreur chargement historique:", err);
-    container.innerHTML = "❌ Erreur lors du chargement des données.";
-  }
-}
-
-  
   </script>
 </body>
+</html>
