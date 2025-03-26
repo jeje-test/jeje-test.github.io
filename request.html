@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>⚠️ Requête Exceptionnelle</title>
   <link rel="stylesheet" href="style.css" />
@@ -16,12 +16,13 @@
 
   <!-- Formulaire -->
   <form id="exceptionForm" class="form-container">
-    <label for="qrCode">QR Code** :</label>
-    <p class="subtext">**À utiliser de préférence en priorité. Sinon, laisser vide et remplir les champs Nom et Prénom.</p>
-
-    <div class="qr-input-group">
-      <input type="text" id="qrCode" name="qrCode" />
-      <button type="button" id="startScan">📸</button>
+    <div class="field-group">
+      <label for="qrCode">QR Code** :</label>
+      <div class="qr-row">
+        <input type="text" id="qrCode" name="qrCode" />
+        <button type="button" id="startScan">📸</button>
+      </div>
+      <p class="subtext">**À utiliser de préférence en priorité. Sinon, laisser vide et remplir les champs Nom et Prénom.</p>
     </div>
 
     <div id="scannerContainer" class="hidden scanner-wrapper">
@@ -56,6 +57,7 @@
       <button type="submit">✅ Valider</button>
     </div>
   </form>
+
   <script>
     const exceptionForm = document.getElementById('exceptionForm');
     const scannerContainer = document.getElementById('scannerContainer');
@@ -75,8 +77,6 @@
         prenomInput.required = false;
       } else {
         identityFields.style.display = 'flex';
-        identityFields.style.flexDirection = 'column';
-        identityFields.style.gap = '15px';
         nomInput.required = true;
         prenomInput.required = true;
       }
@@ -125,7 +125,7 @@
         alert('Veuillez remplir soit le QR Code, soit le Nom et le Prénom.');
         e.preventDefault();
       } else {
-                const data = {
+        const data = {
           qrCode: qrInput.value.trim(),
           nom: nomInput.value.trim(),
           prenom: prenomInput.value.trim(),
@@ -159,6 +159,5 @@
 
     toggleIdentityFields();
   </script>
-
 </body>
 </html>
