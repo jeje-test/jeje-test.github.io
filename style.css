@@ -112,7 +112,12 @@ h1 {
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
+}
+
+.buttons button {
+  flex: 1 1 200px; /* min 200px, s’adapte selon l’espace dispo */
+  max-width: 300px;
 }
 
 button {
