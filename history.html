@@ -35,6 +35,10 @@
     }
 
     async function loadHistory() {
+      const selectedDate = document.getElementById("datePicker").value;
+const [year, month, day] = selectedDate.split("-");
+document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
+
       const container = document.getElementById("historyContainer");
       const scriptURL = await loadScriptURL();
       if (!scriptURL) {
