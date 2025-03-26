@@ -43,8 +43,9 @@
   <h1 style="text-align: center;">⚠️ Requête Exceptionnelle</h1>
 
   <!-- Bouton Retour -->
-    <button onclick="window.location.href='index.html'" >🔙 Retour</button>
-  
+ 
+    <button onclick="window.location.href='index.html'">🔙 Retour</button>
+ 
 
   <!-- Formulaire -->
   <form id="exceptionForm">
@@ -152,12 +153,40 @@
       }
     });
 
-    exceptionForm.addEventListener('submit', (e) => {
+    exceptionForm.addEventListener('submit', async (e) => {
       if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
         alert('Veuillez remplir soit le QR Code, soit le Nom et le Prénom.');
         e.preventDefault();
       } else {
-        alert('Formulaire soumis avec succès !');
+                const data = {
+          qrCode: qrInput.value.trim(),
+          nom: nomInput.value.trim(),
+          prenom: prenomInput.value.trim(),
+          email: document.getElementById('email').value.trim(),
+          raison: document.getElementById('raison').value,
+          commentaire: document.getElementById('commentaire').value.trim(),
+        };
+
+        try {
+          const manifest = await fetch('manifest.json').then(r => r.json());
+          const response = await fetch(manifest.scriptURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ feuille: 'Requêtes', ...data })
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            alert('Formulaire soumis avec succès !');
+            exceptionForm.reset();
+            toggleIdentityFields();
+          } else {
+            alert('Erreur lors de l’envoi : ' + result.message);
+          }
+        } catch (error) {
+          alert('Erreur de communication avec le serveur.');
+          console.error(error);
+        }
       }
     });
 
