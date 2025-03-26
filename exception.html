@@ -6,33 +6,64 @@
   <title>⚠️ Requête Exceptionnelle</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
+  <style>
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #scannerContainer {
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
+  <h1 style="text-align: center;">⚠️ Requête Exceptionnelle</h1>
 
   <!-- Bouton Retour -->
   <button onclick="window.location.href='index.html'">🔙 Retour</button>
 
-  <h1>⚠️ Requête Exceptionnelle</h1>
-
   <!-- Formulaire -->
   <form id="exceptionForm">
     <label for="qrCode">QR Code :</label>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <input type="text" id="qrCode" name="qrCode" required />
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="text" id="qrCode" name="qrCode" />
       <button type="button" id="startScan">📸</button>
     </div>
 
     <div id="scannerContainer" class="hidden">
-      <div id="reader" style="width: 300px;"></div>
+      <div id="reader" style="width: 100%; max-width: 300px; margin: auto;"></div>
       <button type="button" id="stopScan">❌ Fermer</button>
     </div>
 
     <div id="identityFields">
       <label for="nom">Nom :</label>
-      <input type="text" id="nom" name="nom" required />
+      <input type="text" id="nom" name="nom" />
 
       <label for="prenom">Prénom :</label>
-      <input type="text" id="prenom" name="prenom" required />
+      <input type="text" id="prenom" name="prenom" />
     </div>
 
     <label for="email">Email :</label>
@@ -50,33 +81,45 @@
     <textarea id="commentaire" name="commentaire" rows="4"></textarea>
 
     <div class="form-buttons">
-      <button type="reset">♻️ Réinitialiser</button>
+      <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
       <button type="submit">✅ Valider</button>
     </div>
   </form>
 
   <script>
-    document.getElementById('exceptionForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Formulaire soumis avec succès !');
-    });
-
+    const exceptionForm = document.getElementById('exceptionForm');
     const scannerContainer = document.getElementById('scannerContainer');
     const startScanBtn = document.getElementById('startScan');
     const stopScanBtn = document.getElementById('stopScan');
     const qrInput = document.getElementById('qrCode');
+    const nomInput = document.getElementById('nom');
+    const prenomInput = document.getElementById('prenom');
     const identityFields = document.getElementById('identityFields');
+    const resetBtn = document.getElementById('resetBtn');
     let html5QrcodeScanner;
 
     function toggleIdentityFields() {
       if (qrInput.value.trim() !== '') {
         identityFields.style.display = 'none';
+        nomInput.required = false;
+        prenomInput.required = false;
       } else {
-        identityFields.style.display = 'block';
+        identityFields.style.display = 'flex';
+        identityFields.style.flexDirection = 'column';
+        identityFields.style.gap = '15px';
+        nomInput.required = true;
+        prenomInput.required = true;
       }
     }
 
     qrInput.addEventListener('input', toggleIdentityFields);
+
+    resetBtn.addEventListener('click', () => {
+      setTimeout(() => {
+        qrInput.value = '';
+        toggleIdentityFields();
+      }, 0);
+    });
 
     startScanBtn.addEventListener('click', () => {
       scannerContainer.classList.remove('hidden');
@@ -104,6 +147,15 @@
           html5QrcodeScanner.clear();
           scannerContainer.classList.add('hidden');
         });
+      }
+    });
+
+    exceptionForm.addEventListener('submit', (e) => {
+      if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
+        alert('Veuillez remplir soit le QR Code, soit le Nom et le Prénom.');
+        e.preventDefault();
+      } else {
+        alert('Formulaire soumis avec succès !');
       }
     });
 
