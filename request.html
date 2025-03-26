@@ -6,63 +6,30 @@
   <title>⚠️ Requête Exceptionnelle</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
-  <style>
-    form {
-      max-width: 600px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    label {
-      font-weight: bold;
-    }
-
-    input, select, textarea, button {
-      padding: 10px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .form-buttons {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    #scannerContainer {
-      margin-top: 10px;
-      text-align: center;
-    }
-  </style>
 </head>
 <body>
-  <h1 style="text-align: center;">⚠️ Requête Exceptionnelle</h1>
+  <h1 class="title-center">⚠️ Requête Exceptionnelle</h1>
 
   <div class="top-bar">
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
- 
- 
 
   <!-- Formulaire -->
-  <form id="exceptionForm">
+  <form id="exceptionForm" class="form-container">
     <label for="qrCode">QR Code** :</label>
-<p style="font-size: 0.9em; color: #555; margin-top: -10px; margin-bottom: 5px;">**À utiliser de préférence en priorité. Sinon, laisser vide et remplir les champs Nom et Prénom.</p>
-    <div style="display: flex; gap: 10px; align-items: center;">
+    <p class="subtext">**À utiliser de préférence en priorité. Sinon, laisser vide et remplir les champs Nom et Prénom.</p>
+
+    <div class="qr-input-group">
       <input type="text" id="qrCode" name="qrCode" />
       <button type="button" id="startScan">📸</button>
     </div>
 
-    <div id="scannerContainer" class="hidden">
-      <div id="reader" style="width: 100%; max-width: 300px; margin: auto;"></div>
+    <div id="scannerContainer" class="hidden scanner-wrapper">
+      <div id="reader" class="scanner-reader"></div>
       <button type="button" id="stopScan">❌ Fermer</button>
     </div>
 
-    <div id="identityFields">
+    <div id="identityFields" class="identity-fields">
       <label for="nom">Nom :</label>
       <input type="text" id="nom" name="nom" />
 
@@ -89,7 +56,6 @@
       <button type="submit">✅ Valider</button>
     </div>
   </form>
-
   <script>
     const exceptionForm = document.getElementById('exceptionForm');
     const scannerContainer = document.getElementById('scannerContainer');
