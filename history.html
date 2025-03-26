@@ -5,12 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--nav-bg, #eee);
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      nav {
+        background-color: #222;
+        color: #fff;
+      }
+      th {
+        background-color: #333;
+        color: #fff;
+      }
+      td {
+        background-color: #222;
+        color: #fff;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>📜 Historique des derniers scans</h1>
-    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+  <div class="container">
+    <nav>
+      <h1>📜 Historique du jour</h1>
+      <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+    </nav>
 
-  <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
+    <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
+  </div>
 
   <script>
     async function loadScriptURL() {
@@ -22,6 +74,14 @@
         console.error("Erreur chargement manifest:", err);
         return null;
       }
+    }
+
+    function isToday(dateString) {
+      const today = new Date();
+      const date = new Date(dateString);
+      return date.getDate() === today.getDate() &&
+             date.getMonth() === today.getMonth() &&
+             date.getFullYear() === today.getFullYear();
     }
 
     async function loadHistory() {
@@ -36,8 +96,10 @@
         const response = await fetch(`${scriptURL}?action=history`);
         const data = await response.json();
 
-        if (!Array.isArray(data) || data.length === 0) {
-          container.innerHTML = "Aucun scan trouvé.";
+        const todayData = Array.isArray(data) ? data.filter(row => isToday(row.date)) : [];
+
+        if (todayData.length === 0) {
+          container.innerHTML = "Aucun scan trouvé aujourd'hui.";
           return;
         }
 
@@ -47,13 +109,17 @@
               <tr>
                 <th>🕒 Date</th>
                 <th>📦 QR Code</th>
+                <th>🧑 Colonne C</th>
+                <th>🎓 Colonne D</th>
               </tr>
             </thead>
             <tbody>
-              ${data.map(row => `
+              ${todayData.map(row => `
                 <tr>
                   <td>${row.date}</td>
                   <td>${row.qrcode}</td>
+                  <td>${row.colC || '-'}</td>
+                  <td>${row.colD || '-'}</td>
                 </tr>
               `).join('')}
             </tbody>
