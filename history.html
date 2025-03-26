@@ -34,62 +34,64 @@
       }
     }
 
-    async function loadHistory() {
-      const selectedDate = document.getElementById("datePicker").value;
-const [year, month, day] = selectedDate.split("-");
-document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
+async function loadHistory() {
+  const container = document.getElementById("historyContainer");
+  const scriptURL = await loadScriptURL();
+  if (!scriptURL) {
+    container.innerHTML = "❌ Impossible de récupérer l'URL du script.";
+    return;
+  }
 
-      const container = document.getElementById("historyContainer");
-      const scriptURL = await loadScriptURL();
-      if (!scriptURL) {
-        container.innerHTML = "❌ Impossible de récupérer l'URL du script.";
-        return;
-      }
+  let selectedDate = document.getElementById("datePicker").value;
+  if (!selectedDate) {
+    container.innerHTML = "❗ Merci de sélectionner une date.";
+    return;
+  }
 
-      const selectedDate = document.getElementById("datePicker").value;
-      if (!selectedDate) {
-        container.innerHTML = "❗ Merci de sélectionner une date.";
-        return;
-      }
+  // 🔁 Afficher la date sélectionnée sous format FR
+  let [year, month, day] = selectedDate.split("-");
+  document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
 
-      container.innerHTML = "🔄 Chargement...";
+  container.innerHTML = "🔄 Chargement...";
 
-      try {
-        const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
-        const data = await response.json();
+  try {
+    const response = await fetch(`${scriptURL}?action=history&date=${selectedDate}`);
+    const data = await response.json();
 
-        if (!Array.isArray(data) || data.length === 0) {
-          container.innerHTML = "Aucun scan trouvé pour cette date.";
-          return;
-        }
-
-        const table = `
-          <table>
-            <thead>
-              <tr>
-                <th>🕒 Date</th>
-                <th>📦 QR Code</th>
-                <th>⚙️ Action</th>
-                <th>✅ Résultat</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${data.map(row => `
-                <tr>
-                  <td>${row.date}</td>
-                  <td>${row.qrcode}</td>
-                  <td>${row.action}</td>
-                  <td>${row.resultat}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        `;
-        container.innerHTML = table;
-      } catch (err) {
-        console.error("Erreur chargement historique:", err);
-        container.innerHTML = "❌ Erreur lors du chargement des données.";
-      }
+    if (!Array.isArray(data) || data.length === 0) {
+      container.innerHTML = "Aucun scan trouvé pour cette date.";
+      return;
     }
+
+    const table = `
+      <table>
+        <thead>
+          <tr>
+            <th>🕒 Date</th>
+            <th>📦 QR Code</th>
+            <th>⚙️ Action</th>
+            <th>✅ Résultat</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data.map(row => `
+            <tr>
+              <td>${row.date}</td>
+              <td>${row.qrcode}</td>
+              <td>${row.action}</td>
+              <td>${row.resultat}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+    container.innerHTML = table;
+  } catch (err) {
+    console.error("Erreur chargement historique:", err);
+    container.innerHTML = "❌ Erreur lors du chargement des données.";
+  }
+}
+
+  
   </script>
 </body>
