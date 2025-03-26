@@ -5,12 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
+
 </head>
 <body>
   <h1>📜 Historique des scans</h1>
 
-  <div style="margin-bottom: 1rem;">
-    <input type="date" id="datePicker" />
+  <div class="top-bar">
+    <input
+      type="date"
+      id="datePicker"
+      title="Sélectionner une date dans le mois écoulé"
+    />
     <button onclick="loadHistory()">📅 Valider</button>
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
@@ -19,11 +24,35 @@
   <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
 
   <script>
-    // 📅 Initialiser date par défaut à aujourd’hui
+    const datePicker = document.getElementById("datePicker");
+
     window.addEventListener("DOMContentLoaded", () => {
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("datePicker").value = today;
+      const today = new Date();
+      const todayStr = today.toISOString().split("T")[0];
+
+      const pastDate = new Date();
+      pastDate.setDate(today.getDate() - 30);
+      const pastStr = pastDate.toISOString().split("T")[0];
+
+      datePicker.max = todayStr;
+      datePicker.min = pastStr;
+      datePicker.value = todayStr;
+
       loadHistory();
+    });
+
+    datePicker.addEventListener("change", () => {
+      const selected = new Date(datePicker.value);
+      const min = new Date(datePicker.min);
+      const max = new Date(datePicker.max);
+
+      if (selected < min || selected > max) {
+        alert("❌ La date doit être comprise dans le mois écoulé.");
+        const today = new Date().toISOString().split("T")[0];
+        datePicker.value = today;
+        document.getElementById("selectedDateLabel").textContent = "Résultats pour aujourd'hui";
+        loadHistory();
+      }
     });
 
     async function loadScriptURL() {
@@ -45,13 +74,12 @@
         return;
       }
 
-      let selectedDate = document.getElementById("datePicker").value;
+      let selectedDate = datePicker.value;
       if (!selectedDate) {
         container.innerHTML = "❗ Merci de sélectionner une date.";
         return;
       }
 
-      // 🕒 Affichage lisible de la date sélectionnée
       let [year, month, day] = selectedDate.split("-");
       document.getElementById("selectedDateLabel").textContent = `Résultats pour le ${day}/${month}/${year}`;
       container.innerHTML = "🔄 Chargement...";
