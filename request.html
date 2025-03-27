@@ -22,7 +22,9 @@
         <input type="text" id="qrCode" name="qrCode" />
         <button type="button" id="startScan">📸</button>
       </div>
-      <p class="subtext">**À utiliser de préférence en priorité. Sinon, laisser vide et remplir les champs Nom et Prénom.</p>
+<div class="field-tip">
+  📌 Utiliser de préférence un QR Code. Sinon, laisser vide et renseigner Nom + Prénom.
+</div>
     </div>
 
     <div id="scannerContainer" class="hidden scanner-wrapper">
@@ -51,6 +53,9 @@
 
     <label for="commentaire">Commentaire :</label>
     <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+    <div class="field-tip">
+  📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
+</div>
 
     <div class="form-buttons">
       <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
