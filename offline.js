@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function sendOfflineData() {
+  async function sendOfflineData() {
     if (offlineScans.length === 0) {
       showStatusModal("❌ Aucun QR Code à envoyer.");
       return;
@@ -118,25 +118,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     show(loader);
 
-    const requests = offlineScans.map(code => {
-      return fetch(postURL, {
-        method: "POST",
-        body: new URLSearchParams({ data: code + "|offline" })
-      }).then(res => res.json());
-    });
+    let totalEnvoyes = 0;
+    let resultats = [];
 
-    Promise.all(requests)
-      .then(results => {
-        hide(loader);
-        const ok = results.filter(r => r.status === "success").length;
-        showStatusModal(`✅ ${ok} envois réussis.`);
-        clearOfflineScans();
-      })
-      .catch(err => {
-        hide(loader);
-        console.error("Erreur envoi :", err);
-        showStatusModal("❌ Erreur lors de l'envoi des données.");
-      });
+    for (const code of offlineScans) {
+      try {
+        const response = await fetch(postURL, {
+          method: "POST",
+          body: new URLSearchParams({
+            data: code,
+            offline: "true"
+          })
+        });
+
+        const res = await response.json();
+        totalEnvoyes++; // ✅ On compte même les KO
+        resultats.push(`📌 ${code} → ${res.message || "Réponse inconnue"}`);
+
+      } catch (err) {
+        resultats.push(`❌ ${code} → Erreur d'envoi`);
+      }
+    }
+
+    hide(loader);
+    clearOfflineScans();
+
+    const messageFinal = `✅ ${totalEnvoyes} envoyés\n\n${resultats.join('\n')}`;
+    showStatusModal(messageFinal);
   }
 
   function fetchManifestURL() {
