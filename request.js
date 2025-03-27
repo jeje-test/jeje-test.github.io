@@ -60,39 +60,46 @@ stopScanBtn.addEventListener('click', () => {
 });
 
 exceptionForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
   if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
     alert('Veuillez remplir soit le QR Code, soit le Nom et le Prénom.');
-    e.preventDefault();
-  } else {
-    const data = {
-      qrCode: qrInput.value.trim(),
-      nom: nomInput.value.trim(),
-      prenom: prenomInput.value.trim(),
-      email: document.getElementById('email').value.trim(),
-      raison: document.getElementById('raison').value,
-      commentaire: document.getElementById('commentaire').value.trim(),
-    };
+    return;
+  }
 
-    try {
-      const manifest = await fetch('manifest.json').then(r => r.json());
-      const response = await fetch(manifest.scriptURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feuille: 'Requêtes', ...data })
-      });
+  const data = {
+    feuille: 'Requêtes',
+    qrCode: qrInput.value.trim(),
+    nom: nomInput.value.trim(),
+    prenom: prenomInput.value.trim(),
+    email: document.getElementById('email').value.trim(),
+    raison: document.getElementById('raison').value,
+    commentaire: document.getElementById('commentaire').value.trim()
+  };
 
-      const result = await response.json();
-      if (result.success) {
-        alert('Formulaire soumis avec succès !');
-        exceptionForm.reset();
-        toggleIdentityFields();
-      } else {
-        alert('Erreur lors de l’envoi : ' + result.message);
-      }
-    } catch (error) {
-      alert('Erreur de communication avec le serveur.');
-      console.error(error);
+  const params = new URLSearchParams();
+  for (const key in data) {
+    params.append(key, data[key]);
+  }
+
+  try {
+    const manifest = await fetch('manifest.json').then(r => r.json());
+    const response = await fetch(manifest.scriptURL, {
+      method: 'POST',
+      body: params
+    });
+
+    const result = await response.json();
+    if (result.status === "success") {
+      alert('Formulaire soumis avec succès !');
+      exceptionForm.reset();
+      toggleIdentityFields();
+    } else {
+      alert('Erreur : ' + result.message);
     }
+  } catch (error) {
+    alert('Erreur de communication avec le serveur.');
+    console.error(error);
   }
 });
 
