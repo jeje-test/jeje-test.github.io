@@ -6,6 +6,7 @@
   <title>📴 Scan QR Code hors ligne</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
+  <link rel="icon" href="icons/icon-192.png" />
 </head>
 
 <body>
@@ -13,15 +14,15 @@
   <div id="statusModal" class="modal hidden">
     <div class="modal-content">
       <p id="statusText"></p>
-<div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-  <button id="rescanBtn">📸 Scanner à nouveau</button>
-  <button id="closeStatusBtn">Fermer</button>
-</div>
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+        <button id="rescanBtn">📸 Scanner à nouveau</button>
+        <button id="closeStatusBtn">Fermer</button>
+      </div>
     </div>
   </div>
 
   <h1>📴 Scan hors ligne</h1>
-<p id="pendingNotice" class="pending-notice hidden">⚠️ Données hors ligne en attente d’envoi</p>
+  <p id="pendingNotice" class="pending-notice hidden">⚠️ Données hors ligne en attente d’envoi</p>
 
   <div class="buttons">
     <button id="startScanOffline">📸 Scanner un QR Code</button>
