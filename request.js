@@ -7,6 +7,11 @@ const nomInput = document.getElementById('nom');
 const prenomInput = document.getElementById('prenom');
 const identityFields = document.getElementById('identityFields');
 const resetBtn = document.getElementById('resetBtn');
+
+const statusModal = document.getElementById('statusModal');
+const statusText = document.getElementById('statusText');
+const newRequestBtn = document.getElementById('newRequestBtn');
+
 let html5QrcodeScanner;
 
 function toggleIdentityFields() {
@@ -63,7 +68,7 @@ exceptionForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
-    alert('Veuillez remplir soit le QR Code, soit le Nom et le Prénom.');
+    showStatus("❗ Veuillez remplir soit le QR Code, soit le Nom et le Prénom.");
     return;
   }
 
@@ -91,16 +96,29 @@ exceptionForm.addEventListener('submit', async (e) => {
 
     const result = await response.json();
     if (result.status === "success") {
-      alert('Formulaire soumis avec succès !');
+      showStatus("✅ Requête enregistrée avec succès !");
       exceptionForm.reset();
       toggleIdentityFields();
     } else {
-      alert('Erreur : ' + result.message);
+      showStatus("❌ Erreur : " + result.message);
     }
   } catch (error) {
-    alert('Erreur de communication avec le serveur.');
     console.error(error);
+    showStatus("⚠️ Erreur de communication avec le serveur.");
   }
 });
 
-toggleIdentityFields();
+function showStatus(message) {
+  statusText.textContent = message;
+  statusModal.classList.remove('hidden');
+
+  // 🎯 Vibration si disponible (mobile)
+  if (navigator.vibrate) {
+    navigator.vibrate(100); // vibration de 100 ms
+  }
+}
+
+
+newRequestBtn.addEventListener('click', () => {
+  statusModal.classList.add('hidden');
+});
