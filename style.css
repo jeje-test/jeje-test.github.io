@@ -383,3 +383,10 @@ button {
   .modal.hidden {
     display: none;
   }
+
+.pending-notice {
+  color: orange;
+  font-weight: bold;
+  text-align: center;
+  margin: 10px 0;
+}
