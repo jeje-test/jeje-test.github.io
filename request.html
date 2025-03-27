@@ -65,10 +65,13 @@
   📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
 </div>
 
-    <div class="form-buttons">
-      <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
-      <button type="submit">✅ Valider</button>
-    </div>
+<div class="form-buttons">
+  <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
+  <button type="submit" id="submitBtn">
+    ✅ Valider
+    <span id="loadingSpinner" class="spinner hidden"></span>
+  </button>
+</div>
   </form>
 
 <script src="request.js"></script>
