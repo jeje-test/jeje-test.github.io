@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
 </head>
+
+<!-- Popup modale -->
+<div id="statusModal" class="modal hidden">
+  <div class="modal-content">
+    <p id="statusText"></p>
+    <button id="closeStatusBtn">OK</button>
+  </div>
+</div>
+  
 <body>
 
   <!-- Logo sous le titre -->
@@ -33,10 +42,6 @@
 
   <!-- Loader -->
   <div id="loader" class="loader hidden"></div>
-
-  <!-- Bloc d'état de traitement (toujours visible) -->
-   <h2>📊 Status</h2>
-  <div id="statusMessage" class="status-message"></div>
 
   <!-- Zone d'affichage des résultats -->
   <h2>📊 Résultats</h2>
