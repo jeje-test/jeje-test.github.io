@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const statusModal = document.getElementById("statusModal");
   const statusText = document.getElementById("statusText");
   const closeStatusBtn = document.getElementById("closeStatusBtn");
+  const rescanBtn = document.getElementById("rescanBtn");
   const pendingNotice = document.getElementById("pendingNotice");
 
   let html5QrCode = null;
@@ -75,6 +76,11 @@ document.addEventListener("DOMContentLoaded", function () {
     hide(statusModal);
   });
 
+  rescanBtn.addEventListener("click", () => {
+    hide(statusModal);
+    startScanner();
+  });
+
   function startScanner() {
     show(scannerContainer);
     html5QrCode = new Html5Qrcode("reader");
@@ -82,10 +88,13 @@ document.addEventListener("DOMContentLoaded", function () {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
       (decodedText) => {
-        offlineScans.push(decodedText);
-        saveOfflineScans();
-        renderOfflineList();
-        showStatusModal("✅ QR Code ajouté !");
+        html5QrCode.stop().then(() => {
+          hide(scannerContainer);
+          offlineScans.push(decodedText);
+          saveOfflineScans();
+          renderOfflineList();
+          showStatusModal("✅ QR Code ajouté !");
+        });
       }
     ).catch(err => {
       console.error("Erreur démarrage scanner:", err);
