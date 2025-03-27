@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
-          showStatusModal("✅ Données récupérées !");
+         // showStatusModal("✅ Données récupérées !");
 
           let resultHTML = `<strong>Résultat :</strong><br><table class=\"result-table\"><tbody>`;
           for (let key in data.result) {
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function startScanner() {
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
-    showStatusModal("Scan en cours...");
+    //showStatusModal("Scan en cours...");
     hide(actionsContainer);
     html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
