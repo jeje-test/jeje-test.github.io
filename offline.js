@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const startScanButton = document.getElementById("startScanOffline");
   const stopScanButton = document.getElementById("stopScan");
   const sendButton = document.getElementById("sendOfflineDataBtn");
+  const resetButton = document.getElementById("resetOfflineListBtn");
   const offlineList = document.getElementById("offlineList");
   const loader = document.getElementById("loader");
   const statusModal = document.getElementById("statusModal");
@@ -13,6 +14,36 @@ document.addEventListener("DOMContentLoaded", function () {
   let html5QrCode = null;
   let offlineScans = [];
   let postURL = "";
+
+  // Sauvegarde dans localStorage
+  const STORAGE_KEY = "offlineQRScans";
+
+  function saveOfflineScans() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(offlineScans));
+  }
+
+  function loadOfflineScans() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      offlineScans = JSON.parse(data);
+      renderOfflineList();
+    }
+  }
+
+  function clearOfflineScans() {
+    offlineScans = [];
+    localStorage.removeItem(STORAGE_KEY);
+    renderOfflineList();
+  }
+
+  function renderOfflineList() {
+    offlineList.innerHTML = "";
+    offlineScans.forEach((code, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1}. ${code}`;
+      offlineList.appendChild(li);
+    });
+  }
 
   function show(el) {
     el.classList.remove("hidden");
@@ -39,15 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
       (decodedText) => {
-        if (!offlineScans.includes(decodedText)) {
-          offlineScans.push(decodedText);
-          const li = document.createElement("li");
-          li.textContent = decodedText;
-          offlineList.appendChild(li);
-          showStatusModal("✅ QR Code ajouté !");
-        } else {
-          showStatusModal("⚠️ QR Code déjà scanné.");
-        }
+        offlineScans.push(decodedText);
+        saveOfflineScans();
+        renderOfflineList();
+        showStatusModal("✅ QR Code ajouté !");
       }
     ).catch(err => {
       console.error("Erreur démarrage scanner:", err);
@@ -83,8 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
         hide(loader);
         const ok = results.filter(r => r.status === "success").length;
         showStatusModal(`✅ ${ok} envois réussis.`);
-        offlineScans = [];
-        offlineList.innerHTML = "";
+        clearOfflineScans();
       })
       .catch(err => {
         hide(loader);
@@ -108,6 +133,13 @@ document.addEventListener("DOMContentLoaded", function () {
   startScanButton.addEventListener("click", startScanner);
   stopScanButton.addEventListener("click", stopScanner);
   sendButton.addEventListener("click", sendOfflineData);
+  resetButton.addEventListener("click", () => {
+    if (confirm("⚠️ Réinitialiser la liste des scans ?")) {
+      clearOfflineScans();
+      showStatusModal("🗑️ Liste réinitialisée.");
+    }
+  });
 
   fetchManifestURL();
+  loadOfflineScans(); // Charger les données sauvegardées au démarrage
 });
