@@ -12,6 +12,9 @@ const statusModal = document.getElementById('statusModal');
 const statusText = document.getElementById('statusText');
 const newRequestBtn = document.getElementById('newRequestBtn');
 
+const submitBtn = document.getElementById('submitBtn');
+const spinner = document.getElementById('loadingSpinner');
+
 let html5QrcodeScanner;
 
 function toggleIdentityFields() {
@@ -67,13 +70,17 @@ stopScanBtn.addEventListener('click', () => {
 exceptionForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
+  submitBtn.disabled = true;
+  spinner.classList.remove('hidden');
+
   if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
     showStatus("❗ Veuillez remplir soit le QR Code, soit le Nom et le Prénom.");
+    resetSubmitUI();
     return;
   }
 
   const data = {
-    feuille: 'Requêtes',
+    feuille: 'Demandes',
     qrCode: qrInput.value.trim(),
     nom: nomInput.value.trim(),
     prenom: prenomInput.value.trim(),
@@ -105,6 +112,8 @@ exceptionForm.addEventListener('submit', async (e) => {
   } catch (error) {
     console.error(error);
     showStatus("⚠️ Erreur de communication avec le serveur.");
+  } finally {
+    resetSubmitUI();
   }
 });
 
@@ -112,12 +121,14 @@ function showStatus(message) {
   statusText.textContent = message;
   statusModal.classList.remove('hidden');
 
-  // 🎯 Vibration si disponible (mobile)
-  if (navigator.vibrate) {
-    navigator.vibrate(100); // vibration de 100 ms
-  }
+  // 🎯 Vibration si disponible
+  if (navigator.vibrate) navigator.vibrate(100);
 }
 
+function resetSubmitUI() {
+  submitBtn.disabled = false;
+  spinner.classList.add('hidden');
+}
 
 newRequestBtn.addEventListener('click', () => {
   statusModal.classList.add('hidden');
