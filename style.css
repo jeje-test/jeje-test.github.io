@@ -313,3 +313,16 @@ button {
 .qr-row input {
   flex: 1;
 }
+
+
+.field-tip {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.9em;
+  margin-top: -5px;
+  margin-bottom: 15px;
+  text-align: left;
+}
