@@ -10,40 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const statusModal = document.getElementById("statusModal");
   const statusText = document.getElementById("statusText");
   const closeStatusBtn = document.getElementById("closeStatusBtn");
+  const pendingNotice = document.getElementById("pendingNotice");
 
   let html5QrCode = null;
   let offlineScans = [];
   let postURL = "";
 
-  // Sauvegarde dans localStorage
   const STORAGE_KEY = "offlineQRScans";
-
-  function saveOfflineScans() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(offlineScans));
-  }
-
-  function loadOfflineScans() {
-    const data = localStorage.getItem(STORAGE_KEY);
-    if (data) {
-      offlineScans = JSON.parse(data);
-      renderOfflineList();
-    }
-  }
-
-  function clearOfflineScans() {
-    offlineScans = [];
-    localStorage.removeItem(STORAGE_KEY);
-    renderOfflineList();
-  }
-
-  function renderOfflineList() {
-    offlineList.innerHTML = "";
-    offlineScans.forEach((code, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${index + 1}. ${code}`;
-      offlineList.appendChild(li);
-    });
-  }
 
   function show(el) {
     el.classList.remove("hidden");
@@ -57,6 +30,45 @@ document.addEventListener("DOMContentLoaded", function () {
     statusText.textContent = message;
     show(statusModal);
     if (navigator.vibrate) navigator.vibrate(100);
+  }
+
+  function updatePendingNotice() {
+    if (offlineScans.length > 0) {
+      show(pendingNotice);
+    } else {
+      hide(pendingNotice);
+    }
+  }
+
+  function saveOfflineScans() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(offlineScans));
+    updatePendingNotice();
+  }
+
+  function loadOfflineScans() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      offlineScans = JSON.parse(data);
+      renderOfflineList();
+      updatePendingNotice();
+    }
+  }
+
+  function clearOfflineScans() {
+    offlineScans = [];
+    localStorage.removeItem(STORAGE_KEY);
+    renderOfflineList();
+    updatePendingNotice();
+  }
+
+  function renderOfflineList() {
+    offlineList.innerHTML = "";
+    offlineScans.forEach((code, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1}. ${code}`;
+      offlineList.appendChild(li);
+    });
+    updatePendingNotice();
   }
 
   closeStatusBtn.addEventListener("click", () => {
@@ -141,5 +153,5 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   fetchManifestURL();
-  loadOfflineScans(); // Charger les données sauvegardées au démarrage
+  loadOfflineScans();
 });
