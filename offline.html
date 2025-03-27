@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📴 Scan QR Code hors ligne</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="libs/html5-qrcode.min.js"></script>
+</head>
+
+<body>
+  <!-- Modale de statut -->
+  <div id="statusModal" class="modal hidden">
+    <div class="modal-content">
+      <p id="statusText"></p>
+      <button id="closeStatusBtn">OK</button>
+    </div>
+  </div>
+
+  <h1>📴 Scan hors ligne</h1>
+
+  <div class="buttons">
+    <button id="startScanOffline">📸 Scanner un QR Code</button>
+    <button id="sendOfflineDataBtn">📤 Envoyer les données</button>
+    <button onclick="window.location.href='index.html'">🔙 Retour</button>
+  </div>
+
+  <!-- Scanner -->
+  <div id="scannerContainer" class="hidden">
+    <div id="reader"></div>
+    <button id="stopScan">❌ Arrêter le scanner</button>
+  </div>
+
+  <!-- Liste des QR codes scannés -->
+  <h2>🧾 QR Codes scannés</h2>
+  <ul id="offlineList" class="offline-list"></ul>
+
+  <!-- Loader -->
+  <div id="loader" class="loader hidden"></div>
+
+  <script src="offline.js"></script>
+</body>
+</html>
