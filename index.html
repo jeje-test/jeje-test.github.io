@@ -20,13 +20,14 @@
   <!-- Logo -->
   <div class="image-container">
     <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
-         alt="Logo TY" style="max-width: 20%; height: auto;" />
+         alt="Logo TY" aria-label="Logo de TY" style="max-width: 20%; height: auto;" />
   </div>
+
   <hr class="separator" />
 
   <h1>🌍 Fonctionnalités</h1>
 
-  <!-- Boutons principaux -->
+  <!-- Boutons de scan et actions -->
   <div class="buttons">
     <button id="startScan">📸 Scanner un QR Code</button>
     <button onclick="window.location.href='offline.html'">📴 Scan QR Code hors ligne</button>
@@ -35,12 +36,14 @@
 
     <button onclick="window.location.href='form.html'">📝 Nouvelle inscription</button>
     <button onclick="window.location.href='request.html'">⚠️ Demande exceptionnelle</button>
+  </div>
 
-      <hr class="separator" />
+  <hr class="separator" />
 
+  <!-- Boutons de consultation -->
+  <div class="buttons">
     <button onclick="window.location.href='history.html'">📜 Historique</button>
     <button onclick="window.location.href='dashboard.html'">📊 Dashboard</button>
-
   </div>
 
   <!-- Zone de scanner -->
@@ -52,11 +55,11 @@
   <!-- Loader -->
   <div id="loader" class="loader hidden"></div>
 
-  <!-- Zone d'affichage des résultats -->
+  <!-- Résultat du scan -->
   <h2>📊 Résultats</h2>
   <div id="dataContainer" class="result-box fade-target">Aucune donnée scannée.</div>
 
-  <!-- Actions -->
+  <!-- Actions après scan -->
   <div id="actionsContainer" class="hidden" style="justify-content: center; gap: 10px; margin-top: 10px;">
     <button id="decrementBtn">✅ Décompter un nouveau cours</button>
     <button id="cancelBtn">❌ Abandonner</button>
@@ -64,7 +67,7 @@
 
   <hr class="separator" />
 
-  <!-- Footer avec version et contrôles PWA -->
+  <!-- Footer avec version et PWA -->
   <footer>
     <div id="pwaControls">
       <button id="toggleThemeBtn">🌙 Mode sombre</button>
@@ -74,7 +77,6 @@
     </div>
   </footer>
 
-  <!-- JS principal -->
   <script src="app.js"></script>
 </body>
 </html>
