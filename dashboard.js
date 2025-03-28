@@ -57,13 +57,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Chargement des données depuis le script Apps Script
+  // Chargement des données depuis le script Apps Script (via POST pour éviter CORS)
   fetch("manifest.json")
     .then(res => res.json())
     .then(manifest => {
       versionDiv.textContent = "Version: " + manifest.version;
-      const dashboardURL = `${manifest.scriptURL}?action=dashboard&cacheBust=${Date.now()}`;
-      return fetch(dashboardURL, { cache: "no-store" });
+
+      const form = new FormData();
+      form.append("action", "dashboard");
+
+      return fetch(manifest.scriptURL, {
+        method: "POST",
+        body: form
+      });
     })
     .then(res => res.json())
     .then(stats => {
