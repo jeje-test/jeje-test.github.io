@@ -404,3 +404,34 @@ button {
 .fade-target.fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
+
+/* Ajustement du dashboard */
+.result-box {
+  padding: 0.75rem;
+  margin: 0.75rem auto;
+  line-height: 1.4;
+  font-size: 0.95em;
+}
+
+.result-box h2 {
+  margin-top: 0.3rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.2em;
+}
+
+.result-box p,
+.result-box li {
+  margin: 3px 0;
+  line-height: 1.4;
+}
+
+.result-box ul {
+  padding-left: 1.2em;
+  margin: 0.5rem 0;
+}
+
+canvas {
+  max-width: 100%;
+  margin-top: 10px;
+}
+
