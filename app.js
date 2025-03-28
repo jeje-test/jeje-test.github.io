@@ -8,6 +8,8 @@ function show(el) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  const STORAGE_KEY = "offlineQRScans";
+
   const scannerDiv = document.getElementById("reader");
   const scannerContainer = document.getElementById("scannerContainer");
   const resultDiv = document.getElementById("dataContainer");
@@ -21,11 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const stopScanButton = document.getElementById("stopScan");
   const refreshCacheBtn = document.getElementById("refreshCacheBtn");
   const toggleBtn = document.getElementById("toggleThemeBtn");
-  const installBtn = document.getElementById("installBtn");
+  const installBtn = document.getElementById("installBtnFooter");
 
   const statusModal = document.getElementById("statusModal");
   const statusText = document.getElementById("statusText");
   const closeStatusBtn = document.getElementById("closeStatusBtn");
+
+  const offlineNotice = document.getElementById("offlineNotice");
+  const downloadBtn = document.getElementById("downloadOfflineBtn");
 
   let html5QrCode = null;
   let lastScannedCode = null;
@@ -66,10 +71,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  function showUpdateBanner() {
-    const banner = document.getElementById("updateBanner");
-    if (banner) banner.style.display = "block";
+  function showStatusModal(message) {
+    statusText.textContent = message;
+    statusModal.classList.remove("hidden");
+    if (navigator.vibrate) navigator.vibrate(100);
   }
+
+  closeStatusBtn.addEventListener("click", () => {
+    statusModal.classList.add("hidden");
+  });
 
   function fetchManifestAndInit() {
     fetch("manifest.json")
@@ -79,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         getURL = data.scriptURL + "?q=";
         postURL = data.scriptURL;
         attachEventListeners();
+        updateOfflineNotice();
       })
       .catch(error => {
         console.error("Erreur manifest.json :", error);
@@ -109,9 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
-         // showStatusModal("✅ Données récupérées !");
-
-          let resultHTML = `<strong>Résultat :</strong><br><table class=\"result-table\"><tbody>`;
+          let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
           for (let key in data.result) {
             let value = data.result[key];
             let highlight = "";
@@ -167,20 +176,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function showStatusModal(message) {
-    statusText.textContent = message;
-    statusModal.classList.remove("hidden");
-    if (navigator.vibrate) navigator.vibrate(100);
-  }
-
-  closeStatusBtn.addEventListener("click", () => {
-    statusModal.classList.add("hidden");
-  });
-
   function startScanner() {
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
-    //showStatusModal("Scan en cours...");
     hide(actionsContainer);
     html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
@@ -195,6 +193,39 @@ document.addEventListener("DOMContentLoaded", function () {
       html5QrCode.stop().then(() => hide(scannerContainer));
     }
   }
+
+  function updateOfflineNotice() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (data) {
+      const list = JSON.parse(data);
+      if (Array.isArray(list) && list.length > 0) {
+        show(offlineNotice);
+        show(downloadBtn);
+      } else {
+        hide(offlineNotice);
+        hide(downloadBtn);
+      }
+    } else {
+      hide(offlineNotice);
+      hide(downloadBtn);
+    }
+  }
+
+  downloadBtn?.addEventListener("click", () => {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+    if (data.length === 0) return alert("Aucune donnée à exporter.");
+
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + data.map((d, i) => `${i + 1};${d.code};${d.timestamp}`).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "historique_offline.csv");
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  });
 
   function attachEventListeners() {
     startScanButton.addEventListener("click", startScanner);
