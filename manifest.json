@@ -2,7 +2,7 @@
   "name": "Scanner QR Code PWA",
   "short_name": "QR Scanner",
   "description": "Une application PWA pour scanner des QR Codes et interagir avec Google Sheets",
-  "version": "2.7.4",
+  "version": "2.7.5",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -22,5 +22,5 @@
       "purpose": "any maskable"
     }
   ],
-  "scriptURL": "https://script.google.com/macros/s/AKfycbx2Zjg7PjGADDDJOhZhRYwcFU5JBbCINSl47xqQzfSPbq175XMrFWuIewRgKlw9ob5D/exec"
+  "scriptURL": "https://script.google.com/macros/s/AKfycbwxO_7mHiaCe5er68hkczOZ6OkoWb8IMLzZPTJs0FHCe0VttzHOJ6joh4hJe7BArvR8/exec"
 }
