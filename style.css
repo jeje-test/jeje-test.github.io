@@ -390,3 +390,17 @@ button {
   text-align: center;
   margin: 10px 0;
 }
+
+/* Bouton de téléchargement de l'historique offline */
+#downloadOfflineBtn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-top: 5px;
+}
+
+/* Fade-in cible pour dataContainer */
+.fade-target.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
