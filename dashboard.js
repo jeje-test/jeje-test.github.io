@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2>⚠️ Alertes - Cours restants faibles</h2>
           <ul>
             ${Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
-              ? stats.lowBalanceUsers.map(u => `<li><strong>${u.name}</strong> - ${u.remaining} cours restants</li>`).join('')
+              ? stats.lowBalanceUsers.map(u => `<li><strong>${u.name}</strong> : ${u.remaining} cours restants</li>`).join('')
               : '<li>Aucune alerte 👍</li>'}
           </ul>
         </div>
