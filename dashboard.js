@@ -115,12 +115,27 @@ document.addEventListener("DOMContentLoaded", () => {
       options: {
         responsive: true,
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.parsed.y} cours`
+            }
+          },
+          datalabels: {
+            anchor: 'end',
+            align: 'top',
+            color: '#000',
+            font: {
+              weight: 'bold'
+            },
+            formatter: value => value
+          }
         },
         scales: {
-          y: { beginAtZero: true }
+          y: { beginAtZero: true, precision: 0 }
         }
-      }
+      },
+      plugins: [ChartDataLabels]
     });
   }
 });
