@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeStatusBtn = document.getElementById("closeStatusBtn");
 
   const offlineNotice = document.getElementById("offlineNotice");
-  const downloadBtn = document.getElementById("downloadOfflineBtn");
 
   const allButtonSections = document.querySelectorAll(".buttons");
 
@@ -39,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let getURL = "";
   let postURL = "";
 
-  // 🌃 Thème clair/sombre
+  // 🌓 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     const isDark = document.body.classList.contains("dark-mode");
@@ -153,39 +152,38 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-function sendDataToGoogleSheet(scannedData) {
-  show(loader);
-  resultDiv.innerHTML = "";
-  hide(actionsContainer);
+  function sendDataToGoogleSheet(scannedData) {
+    show(loader);
+    resultDiv.innerHTML = "";
+    hide(actionsContainer);
 
-  fetch(postURL, {
-    method: "POST",
-    body: new URLSearchParams({ data: scannedData })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === "success" || data.status === "ignored") {
-        showStatusModal("✅ Cours décompté avec succès !");
-        setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
-      } else if (data.status === "batch" && Array.isArray(data.results)) {
-        const first = data.results[0];
-        if (first.status === "success") {
-          showStatusModal("✅ " + (first.message || "Opération en lot réussie."));
-          setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
-        } else {
-          showStatusModal("❌ " + (first.message || "Erreur lors du traitement par lot."));
-        }
-      } else {
-        showStatusModal("❌ " + (data.message || "Erreur lors du décompte."));
-      }
+    fetch(postURL, {
+      method: "POST",
+      body: new URLSearchParams({ data: scannedData })
     })
-    .catch(error => {
-      hide(loader);
-      showStatusModal("❌ Erreur lors de l'envoi des données.");
-      console.error("Erreur POST :", error);
-    });
-}
-
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success" || data.status === "ignored") {
+          showStatusModal("✅ Cours décompté avec succès !");
+          setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
+        } else if (data.status === "batch" && Array.isArray(data.results)) {
+          const first = data.results[0];
+          if (first.status === "success") {
+            showStatusModal("✅ " + (first.message || "Opération en lot réussie."));
+            setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
+          } else {
+            showStatusModal("❌ " + (first.message || "Erreur lors du traitement par lot."));
+          }
+        } else {
+          showStatusModal("❌ " + (data.message || "Erreur lors du décompte."));
+        }
+      })
+      .catch(error => {
+        hide(loader);
+        showStatusModal("❌ Erreur lors de l'envoi des données.");
+        console.error("Erreur POST :", error);
+      });
+  }
 
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
@@ -223,32 +221,13 @@ function sendDataToGoogleSheet(scannedData) {
       const list = JSON.parse(data);
       if (Array.isArray(list) && list.length > 0) {
         show(offlineNotice);
-        show(downloadBtn);
       } else {
         hide(offlineNotice);
-        hide(downloadBtn);
       }
     } else {
       hide(offlineNotice);
-      hide(downloadBtn);
     }
   }
-
-  downloadBtn?.addEventListener("click", () => {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-    if (data.length === 0) return alert("Aucune donnée à exporter.");
-
-    const csvContent = "data:text/csv;charset=utf-8,"
-      + data.map((d, i) => `${i + 1};${d.code};${d.timestamp}`).join("\n");
-
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "historique_offline.csv");
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  });
 
   function attachEventListeners() {
     startScanButton.addEventListener("click", startScanner);
