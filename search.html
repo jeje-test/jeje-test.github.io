@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>🔍 Recherche</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -18,12 +18,20 @@
 
   <!-- Formulaire de recherche -->
   <div class="form-container">
-    <input type="text" id="searchInput" placeholder="Nom Prénom ou ID..." />
-    <button id="searchBtn">Rechercher</button>
+    <input type="text" id="email" placeholder="Email" />
+    <input type="text" id="nom" placeholder="Nom" />
+    <input type="text" id="prenom" placeholder="Prénom" />
+    <div class="buttons">
+      <button id="searchBtn">Rechercher</button>
+      <button id="resetBtn">Réinitialiser</button>
+    </div>
   </div>
 
-  <!-- Résultat -->
-  <div id="searchResult" class="result-box">Aucun résultat pour l’instant.</div>
+  <!-- Résultats de la recherche -->
+  <div id="searchResults" class="result-box">Aucun résultat pour l'instant.</div>
+
+  <!-- Fiche détaillée -->
+  <div id="detailContainer" class="result-box hidden"></div>
 
   <!-- Footer -->
   <footer>
