@@ -153,30 +153,39 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function sendDataToGoogleSheet(scannedData) {
-    show(loader);
-    resultDiv.innerHTML = "";
-    hide(actionsContainer);
+function sendDataToGoogleSheet(scannedData) {
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
 
-    fetch(postURL, {
-      method: "POST",
-      body: new URLSearchParams({ data: scannedData })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "success" || data.status === "ignored") {
-          showStatusModal("✅ Cours décompté avec succès !");
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({ data: scannedData })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success" || data.status === "ignored") {
+        showStatusModal("✅ Cours décompté avec succès !");
+        setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
+      } else if (data.status === "batch" && Array.isArray(data.results)) {
+        const first = data.results[0];
+        if (first.status === "success") {
+          showStatusModal("✅ " + (first.message || "Opération en lot réussie."));
           setTimeout(() => fetchDataFromGoogleSheet(scannedData), 1000);
         } else {
-          showStatusModal("❌ " + (data.message || "Erreur lors du décompte."));
+          showStatusModal("❌ " + (first.message || "Erreur lors du traitement par lot."));
         }
-      })
-      .catch(error => {
-        hide(loader);
-        showStatusModal("❌ Erreur lors de l'envoi des données.");
-        console.error("Erreur POST :", error);
-      });
-  }
+      } else {
+        showStatusModal("❌ " + (data.message || "Erreur lors du décompte."));
+      }
+    })
+    .catch(error => {
+      hide(loader);
+      showStatusModal("❌ Erreur lors de l'envoi des données.");
+      console.error("Erreur POST :", error);
+    });
+}
+
 
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
