@@ -32,12 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const offlineNotice = document.getElementById("offlineNotice");
   const downloadBtn = document.getElementById("downloadOfflineBtn");
 
+  const allButtonSections = document.querySelectorAll(".buttons");
+
   let html5QrCode = null;
   let lastScannedCode = null;
   let getURL = "";
   let postURL = "";
 
-  // 🌓 Thème clair/sombre
+  // 🌃 Thème clair/sombre
   toggleBtn?.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     const isDark = document.body.classList.contains("dark-mode");
@@ -176,7 +178,16 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  function hideAllButtonSections() {
+    allButtonSections.forEach(el => hide(el));
+  }
+
+  function showAllButtonSections() {
+    allButtonSections.forEach(el => show(el));
+  }
+
   function startScanner() {
+    hideAllButtonSections();
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
     hide(actionsContainer);
@@ -190,7 +201,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function stopScanner() {
     if (html5QrCode) {
-      html5QrCode.stop().then(() => hide(scannerContainer));
+      html5QrCode.stop().then(() => {
+        hide(scannerContainer);
+        showAllButtonSections();
+      });
     }
   }
 
@@ -242,6 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cancelBtn.addEventListener("click", () => {
       resultDiv.innerHTML = "";
       hide(actionsContainer);
+      showAllButtonSections();
     });
 
     refreshCacheBtn?.addEventListener("click", () => {
