@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>🔍 Recherche</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Logo et titre -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+         alt="Logo TY" style="max-width: 20%; height: auto;" />
+  </div>
+
+  <hr class="separator" />
+  <h1>🔍 Recherche manuelle</h1>
+
+  <!-- Formulaire de recherche -->
+  <div class="form-container">
+    <input type="text" id="searchInput" placeholder="Nom Prénom ou ID..." />
+    <button id="searchBtn">Rechercher</button>
+  </div>
+
+  <!-- Résultat -->
+  <div id="searchResult" class="result-box">Aucun résultat pour l’instant.</div>
+
+  <!-- Footer -->
+  <footer>
+    <div id="pwaControls">
+      <button onclick="window.location.href='index.html'">🏠 Retour</button>
+      <p id="appVersion"></p>
+    </div>
+  </footer>
+
+  <script src="search.js"></script>
+</body>
+</html>
