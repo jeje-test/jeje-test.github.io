@@ -38,12 +38,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let lastScannedCode = null;
   let getURL = "";
   let postURL = "";
+  let fromSearch = false;
 
-
-  toggleBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-});
-  
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
   }
@@ -58,6 +54,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (navigator.vibrate) navigator.vibrate(100);
   }
 
+
+toggleBtn?.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  toggleBtn.textContent = document.body.classList.contains("dark-mode")
+    ? "☀️ Mode clair"
+    : "🌙 Mode sombre";
+});
+
+  
   closeStatusBtn.addEventListener("click", () => {
     statusModal.classList.add("hidden");
   });
@@ -75,17 +80,17 @@ document.addEventListener("DOMContentLoaded", function () {
         // 🔍 Auto-lancement si ?q= dans l'URL (depuis search.html)
         const urlParams = new URLSearchParams(window.location.search);
         const qParam = urlParams.get("q");
-            if (qParam) {
-              lastScannedCode = qParam; // ✅ on stocke le code pour pouvoir le réutiliser
-              hideAllButtonSections();
-              hide(scannerContainer);
-              hide(stopScanButton);
-              fetchDataFromGoogleSheet(qParam);
-            
-              const searchNotice = document.getElementById("searchNotice");
-              if (searchNotice) show(searchNotice);
-            }
+        if (qParam) {
+          lastScannedCode = qParam; // ✅ on stocke le code pour pouvoir le réutiliser
+          fromSearch = true;
+          hideAllButtonSections();
+          hide(scannerContainer);
+          hide(stopScanButton);
+          fetchDataFromGoogleSheet(qParam);
 
+          const searchNotice = document.getElementById("searchNotice");
+          if (searchNotice) show(searchNotice);
+        }
       })
       .catch(error => {
         console.error("Erreur manifest.json :", error);
@@ -96,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function onScanSuccess(decodedText) {
     if (navigator.vibrate) navigator.vibrate(200);
     lastScannedCode = decodedText;
+    fromSearch = false;
     if (html5QrCode) {
       html5QrCode.stop().then(() => hide(scannerContainer));
     }
@@ -115,7 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
-          let resultHTML = `<strong>Résultat :</strong><br><p id="searchNotice" class="subtext hidden">🔍 Résultat issu d'une recherche manuelle</p><table class="result-table"><tbody>`;
+          let resultHTML = `<strong>Résultat :</strong><br>`;
+          if (fromSearch) {
+            resultHTML += `<p id="searchNotice" class="subtext">🔍 Résultat issu d'une recherche manuelle</p>`;
+          }
+          resultHTML += `<table class="result-table"><tbody>`;
           for (let key in data.result) {
             let value = data.result[key];
             let highlight = "";
@@ -184,7 +194,7 @@ document.addEventListener("DOMContentLoaded", function () {
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
     hide(actionsContainer);
-    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode = new Html5QrCode("reader");
     html5QrCode.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
