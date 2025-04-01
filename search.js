@@ -45,25 +45,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderResults(list) {
     if (!list.length) {
-      resultsContainer.innerHTML = "Aucun résultat trouvé.";
-      return;
-    }
+      resultsContainer.innerHTML = "<strong>Résultats :</strong><ul class='choice-list'>" +
+      list
+        .sort((a, b) => a.nom.localeCompare(b.nom))
+        .map((item) => {
+          const label = `📧 ${item.email || ''} — 👤 ${item.nom} ${item.prenom}`;
+          return `<li><button class=\"choice-btn\" data-code=\"${item.code}\">${label}</button></li>`;
+        }).join("") + "</ul>";
 
-    resultsContainer.innerHTML = "<strong>Résultats :</strong><ul class='choice-list'>" +
-      list.map((item) => {
-        const label = `${item.nom} ${item.prenom} - ${item.email || ''}`;
-        return `<li><button class='choice-btn' data-code="${item.code}">${label}</button></li>`;
-      }).join("") + "</ul>";
-
-    document.querySelectorAll(".choice-btn").forEach(btn => {
+    document.querySelectorAll("#searchResults button").forEach(btn => {
       btn.addEventListener("click", () => {
         const code = btn.getAttribute("data-code");
-        showRedirectModal(code);
+        showConfirmationModal(code);
       });
     });
   }
 
-  function showRedirectModal(code) {
+  function showConfirmationModal(code) {
     const modal = document.createElement("div");
     modal.className = "modal-overlay";
     modal.innerHTML = `
@@ -85,6 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.remove();
       fetchDetail(code);
     });
+  }`;
+    } else {
+      fetchDetail(code);
+    }
   }
 
   function fetchDetail(code) {
