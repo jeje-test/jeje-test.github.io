@@ -7,27 +7,40 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div class="header-content">
-      <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png" alt="Logo TY" class="logo" />
-      <h1 class="page-title">🔍 Recherche manuelle</h1>
-    </div>
-    <div class="separator"></div>
-  </header>
 
-  <div class="form-container fade-in">
+  <!-- Logo -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+         alt="Logo TY" style="max-width: 20%; height: auto;" />
+  </div>
+
+  <hr class="separator" />
+
+  <h1>🔍 Recherche manuelle</h1>
+  <!-- Bouton retour -->
+    <div class="top-bar">
+    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+  </div>
+
+  
+  <!-- Formulaire -->
+  <div class="form-container">
     <input type="text" id="email" placeholder="Email" />
     <input type="text" id="nom" placeholder="Nom" />
     <input type="text" id="prenom" placeholder="Prénom" />
     <div class="buttons">
-      <button id="searchBtn">🔎 Rechercher</button>
-      <button id="resetBtn" class="danger">♻️ Réinitialiser</button>
+      <button id="searchBtn">Rechercher</button>
+      <button id="resetBtn">Réinitialiser</button>
     </div>
   </div>
 
-  <div id="searchResults" class="result-box">Aucune donnée scannée.</div>
+  <!-- Résultats de la recherche -->
+  <div id="searchResults" class="result-box">Aucun résultat pour l'instant.</div>
+
+  <!-- Fiche détaillée -->
   <div id="detailContainer" class="result-box hidden"></div>
 
+  <!-- Modale de confirmation -->
   <div id="confirmModal" class="modal hidden">
     <div class="modal-content">
       <p>Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?</p>
@@ -38,17 +51,18 @@
     </div>
   </div>
 
-  <footer class="app-footer">
-    <div class="separator"></div>
+  <!-- Footer -->
+  <footer>
+    <hr class="separator" />
     <div id="pwaControls">
       <button id="toggleThemeBtn">🌙 Mode sombre</button>
       <button id="refreshCacheBtn">♻️ Recharger l’app</button>
       <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
-      <p id="appVersion">Version: 3.1.2</p>
+      <p id="appVersion"></p>
     </div>
   </footer>
 
   <script src="search.js"></script>
-  <script src="pwa-ui.js"></script>
+  <script src="pwa-ui.js"></script> <!-- si tu as une logique partagée pour PWA / thème -->
 </body>
 </html>
