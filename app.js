@@ -78,6 +78,24 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(error => {
         console.error("Erreur manifest.json :", error);
       });
+
+    const scannerStatus = document.getElementById("scannerStatus");
+if (typeof Html5QrCode === "undefined") {
+  scannerStatus.textContent = "❌ Scanner non disponible (librairie manquante)";
+  scannerStatus.style.color = "red";
+} else {
+  // Vérifie si l'accès caméra est théoriquement possible
+  navigator.mediaDevices?.getUserMedia({ video: true })
+    .then(() => {
+      scannerStatus.textContent = "✅ Scanner prêt";
+      scannerStatus.style.color = "green";
+    })
+    .catch(() => {
+      scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
+      scannerStatus.style.color = "orange";
+    });
+}
+
   }
 
   function onScanSuccess(decodedText) {
