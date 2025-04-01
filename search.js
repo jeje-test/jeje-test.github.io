@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     resultsContainer.innerHTML = "<strong>📋 Résultats :</strong><ul class='result-list'>" +
       list.map((item) => {
         const label = `${item.nom} ${item.prenom} - ${item.email || ''}`;
-        return `<li><button class="result-button" data-code="${item.code}">👤 ${label}</button></li>`;
+        return `<li><button class="result-button" data-code="${item.code}">${label}</button></li>`;
       }).join("") + "</ul>";
 
     document.querySelectorAll("#searchResults button").forEach(btn => {
