@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-
 </head>
 
 <body>
@@ -17,22 +16,23 @@
          alt="Logo TY" aria-label="Logo de TY" style="max-width: 20%; height: auto;" />
   </div>
 
+  <!-- Barre de retour alignée -->
+  <div class="top-bar">
+    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+  </div>
+
   <hr class="separator" />
 
   <h1>📊 Dashboard de suivi</h1>
   <p class="subtext">Suivi en temps réel de l’activité des scans</p>
 
-  <div class="buttons">
-    <button onclick="window.location.href='index.html'">🔙 Retour</button>
-  </div>
-
   <div id="dashboardContainer" class="fade-target">
-    <p>Chargement des données en cours...</p>
+    <p>🔄 Chargement des données en cours...</p>
   </div>
 
   <hr class="separator" />
 
-  <!-- Footer avec version et PWA -->
+  <!-- Footer avec version, PWA, thème -->
   <footer>
     <div id="pwaControls">
       <button id="toggleThemeBtn">🌙 Mode sombre</button>
@@ -42,6 +42,8 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="dashboard.js"></script>
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
