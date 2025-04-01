@@ -237,12 +237,22 @@ toggleBtn?.addEventListener("click", () => {
       }
     });
 
-    cancelBtn.addEventListener("click", () => {
-      resultDiv.innerHTML = "";
-      hide(actionsContainer);
-      showAllButtonSections();
-    });
+cancelBtn.addEventListener("click", () => {
+  resultDiv.innerHTML = "";
+  lastScannedCode = null;
+  hide(actionsContainer);
+  showAllButtonSections();
 
+  // Nettoie l'URL si ?q=... présent
+  if (window.history.replaceState) {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
+
+  // Nettoyage éventuel de stockage si implémenté
+  localStorage.removeItem("lastScannedQR");
+});
+    
     refreshCacheBtn?.addEventListener("click", () => {
       if ('caches' in window) {
         caches.keys().then(names => {
