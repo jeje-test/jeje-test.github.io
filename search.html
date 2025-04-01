@@ -7,16 +7,23 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Logo et titre -->
+
+  <!-- Logo -->
   <div class="image-container">
     <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
          alt="Logo TY" style="max-width: 20%; height: auto;" />
   </div>
 
   <hr class="separator" />
+
+  <!-- Bouton retour -->
+  <div class="buttons">
+    <button onclick="window.location.href='index.html'">🔙 Retour</button>
+  </div>
+
   <h1>🔍 Recherche manuelle</h1>
 
-  <!-- Formulaire de recherche -->
+  <!-- Formulaire -->
   <div class="form-container">
     <input type="text" id="email" placeholder="Email" />
     <input type="text" id="nom" placeholder="Nom" />
@@ -33,26 +40,28 @@
   <!-- Fiche détaillée -->
   <div id="detailContainer" class="result-box hidden"></div>
 
+  <!-- Modale de confirmation -->
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-content">
+      <p>Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?</p>
+      <div class="modal-actions">
+        <button id="confirmYes">✅ Oui</button>
+        <button id="confirmNo">❌ Non</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Footer -->
   <footer>
     <div id="pwaControls">
-      <button onclick="window.location.href='index.html'">🏠 Retour</button>
+      <button id="toggleThemeBtn">🌙 Mode sombre</button>
+      <button id="refreshCacheBtn">♻️ Recharger l’app</button>
+      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
       <p id="appVersion"></p>
     </div>
   </footer>
 
-<div id="confirmModal" class="modal hidden">
-  <div class="modal-content">
-    <p>Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?</p>
-    <div class="modal-actions">
-      <button id="confirmYes">✅ Oui</button>
-      <button id="confirmNo">❌ Non</button>
-    </div>
-  </div>
-</div>
-  
-    <script src="search.js"></script>
-
-
+  <script src="search.js"></script>
+  <script src="pwa-ui.js"></script> <!-- si tu as une logique partagée pour PWA / thème -->
 </body>
 </html>
