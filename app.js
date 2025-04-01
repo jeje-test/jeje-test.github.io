@@ -70,15 +70,17 @@ document.addEventListener("DOMContentLoaded", function () {
         // 🔍 Auto-lancement si ?q= dans l'URL (depuis search.html)
         const urlParams = new URLSearchParams(window.location.search);
         const qParam = urlParams.get("q");
-        if (qParam) {
-          hideAllButtonSections();
-          hide(scannerContainer);
-          hide(stopScanButton);
-          fetchDataFromGoogleSheet(qParam);
+            if (qParam) {
+              lastScannedCode = qParam; // ✅ on stocke le code pour pouvoir le réutiliser
+              hideAllButtonSections();
+              hide(scannerContainer);
+              hide(stopScanButton);
+              fetchDataFromGoogleSheet(qParam);
+            
+              const searchNotice = document.getElementById("searchNotice");
+              if (searchNotice) show(searchNotice);
+            }
 
-          const searchNotice = document.getElementById("searchNotice");
-          if (searchNotice) show(searchNotice);
-        }
       })
       .catch(error => {
         console.error("Erreur manifest.json :", error);
