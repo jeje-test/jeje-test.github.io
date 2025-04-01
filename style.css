@@ -325,6 +325,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
+.date-input {
+  max-width: 200px;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 1rem;
+}
+
+
 
 .form-container {
   max-width: 600px;
