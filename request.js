@@ -15,6 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
     el.classList.add("hidden");
   }
 
+  toggleBtn?.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  toggleBtn.textContent = document.body.classList.contains("dark-mode")
+    ? "☀️ Mode clair"
+    : "🌙 Mode sombre";
+});
+
   function loadVersionAndURL() {
     fetch("manifest.json")
       .then((res) => res.json())
