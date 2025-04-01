@@ -3,9 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>🔍 Recherche</title>
+  <title>📴 Scan QR Code hors ligne</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="libs/html5-qrcode.min.js"></script>
+  <link rel="icon" href="icons/icon-192.png" />
 </head>
+
 <body>
 
   <!-- Logo -->
@@ -14,44 +17,47 @@
          alt="Logo TY" style="max-width: 20%; height: auto;" />
   </div>
 
-  <hr class="separator" />
-
-  <h1>🔍 Recherche manuelle</h1>
-  <!-- Bouton retour -->
-    <div class="top-bar">
+  <!-- Barre de retour -->
+  <div class="top-bar">
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
 
-  
-  <!-- Formulaire -->
-  <div class="form-container">
-    <input type="text" id="email" placeholder="Email" />
-    <input type="text" id="nom" placeholder="Nom" />
-    <input type="text" id="prenom" placeholder="Prénom" />
-    <div class="buttons">
-      <button id="searchBtn">Rechercher</button>
-      <button id="resetBtn">Réinitialiser</button>
-    </div>
+  <hr class="separator" />
+
+  <h1>📴 Scan hors ligne</h1>
+  <p id="pendingNotice" class="pending-notice hidden">⚠️ Données hors ligne en attente d’envoi</p>
+
+  <div class="buttons">
+    <button id="startScanOffline">📸 Scanner un QR Code</button>
+    <button id="sendOfflineDataBtn">📤 Envoyer les données</button>
+    <button id="resetOfflineListBtn">🗑️ Réinitialiser</button>
   </div>
 
-  <!-- Résultats de la recherche -->
-  <div id="searchResults" class="result-box">Aucun résultat pour l'instant.</div>
+  <!-- Scanner -->
+  <div id="scannerContainer" class="hidden">
+    <div id="reader"></div>
+    <button id="stopScan">❌ Arrêter le scanner</button>
+  </div>
 
-  <!-- Fiche détaillée -->
-  <div id="detailContainer" class="result-box hidden"></div>
+  <!-- Liste des QR codes scannés -->
+  <h2>🧾 QR Codes scannés</h2>
+  <ul id="offlineList" class="offline-list"></ul>
 
-  <!-- Modale de confirmation -->
-  <div id="confirmModal" class="modal hidden">
+  <!-- Loader -->
+  <div id="loader" class="loader hidden"></div>
+
+  <!-- Modale de statut -->
+  <div id="statusModal" class="modal hidden">
     <div class="modal-content">
-      <p>Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?</p>
-      <div class="modal-actions">
-        <button id="confirmYes">✅ Oui</button>
-        <button id="confirmNo">❌ Non</button>
+      <p id="statusText"></p>
+      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+        <button id="rescanBtn">📸 Scanner à nouveau</button>
+        <button id="closeStatusBtn">Fermer</button>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer PWA -->
   <footer>
     <hr class="separator" />
     <div id="pwaControls">
@@ -62,7 +68,7 @@
     </div>
   </footer>
 
-  <script src="search.js"></script>
-  <script src="pwa-ui.js"></script> <!-- si tu as une logique partagée pour PWA / thème -->
+  <script src="offline.js"></script>
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
