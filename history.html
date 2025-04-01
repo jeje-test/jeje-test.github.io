@@ -2,26 +2,40 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>📜 Historique des scans</h1>
+  <!-- Logo -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+         alt="Logo TY" style="max-width: 20%; height: auto;" />
+  </div>
 
+  <!-- Barre de contrôle -->
   <div class="top-bar">
-    <input
-      type="date"
-      id="datePicker"
-      title="Sélectionner une date dans le mois écoulé"
-    />
+    <input type="date" id="datePicker" title="Sélectionner une date dans le mois écoulé" />
     <button onclick="loadHistory()">📅 Valider</button>
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
 
+  <h1>📜 Historique des scans</h1>
   <h2 id="selectedDateLabel">Résultats pour ...</h2>
   <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
 
+  <!-- Footer -->
+  <footer>
+    <hr class="separator" />
+    <div id="pwaControls">
+      <button id="toggleThemeBtn">🌙 Mode sombre</button>
+      <button id="refreshCacheBtn">♻️ Recharger l’app</button>
+      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
+      <p id="appVersion"></p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
   <script>
     const datePicker = document.getElementById("datePicker");
 
@@ -124,5 +138,6 @@
       }
     }
   </script>
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
