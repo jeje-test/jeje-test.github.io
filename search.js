@@ -7,6 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let getURL = "";
 
+
+toggleBtn?.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  toggleBtn.textContent = document.body.classList.contains("dark-mode")
+    ? "☀️ Mode clair"
+    : "🌙 Mode sombre";
+});
+  
   function show(el) {
     el.classList.remove("hidden");
   }
