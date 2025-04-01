@@ -2,25 +2,28 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>⚠️ Demande Exceptionnelle</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
 </head>
-  <!-- Modale de statut -->
-<div id="statusModal" class="modal hidden">
-  <div class="modal-content">
-    <p id="statusText"></p>
-    <button id="newRequestBtn">➕ Nouvelle demande</button>
-  </div>
-</div>
-  
-<body>
-  <h1 class="title-center">⚠️ Requête Exceptionnelle</h1>
 
+<body>
+
+  <!-- Logo -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+         alt="Logo TY" style="max-width: 20%; height: auto;" />
+  </div>
+
+  <!-- Barre retour -->
   <div class="top-bar">
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
+
+  <hr class="separator" />
+
+  <h1 class="title-center">⚠️ Requête Exceptionnelle</h1>
 
   <!-- Formulaire -->
   <form id="exceptionForm" class="form-container">
@@ -30,11 +33,12 @@
         <input type="text" id="qrCode" name="qrCode" />
         <button type="button" id="startScan">📸</button>
       </div>
-<div class="field-tip">
-  📌 Utiliser de préférence un QR Code. Sinon, laisser vide et renseigner Nom + Prénom.
-</div>
+      <div class="field-tip">
+        📌 Utiliser de préférence un QR Code. Sinon, laisser vide et renseigner Nom + Prénom.
+      </div>
     </div>
 
+    <!-- Scanner -->
     <div id="scannerContainer" class="hidden scanner-wrapper">
       <div id="reader" class="scanner-reader"></div>
       <button type="button" id="stopScan">❌ Fermer</button>
@@ -62,18 +66,38 @@
     <label for="commentaire">Commentaire :</label>
     <textarea id="commentaire" name="commentaire" rows="4"></textarea>
     <div class="field-tip">
-  📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
-</div>
+      📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
+    </div>
 
-<div class="form-buttons">
-  <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
-  <button type="submit" id="submitBtn">
-    ✅ Valider
-    <span id="loadingSpinner" class="spinner hidden"></span>
-  </button>
-</div>
+    <div class="form-buttons">
+      <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
+      <button type="submit" id="submitBtn">
+        ✅ Valider
+        <span id="loadingSpinner" class="spinner hidden"></span>
+      </button>
+    </div>
   </form>
 
-<script src="request.js"></script>
+  <!-- Modale de statut -->
+  <div id="statusModal" class="modal hidden">
+    <div class="modal-content">
+      <p id="statusText"></p>
+      <button id="newRequestBtn">➕ Nouvelle demande</button>
+    </div>
+  </div>
+
+  <!-- Footer PWA -->
+  <footer>
+    <hr class="separator" />
+    <div id="pwaControls">
+      <button id="toggleThemeBtn">🌙 Mode sombre</button>
+      <button id="refreshCacheBtn">♻️ Recharger l’app</button>
+      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
+      <p id="appVersion"></p>
+    </div>
+  </footer>
+
+  <script src="request.js"></script>
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
