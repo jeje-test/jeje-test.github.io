@@ -64,9 +64,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showConfirmationModal(code) {
-    const confirmed = confirm("Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?");
-    if (confirmed) {
+    const modal = document.createElement("div");
+    modal.className = "modal-overlay";
+    modal.innerHTML = `
+      <div class="modal-box">
+        <p>🔍 Souhaitez-vous afficher cette fiche dans la page principale pour décompter un cours ?</p>
+        <div class="modal-actions">
+          <button id="confirmRedirect">✅ Oui, aller à l'accueil</button>
+          <button id="stayHere">❌ Rester ici</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById("confirmRedirect").addEventListener("click", () => {
       window.location.href = `index.html?q=${encodeURIComponent(code)}`;
+    });
+
+    document.getElementById("stayHere").addEventListener("click", () => {
+      modal.remove();
+      fetchDetail(code);
+    });
+  }`;
     } else {
       fetchDetail(code);
     }
