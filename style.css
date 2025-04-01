@@ -87,6 +87,16 @@ body.dark-mode {
   --table-header: #2a2a2a;
 }
 
+/* Adaptation en mode sombre */
+body.dark-mode .result-button {
+  background: #2a2a2a;
+  color: #f1f1f1;
+}
+
+body.dark-mode .result-button:hover {
+  background: #3a3a3a;
+}
+
 h1 {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
@@ -506,20 +516,32 @@ canvas {
 }
 
 .result-button {
-  background: #f0f0f0;
+  background: #f5f7fa;
   border: none;
-  padding: 10px;
+  padding: 14px 16px;
   width: 100%;
   text-align: left;
-  margin-bottom: 5px;
-  border-radius: 8px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 1em;
-  transition: background 0.2s ease;
+  font-size: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
+  color: #222; /* Texte bien visible */
 }
 
 .result-button:hover {
-  background: #dfeeff;
+  background: #e6f0ff;
+}
+
+.result-button::before {
+  content: "👤";
+  display: inline-block;
+  font-size: 1.2rem;
 }
 
 .result-table {
