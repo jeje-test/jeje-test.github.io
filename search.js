@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("manifest.json")
       .then((res) => res.json())
       .then((data) => {
-        versionDiv.textContent = "Version: " + data.version;
+        versionDiv.textContent = `📦 Version : ${data.version}`;
         getURL = data.scriptURL;
       });
   }
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const prenom = document.getElementById("prenom").value.trim();
 
     if (!email && !nom && !prenom) {
-      alert("Veuillez remplir au moins un champ.");
+      alert("❗ Veuillez remplir au moins un champ.");
       return null;
     }
 
@@ -45,13 +45,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderResults(list) {
     if (!list.length) {
-      resultsContainer.innerHTML = "<strong>Résultats :</strong><ul class='choice-list'>" +
-      list
-        .sort((a, b) => a.nom.localeCompare(b.nom))
-        .map((item) => {
-          const label = `📧 ${item.email || ''} — 👤 ${item.nom} ${item.prenom}`;
-          return `<li><button class=\"choice-btn\" data-code=\"${item.code}\">${label}</button></li>`;
-        }).join("") + "</ul>";
+      resultsContainer.innerHTML = "🔍 Aucun résultat trouvé.";
+      return;
+    }
+
+    resultsContainer.innerHTML = "<strong>📋 Résultats :</strong><ul class='result-list'>" +
+      list.map((item) => {
+        const label = `${item.nom} ${item.prenom} - ${item.email || ''}`;
+        return `<li><button class="result-button" data-code="${item.code}">👤 ${label}</button></li>`;
+      }).join("") + "</ul>";
 
     document.querySelectorAll("#searchResults button").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -62,35 +64,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showConfirmationModal(code) {
-    const modal = document.createElement("div");
-    modal.className = "modal-overlay";
-    modal.innerHTML = `
-      <div class="modal-box">
-        <p>🔍 Souhaitez-vous afficher cette fiche dans la page principale pour décompter un cours ?</p>
-        <div class="modal-actions">
-          <button id="confirmRedirect">✅ Oui, aller à l'accueil</button>
-          <button id="stayHere">❌ Rester ici</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById("confirmRedirect").addEventListener("click", () => {
+    const confirmed = confirm("✅ Souhaitez-vous ouvrir la fiche dans la page principale pour décompter un cours ?");
+    if (confirmed) {
       window.location.href = `index.html?q=${encodeURIComponent(code)}`;
-    });
-
-    document.getElementById("stayHere").addEventListener("click", () => {
-      modal.remove();
-      fetchDetail(code);
-    });
-  }`;
     } else {
       fetchDetail(code);
     }
   }
 
   function fetchDetail(code) {
-    detailContainer.innerHTML = "Chargement...";
+    detailContainer.innerHTML = "⏳ Chargement de la fiche...";
     hide(resultsContainer);
     show(detailContainer);
 
@@ -99,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.result) {
-          let html = `<strong>Fiche détaillée :</strong><table class='result-table'><tbody>`;
+          let html = "<strong>📄 Fiche détaillée :</strong><table class='result-table'><tbody>";
           for (let key in data.result) {
             const value = data.result[key];
             let highlight = "";
@@ -110,14 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             html += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
           }
-          html += `</tbody></table>`;
+          html += "</tbody></table>";
           detailContainer.innerHTML = html;
         } else {
-          detailContainer.innerHTML = "Aucune fiche trouvée.";
+          detailContainer.innerHTML = "❌ Aucune fiche trouvée.";
         }
       })
       .catch((err) => {
-        detailContainer.innerHTML = "Erreur lors de la récupération.";
+        detailContainer.innerHTML = "⚠️ Erreur lors de la récupération.";
         console.error(err);
       });
   }
@@ -126,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = buildQuery();
     if (!params) return;
 
-    resultsContainer.innerHTML = "Recherche en cours...";
+    resultsContainer.innerHTML = "🔎 Recherche en cours...";
     hide(detailContainer);
     show(resultsContainer);
 
@@ -134,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((res) => res.json())
       .then((data) => renderResults(data.results || []))
       .catch((err) => {
-        resultsContainer.innerHTML = "Erreur lors de la recherche.";
+        resultsContainer.innerHTML = "⚠️ Erreur lors de la recherche.";
         console.error(err);
       });
   });
@@ -143,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("email").value = "";
     document.getElementById("nom").value = "";
     document.getElementById("prenom").value = "";
-    resultsContainer.innerHTML = "Aucun résultat pour l'instant.";
+    resultsContainer.innerHTML = "🔍 Aucun résultat pour l'instant.";
     hide(detailContainer);
   });
 
