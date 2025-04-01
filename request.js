@@ -1,155 +1,136 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const searchBtn = document.getElementById("searchBtn");
-  const resetBtn = document.getElementById("resetBtn");
-  const resultsContainer = document.getElementById("searchResults");
-  const detailContainer = document.getElementById("detailContainer");
-  const versionDiv = document.getElementById("appVersion");
 
-  let getURL = "";
+const exceptionForm = document.getElementById('exceptionForm');
+const scannerContainer = document.getElementById('scannerContainer');
+const startScanBtn = document.getElementById('startScan');
+const stopScanBtn = document.getElementById('stopScan');
+const qrInput = document.getElementById('qrCode');
+const nomInput = document.getElementById('nom');
+const prenomInput = document.getElementById('prenom');
+const identityFields = document.getElementById('identityFields');
+const resetBtn = document.getElementById('resetBtn');
 
-  function show(el) {
-    el.classList.remove("hidden");
+const statusModal = document.getElementById('statusModal');
+const statusText = document.getElementById('statusText');
+const newRequestBtn = document.getElementById('newRequestBtn');
+
+const submitBtn = document.getElementById('submitBtn');
+const spinner = document.getElementById('loadingSpinner');
+
+let html5QrcodeScanner;
+
+function toggleIdentityFields() {
+  if (qrInput.value.trim() !== '') {
+    identityFields.style.display = 'none';
+    nomInput.required = false;
+    prenomInput.required = false;
+  } else {
+    identityFields.style.display = 'flex';
+    nomInput.required = true;
+    prenomInput.required = true;
   }
+}
 
-  function hide(el) {
-    el.classList.add("hidden");
-  }
+qrInput.addEventListener('input', toggleIdentityFields);
 
+resetBtn.addEventListener('click', () => {
+  setTimeout(() => {
+    qrInput.value = '';
+    toggleIdentityFields();
+  }, 0);
+});
 
-
-  function loadVersionAndURL() {
-    fetch("manifest.json")
-      .then((res) => res.json())
-      .then((data) => {
-        versionDiv.textContent = "Version: " + data.version;
-        getURL = data.scriptURL;
+startScanBtn.addEventListener('click', () => {
+  scannerContainer.classList.remove('hidden');
+  html5QrcodeScanner = new Html5Qrcode("reader");
+  html5QrcodeScanner.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    (decodedText) => {
+      qrInput.value = decodedText;
+      toggleIdentityFields();
+      html5QrcodeScanner.stop().then(() => {
+        html5QrcodeScanner.clear();
+        scannerContainer.classList.add('hidden');
       });
-  }
-
-  function buildQuery() {
-    const email = document.getElementById("email").value.trim();
-    const nom = document.getElementById("nom").value.trim();
-    const prenom = document.getElementById("prenom").value.trim();
-
-    if (!email && !nom && !prenom) {
-      alert("Veuillez remplir au moins un champ.");
-      return null;
+    },
+    (errorMessage) => {
+      console.warn(errorMessage);
     }
+  );
+});
 
-    const params = new URLSearchParams();
-    if (email) params.append("email", email);
-    if (nom) params.append("nom", nom);
-    if (prenom) params.append("prenom", prenom);
-    params.append("action", "search");
-
-    return params;
-  }
-
-  function renderResults(list) {
-    if (!list.length) {
-      resultsContainer.innerHTML = "Aucun résultat trouvé.";
-      return;
-    }
-
-    resultsContainer.innerHTML = "<strong>Résultats :</strong><ul>" +
-      list.map((item) => {
-        const label = `${item.nom} ${item.prenom} - ${item.email || ''}`;
-        return `<li><button data-code="${item.code}">${label}</button></li>`;
-      }).join("") + "</ul>";
-
-    document.querySelectorAll("#searchResults button").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const code = btn.getAttribute("data-code");
-        showConfirmationModal(code);
-      });
+stopScanBtn.addEventListener('click', () => {
+  if (html5QrcodeScanner) {
+    html5QrcodeScanner.stop().then(() => {
+      html5QrcodeScanner.clear();
+      scannerContainer.classList.add('hidden');
     });
   }
+});
 
-  function showConfirmationModal(code) {
-    const modal = document.createElement("div");
-    modal.className = "modal-overlay";
-    modal.innerHTML = `
-      <div class="modal-box">
-        <p>🔍 Souhaitez-vous afficher cette fiche dans la page principale pour décompter un cours ?</p>
-        <div class="modal-actions">
-          <button id="confirmRedirect">✅ Oui, aller à l'accueil</button>
-          <button id="stayHere">❌ Rester ici</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
+exceptionForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    document.getElementById("confirmRedirect").addEventListener("click", () => {
-      window.location.href = `index.html?q=${encodeURIComponent(code)}`;
+  submitBtn.disabled = true;
+  spinner.classList.remove('hidden');
+
+  if (qrInput.value.trim() === '' && (nomInput.value.trim() === '' || prenomInput.value.trim() === '')) {
+    showStatus("❗ Veuillez remplir soit le QR Code, soit le Nom et le Prénom.");
+    resetSubmitUI();
+    return;
+  }
+
+  const data = {
+    feuille: 'Demandes',
+    qrCode: qrInput.value.trim(),
+    nom: nomInput.value.trim(),
+    prenom: prenomInput.value.trim(),
+    email: document.getElementById('email').value.trim(),
+    raison: document.getElementById('raison').value,
+    commentaire: document.getElementById('commentaire').value.trim()
+  };
+
+  const params = new URLSearchParams();
+  for (const key in data) {
+    params.append(key, data[key]);
+  }
+
+  try {
+    const manifest = await fetch('manifest.json').then(r => r.json());
+    const response = await fetch(manifest.scriptURL, {
+      method: 'POST',
+      body: params
     });
 
-    document.getElementById("stayHere").addEventListener("click", () => {
-      modal.remove();
-      fetchDetail(code);
-    });
-  }`;
+    const result = await response.json();
+    if (result.status === "success") {
+      showStatus("✅ Requête enregistrée avec succès !");
+      exceptionForm.reset();
+      toggleIdentityFields();
     } else {
-      fetchDetail(code);
+      showStatus("❌ Erreur : " + result.message);
     }
+  } catch (error) {
+    console.error(error);
+    showStatus("⚠️ Erreur de communication avec le serveur.");
+  } finally {
+    resetSubmitUI();
   }
+});
 
-  function fetchDetail(code) {
-    detailContainer.innerHTML = "Chargement...";
-    hide(resultsContainer);
-    show(detailContainer);
+function showStatus(message) {
+  statusText.textContent = message;
+  statusModal.classList.remove('hidden');
 
-    const url = `${getURL}?q=${encodeURIComponent(code)}&cacheBust=${Date.now()}`;
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.result) {
-          let html = `<strong>Fiche détaillée :</strong><table class='result-table'><tbody>`;
-          for (let key in data.result) {
-            const value = data.result[key];
-            let highlight = "";
-            if (key.toLowerCase().includes("restants") && !isNaN(value)) {
-              const nb = parseInt(value);
-              if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
-              else if (nb <= 5) highlight = ' style="color: orange;"';
-            }
-            html += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
-          }
-          html += `</tbody></table>`;
-          detailContainer.innerHTML = html;
-        } else {
-          detailContainer.innerHTML = "Aucune fiche trouvée.";
-        }
-      })
-      .catch((err) => {
-        detailContainer.innerHTML = "Erreur lors de la récupération.";
-        console.error(err);
-      });
-  }
+  // 🎯 Vibration si disponible
+  if (navigator.vibrate) navigator.vibrate(100);
+}
 
-  searchBtn.addEventListener("click", () => {
-    const params = buildQuery();
-    if (!params) return;
+function resetSubmitUI() {
+  submitBtn.disabled = false;
+  spinner.classList.add('hidden');
+}
 
-    resultsContainer.innerHTML = "Recherche en cours...";
-    hide(detailContainer);
-    show(resultsContainer);
-
-    fetch(`${getURL}?${params.toString()}&cacheBust=${Date.now()}`)
-      .then((res) => res.json())
-      .then((data) => renderResults(data.results || []))
-      .catch((err) => {
-        resultsContainer.innerHTML = "Erreur lors de la recherche.";
-        console.error(err);
-      });
-  });
-
-  resetBtn.addEventListener("click", () => {
-    document.getElementById("email").value = "";
-    document.getElementById("nom").value = "";
-    document.getElementById("prenom").value = "";
-    resultsContainer.innerHTML = "Aucun résultat pour l'instant.";
-    hide(detailContainer);
-  });
-
-  loadVersionAndURL();
+newRequestBtn.addEventListener('click', () => {
+  statusModal.classList.add('hidden');
 });
