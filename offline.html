@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>📴 Scan QR Code hors ligne</title>
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
@@ -10,25 +10,28 @@
 </head>
 
 <body>
-  <!-- Modale de statut -->
-  <div id="statusModal" class="modal hidden">
-    <div class="modal-content">
-      <p id="statusText"></p>
-      <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
-        <button id="rescanBtn">📸 Scanner à nouveau</button>
-        <button id="closeStatusBtn">Fermer</button>
-      </div>
-    </div>
+
+  <!-- Logo -->
+  <div class="image-container">
+    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+         alt="Logo TY" style="max-width: 20%; height: auto;" />
   </div>
+
+  <!-- Barre retour -->
+  <div class="top-bar">
+    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+  </div>
+
+  <hr class="separator" />
 
   <h1>📴 Scan hors ligne</h1>
   <p id="pendingNotice" class="pending-notice hidden">⚠️ Données hors ligne en attente d’envoi</p>
 
+  <!-- Boutons -->
   <div class="buttons">
     <button id="startScanOffline">📸 Scanner un QR Code</button>
     <button id="sendOfflineDataBtn">📤 Envoyer les données</button>
     <button id="resetOfflineListBtn">🗑️ Réinitialiser</button>
-    <button onclick="window.location.href='index.html'">🔙 Retour</button>
   </div>
 
   <!-- Scanner -->
@@ -44,6 +47,29 @@
   <!-- Loader -->
   <div id="loader" class="loader hidden"></div>
 
+  <!-- Modale de statut -->
+  <div id="statusModal" class="modal hidden">
+    <div class="modal-content">
+      <p id="statusText"></p>
+      <div class="modal-actions">
+        <button id="rescanBtn">📸 Scanner à nouveau</button>
+        <button id="closeStatusBtn">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer PWA -->
+  <footer>
+    <hr class="separator" />
+    <div id="pwaControls">
+      <button id="toggleThemeBtn">🌙 Mode sombre</button>
+      <button id="refreshCacheBtn">♻️ Recharger l’app</button>
+      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
+      <p id="appVersion"></p>
+    </div>
+  </footer>
+
   <script src="offline.js"></script>
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
