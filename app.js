@@ -14,23 +14,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const scannerContainer = document.getElementById("scannerContainer");
   const resultDiv = document.getElementById("dataContainer");
   const loader = document.getElementById("loader");
-  const versionDiv = document.getElementById("appVersion");
   const actionsContainer = document.getElementById("actionsContainer");
-  const decrementBtn = document.getElementById("decrementBtn");
   const cancelBtn = document.getElementById("cancelBtn");
 
   const startScanButton = document.getElementById("startScan");
   const stopScanButton = document.getElementById("stopScan");
-  const refreshCacheBtn = document.getElementById("refreshCacheBtn");
-  const toggleBtn = document.getElementById("toggleThemeBtn");
-  const installBtn = document.getElementById("installBtnFooter");
 
   const statusModal = document.getElementById("statusModal");
   const statusText = document.getElementById("statusText");
   const closeStatusBtn = document.getElementById("closeStatusBtn");
 
   const offlineNotice = document.getElementById("offlineNotice");
-  const downloadBtn = document.getElementById("downloadOfflineBtn");
 
   const allButtonSections = document.querySelectorAll(".buttons");
 
@@ -49,20 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function showStatusModal(message) {
-    statusText.textContent = message;
+    statusText.innerHTML = message;
     statusModal.classList.remove("hidden");
     if (navigator.vibrate) navigator.vibrate(100);
   }
 
-
-toggleBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  toggleBtn.textContent = document.body.classList.contains("dark-mode")
-    ? "☀️ Mode clair"
-    : "🌙 Mode sombre";
-});
-
-  
   closeStatusBtn.addEventListener("click", () => {
     statusModal.classList.add("hidden");
   });
@@ -71,17 +56,15 @@ toggleBtn?.addEventListener("click", () => {
     fetch("manifest.json")
       .then(response => response.json())
       .then(data => {
-        versionDiv.textContent = "Version: " + data.version;
         getURL = data.scriptURL + "?q=";
         postURL = data.scriptURL;
         attachEventListeners();
         updateOfflineNotice();
 
-        // 🔍 Auto-lancement si ?q= dans l'URL (depuis search.html)
         const urlParams = new URLSearchParams(window.location.search);
         const qParam = urlParams.get("q");
         if (qParam) {
-          lastScannedCode = qParam; // ✅ on stocke le code pour pouvoir le réutiliser
+          lastScannedCode = qParam;
           fromSearch = true;
           hideAllButtonSections();
           hide(scannerContainer);
@@ -94,7 +77,6 @@ toggleBtn?.addEventListener("click", () => {
       })
       .catch(error => {
         console.error("Erreur manifest.json :", error);
-        versionDiv.textContent = "Version inconnue";
       });
   }
 
@@ -190,22 +172,26 @@ toggleBtn?.addEventListener("click", () => {
   }
 
   function startScanner() {
+    if (typeof Html5QrCode === "undefined") {
+      showStatusModal("❌ Scanner indisponible : librairie non chargée.");
+      return;
+    }
+
     hideAllButtonSections();
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
     hide(actionsContainer);
     html5QrCode = new Html5QrCode("reader");
-html5QrCode.start(
-  { facingMode: "environment" },
-  { fps: 10, qrbox: { width: 250, height: 250 } },
-  onScanSuccess
-).catch(err => {
-  console.error("❌ Erreur démarrage scanner:", err);
-  showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
-  hide(scannerContainer); // on masque le bloc scanner pour éviter un vide
-  showAllButtonSections();
-});
-
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      onScanSuccess
+    ).catch(err => {
+      console.error("❌ Erreur démarrage scanner:", err);
+      showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
+      hide(scannerContainer);
+      showAllButtonSections();
+    });
   }
 
   function stopScanner() {
@@ -235,70 +221,41 @@ html5QrCode.start(
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-        const actionSelect = document.getElementById("actionSelect");
-        const validateActionBtn = document.getElementById("validateActionBtn");
-        
-        validateActionBtn.addEventListener("click", () => {
-          const selected = actionSelect.value;
-        
-          if (!lastScannedCode) {
-            showStatusModal("❌ Aucune donnée à traiter.");
-            return;
-          }
-        
-          if (selected === "decrement") {
-            sendDataToGoogleSheet(lastScannedCode);
-          } else if (selected === "resend") {
-            showStatusModal("📧 Fonction 'Renvoyer le QR code' à implémenter.");
-            // TODO : appeler une fonction de renvoi par mail si disponible
-          } else if (selected === "sendOffline") {
-            showStatusModal("📤 Fonction 'Envoyer le décompte' à implémenter.");
-            // TODO : déclencher envoi batch ou action spécifique
-          } else {
-            showStatusModal("❌ Action non reconnue.");
-          }
-        });
+    const actionSelect = document.getElementById("actionSelect");
+    const validateActionBtn = document.getElementById("validateActionBtn");
 
+    validateActionBtn.addEventListener("click", () => {
+      const selected = actionSelect.value;
 
-cancelBtn.addEventListener("click", () => {
-  resultDiv.innerHTML = "";
-  lastScannedCode = null;
-  hide(actionsContainer);
-  showAllButtonSections();
+      if (!lastScannedCode) {
+        showStatusModal("❌ Aucune donnée à traiter.");
+        return;
+      }
 
-  // Nettoie l'URL si ?q=... présent
-  if (window.history.replaceState) {
-    const cleanUrl = window.location.origin + window.location.pathname;
-    window.history.replaceState({}, document.title, cleanUrl);
-  }
+      if (selected === "decrement") {
+        sendDataToGoogleSheet(lastScannedCode);
+      } else if (selected === "resend") {
+        showStatusModal("📧 Fonction 'Renvoyer le QR code' à implémenter.");
+      } else if (selected === "sendOffline") {
+        showStatusModal("📤 Fonction 'Envoyer le décompte' à implémenter.");
+      } else {
+        showStatusModal("❌ Action non reconnue.");
+      }
+    });
 
-  // Nettoyage éventuel de stockage si implémenté
-  localStorage.removeItem("lastScannedQR");
-});
-    
-refreshCacheBtn?.addEventListener("click", () => {
-  if (confirm("♻️ Réinitialiser complètement l'application ? Cela va vider le cache, les données locales et recharger l'application.")) {
-    
-    // 1. Vider tous les caches PWA
-    if ('caches' in window) {
-      caches.keys().then(names => {
-        return Promise.all(names.map(name => caches.delete(name)));
-      }).then(() => {
-        console.log("✅ Cache vidé");
-      }).catch(err => {
-        console.error("❌ Erreur lors du vidage du cache :", err);
-      });
-    }
+    cancelBtn.addEventListener("click", () => {
+      resultDiv.innerHTML = "";
+      lastScannedCode = null;
+      hide(actionsContainer);
+      showAllButtonSections();
 
-    // 2. Vider les données locales
-    localStorage.clear();
+      if (window.history.replaceState) {
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
 
-    // 3. Recharger la page sans paramètres
-    const cleanUrl = window.location.origin + window.location.pathname;
-    window.location.href = cleanUrl; // reload propre (pas juste reload(true))
-  }
-});
-
+      localStorage.removeItem("lastScannedQR");
+    });
   }
 
   fetchManifestAndInit();
