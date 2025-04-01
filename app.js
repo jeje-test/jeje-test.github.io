@@ -253,18 +253,29 @@ cancelBtn.addEventListener("click", () => {
   localStorage.removeItem("lastScannedQR");
 });
     
-    refreshCacheBtn?.addEventListener("click", () => {
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          for (let name of names) caches.delete(name);
-        }).then(() => {
-          alert("Le cache a été vidé. L'application va se recharger...");
-          window.location.reload(true);
-        }).catch(err => {
-          alert("Erreur lors du vidage du cache.");
-        });
-      }
-    });
+refreshCacheBtn?.addEventListener("click", () => {
+  if (confirm("♻️ Réinitialiser complètement l'application ? Cela va vider le cache, les données locales et recharger l'application.")) {
+    
+    // 1. Vider tous les caches PWA
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        return Promise.all(names.map(name => caches.delete(name)));
+      }).then(() => {
+        console.log("✅ Cache vidé");
+      }).catch(err => {
+        console.error("❌ Erreur lors du vidage du cache :", err);
+      });
+    }
+
+    // 2. Vider les données locales
+    localStorage.clear();
+
+    // 3. Recharger la page sans paramètres
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.location.href = cleanUrl; // reload propre (pas juste reload(true))
+  }
+});
+
   }
 
   fetchManifestAndInit();
