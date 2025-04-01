@@ -195,11 +195,17 @@ toggleBtn?.addEventListener("click", () => {
     resultDiv.innerHTML = "Scan en cours...";
     hide(actionsContainer);
     html5QrCode = new Html5QrCode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      onScanSuccess
-    ).catch(err => console.error("Erreur démarrage scanner:", err));
+html5QrCode.start(
+  { facingMode: "environment" },
+  { fps: 10, qrbox: { width: 250, height: 250 } },
+  onScanSuccess
+).catch(err => {
+  console.error("❌ Erreur démarrage scanner:", err);
+  showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
+  hide(scannerContainer); // on masque le bloc scanner pour éviter un vide
+  showAllButtonSections();
+});
+
   }
 
   function stopScanner() {
@@ -229,13 +235,30 @@ toggleBtn?.addEventListener("click", () => {
     startScanButton.addEventListener("click", startScanner);
     stopScanButton.addEventListener("click", stopScanner);
 
-    decrementBtn.addEventListener("click", () => {
-      if (lastScannedCode) {
-        sendDataToGoogleSheet(lastScannedCode);
-      } else {
-        showStatusModal("❌ Aucune donnée à envoyer.");
-      }
-    });
+        const actionSelect = document.getElementById("actionSelect");
+        const validateActionBtn = document.getElementById("validateActionBtn");
+        
+        validateActionBtn.addEventListener("click", () => {
+          const selected = actionSelect.value;
+        
+          if (!lastScannedCode) {
+            showStatusModal("❌ Aucune donnée à traiter.");
+            return;
+          }
+        
+          if (selected === "decrement") {
+            sendDataToGoogleSheet(lastScannedCode);
+          } else if (selected === "resend") {
+            showStatusModal("📧 Fonction 'Renvoyer le QR code' à implémenter.");
+            // TODO : appeler une fonction de renvoi par mail si disponible
+          } else if (selected === "sendOffline") {
+            showStatusModal("📤 Fonction 'Envoyer le décompte' à implémenter.");
+            // TODO : déclencher envoi batch ou action spécifique
+          } else {
+            showStatusModal("❌ Action non reconnue.");
+          }
+        });
+
 
 cancelBtn.addEventListener("click", () => {
   resultDiv.innerHTML = "";
