@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeStatusBtn = document.getElementById("closeStatusBtn");
 
   const offlineNotice = document.getElementById("offlineNotice");
+  const downloadBtn = document.getElementById("downloadOfflineBtn");
 
   const allButtonSections = document.querySelectorAll(".buttons");
 
@@ -38,39 +39,13 @@ document.addEventListener("DOMContentLoaded", function () {
   let getURL = "";
   let postURL = "";
 
-  // 🌓 Thème clair/sombre
-  toggleBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    toggleBtn.textContent = isDark ? "☀️ Mode clair" : "🌙 Mode sombre";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    toggleBtn.textContent = "☀️ Mode clair";
+  function hideAllButtonSections() {
+    allButtonSections.forEach(el => hide(el));
   }
 
-  // 📲 Installation PWA
-  let deferredPrompt = null;
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = "inline-block";
-  });
-
-  installBtn?.addEventListener("click", () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(choice => {
-        if (choice.outcome === "accepted") {
-          console.log("✅ PWA installée");
-        }
-        installBtn.style.display = "none";
-        deferredPrompt = null;
-      });
-    }
-  });
+  function showAllButtonSections() {
+    allButtonSections.forEach(el => show(el));
+  }
 
   function showStatusModal(message) {
     statusText.textContent = message;
@@ -91,6 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
         postURL = data.scriptURL;
         attachEventListeners();
         updateOfflineNotice();
+
+        // 🔍 Auto-lancement si ?q= dans l'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const qParam = urlParams.get("q");
+        if (qParam) {
+          hideAllButtonSections();
+          show(scannerContainer);
+          fetchDataFromGoogleSheet(qParam);
+        }
       })
       .catch(error => {
         console.error("Erreur manifest.json :", error);
@@ -99,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function onScanSuccess(decodedText) {
-    console.log("QR Code détecté:", decodedText);
     if (navigator.vibrate) navigator.vibrate(200);
     lastScannedCode = decodedText;
     if (html5QrCode) {
@@ -183,14 +166,6 @@ document.addEventListener("DOMContentLoaded", function () {
         showStatusModal("❌ Erreur lors de l'envoi des données.");
         console.error("Erreur POST :", error);
       });
-  }
-
-  function hideAllButtonSections() {
-    allButtonSections.forEach(el => hide(el));
-  }
-
-  function showAllButtonSections() {
-    allButtonSections.forEach(el => show(el));
   }
 
   function startScanner() {
