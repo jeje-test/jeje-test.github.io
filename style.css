@@ -444,3 +444,57 @@ canvas {
   margin-top: 15px;
 }
 
+
+/* Ajouts pour modale et liste de recherche */
+.choice-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem auto;
+  max-width: 500px;
+  text-align: left;
+}
+.choice-list li {
+  margin-bottom: 10px;
+}
+.choice-btn {
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  background: var(--card-bg);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.choice-btn:hover {
+  background-color: var(--table-header);
+}
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-box {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  max-width: 400px;
+  text-align: center;
+}
+.modal-box p {
+  margin-bottom: 1rem;
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+}
+.modal-actions button {
+  flex: 1;
+}
