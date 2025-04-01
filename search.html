@@ -6,9 +6,10 @@
   <title>🔍 Recherche</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
-   <!-- Logo -->
+  <!-- Logo -->
   <div class="image-container">
     <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
          alt="Logo TY" style="max-width: 20%; height: auto;" />
@@ -19,11 +20,12 @@
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
 
+  <hr class="separator" />
+
+  <!-- Titre -->
   <h1>🔍 Recherche manuelle</h1>
 
-
-  
-  <!-- Formulaire -->
+  <!-- Formulaire de recherche -->
   <div class="form-container">
     <input type="text" id="email" placeholder="Email" />
     <input type="text" id="nom" placeholder="Nom" />
@@ -34,7 +36,7 @@
     </div>
   </div>
 
-  <!-- Résultats de la recherche -->
+  <!-- Résultats -->
   <div id="searchResults" class="result-box">Aucun résultat pour l'instant.</div>
 
   <!-- Fiche détaillée -->
@@ -51,7 +53,7 @@
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- Footer PWA -->
   <footer>
     <hr class="separator" />
     <div id="pwaControls">
@@ -62,7 +64,8 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="search.js"></script>
-  <script src="pwa-ui.js"></script> <!-- si tu as une logique partagée pour PWA / thème -->
+  <script src="pwa-ui.js"></script>
 </body>
 </html>
