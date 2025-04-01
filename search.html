@@ -1,34 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>🔍 Recherche</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
-
-  <!-- Header amélioré -->
   <header class="app-header">
     <div class="header-content">
-      <button class="back-button" onclick="window.location.href='index.html'">⬅️</button>
-      <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
-           alt="Logo TY" class="logo" />
+      <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png" alt="Logo TY" class="logo" />
       <h1 class="page-title">🔍 Recherche manuelle</h1>
     </div>
     <div class="separator"></div>
   </header>
 
-  <!-- Formulaire -->
-  <div class="form-container">
+  <div class="form-container fade-in">
     <input type="text" id="email" placeholder="Email" />
     <input type="text" id="nom" placeholder="Nom" />
     <input type="text" id="prenom" placeholder="Prénom" />
     <div class="buttons">
-      <button id="searchBtn">Rechercher</button>
-      <button id="resetBtn">Réinitialiser</button>
+      <button id="searchBtn">🔎 Rechercher</button>
+      <button id="resetBtn" class="danger">♻️ Réinitialiser</button>
     </div>
   </div>
 
-  <!-- Résultats de la recherche -->
-  <div id="searchResults" class="result-box">Aucun résultat pour l'instant.</div>
-
-  <!-- Fiche détaillée -->
+  <div id="searchResults" class="result-box">Aucune donnée scannée.</div>
   <div id="detailContainer" class="result-box hidden"></div>
 
-  <!-- Modale de confirmation -->
   <div id="confirmModal" class="modal hidden">
     <div class="modal-content">
       <p>Souhaitez-vous afficher la fiche dans la page principale pour décompter un cours ?</p>
@@ -39,17 +38,17 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="app-footer">
     <div class="separator"></div>
     <div id="pwaControls">
       <button id="toggleThemeBtn">🌙 Mode sombre</button>
       <button id="refreshCacheBtn">♻️ Recharger l’app</button>
       <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
-      <p id="appVersion"></p>
+      <p id="appVersion">Version: 3.1.2</p>
     </div>
   </footer>
 
   <script src="search.js"></script>
   <script src="pwa-ui.js"></script>
 </body>
+</html>
