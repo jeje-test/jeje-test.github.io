@@ -63,14 +63,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function showConfirmationModal(code) {
-    const confirmed = confirm("✅ Souhaitez-vous ouvrir la fiche dans la page principale pour décompter un cours ?");
-    if (confirmed) {
-      window.location.href = `index.html?q=${encodeURIComponent(code)}`;
-    } else {
-      fetchDetail(code);
-    }
-  }
+function showConfirmationModal(code) {
+  const modal = document.getElementById("confirmModal");
+  const btnYes = document.getElementById("confirmYes");
+  const btnNo = document.getElementById("confirmNo");
+
+  show(modal); // affiche la modale
+
+  const cleanup = () => {
+    hide(modal);
+    btnYes.removeEventListener("click", onYes);
+    btnNo.removeEventListener("click", onNo);
+  };
+
+  const onYes = () => {
+    cleanup();
+    window.location.href = `index.html?q=${encodeURIComponent(code)}`;
+  };
+
+  const onNo = () => {
+    cleanup();
+    fetchDetail(code);
+  };
+
+  btnYes.addEventListener("click", onYes);
+  btnNo.addEventListener("click", onNo);
+}
+
 
   function fetchDetail(code) {
     detailContainer.innerHTML = "⏳ Chargement de la fiche...";
