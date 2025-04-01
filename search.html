@@ -1,28 +1,16 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>🔍 Recherche</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
 <body>
 
-  <!-- Logo -->
-  <div class="image-container">
-    <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
-         alt="Logo TY" style="max-width: 20%; height: auto;" />
-  </div>
+  <!-- Header amélioré -->
+  <header class="app-header">
+    <div class="header-content">
+      <button class="back-button" onclick="window.location.href='index.html'">⬅️</button>
+      <img src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png"
+           alt="Logo TY" class="logo" />
+      <h1 class="page-title">🔍 Recherche manuelle</h1>
+    </div>
+    <div class="separator"></div>
+  </header>
 
-  <hr class="separator" />
-
-  <h1>🔍 Recherche manuelle</h1>
-  <!-- Bouton retour -->
-    <div class="top-bar">
-    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
-  </div>
-
-  
   <!-- Formulaire -->
   <div class="form-container">
     <input type="text" id="email" placeholder="Email" />
@@ -52,8 +40,8 @@
   </div>
 
   <!-- Footer -->
-  <footer>
-    <hr class="separator" />
+  <footer class="app-footer">
+    <div class="separator"></div>
     <div id="pwaControls">
       <button id="toggleThemeBtn">🌙 Mode sombre</button>
       <button id="refreshCacheBtn">♻️ Recharger l’app</button>
@@ -63,6 +51,5 @@
   </footer>
 
   <script src="search.js"></script>
-  <script src="pwa-ui.js"></script> <!-- si tu as une logique partagée pour PWA / thème -->
+  <script src="pwa-ui.js"></script>
 </body>
-</html>
