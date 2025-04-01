@@ -67,13 +67,17 @@ document.addEventListener("DOMContentLoaded", function () {
         attachEventListeners();
         updateOfflineNotice();
 
-        // 🔍 Auto-lancement si ?q= dans l'URL
+        // 🔍 Auto-lancement si ?q= dans l'URL (depuis search.html)
         const urlParams = new URLSearchParams(window.location.search);
         const qParam = urlParams.get("q");
         if (qParam) {
           hideAllButtonSections();
-          show(scannerContainer);
+          hide(scannerContainer);
+          hide(stopScanButton);
           fetchDataFromGoogleSheet(qParam);
+
+          const searchNotice = document.getElementById("searchNotice");
+          if (searchNotice) show(searchNotice);
         }
       })
       .catch(error => {
@@ -104,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then(data => {
         hide(loader);
         if (data && data.result) {
-          let resultHTML = `<strong>Résultat :</strong><br><table class="result-table"><tbody>`;
+          let resultHTML = `<strong>Résultat :</strong><br><p id="searchNotice" class="subtext hidden">🔍 Résultat issu d'une recherche manuelle</p><table class="result-table"><tbody>`;
           for (let key in data.result) {
             let value = data.result[key];
             let highlight = "";
