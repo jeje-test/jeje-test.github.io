@@ -39,6 +39,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let getURL = "";
   let postURL = "";
 
+
+  toggleBtn?.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+});
+  
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
   }
