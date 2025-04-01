@@ -27,13 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
     el.classList.add("hidden");
   }
 
-  toggleBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  toggleBtn.textContent = document.body.classList.contains("dark-mode")
-    ? "☀️ Mode clair"
-    : "🌙 Mode sombre";
-});
-
   function showStatusModal(message) {
     statusText.textContent = message;
     show(statusModal);
