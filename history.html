@@ -13,14 +13,24 @@
          alt="Logo TY" style="max-width: 20%; height: auto;" />
   </div>
 
-  <!-- Barre de contrôle -->
+  <!-- Barre de retour -->
   <div class="top-bar">
-    <input type="date" id="datePicker" title="Sélectionner une date dans le mois écoulé" />
-    <button onclick="loadHistory()">📅 Valider</button>
     <button onclick="window.location.href='index.html'">⬅️ Retour</button>
   </div>
 
+  <hr class="separator" />
+
+  <!-- Titre -->
   <h1>📜 Historique des scans</h1>
+  <p class="subtext">Consultez les enregistrements des derniers jours</p>
+
+  <!-- Filtres -->
+  <div class="top-bar">
+    <input type="date" id="datePicker" title="Sélectionner une date dans les 15 derniers jours" />
+    <button onclick="loadHistory()">📅 Valider</button>
+  </div>
+
+  <!-- Résultat -->
   <h2 id="selectedDateLabel">Résultats pour ...</h2>
   <div id="historyContainer" class="result-box">Chargement de l'historique...</div>
 
@@ -35,7 +45,7 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Script de la page -->
   <script>
     const datePicker = document.getElementById("datePicker");
 
@@ -74,7 +84,7 @@
         const manifest = await response.json();
         return manifest.scriptURL;
       } catch (err) {
-        console.error("Erreur chargement manifest:", err);
+        console.error("Erreur chargement manifest.json :", err);
         return null;
       }
     }
@@ -87,13 +97,13 @@
         return;
       }
 
-      let selectedDate = datePicker.value;
+      const selectedDate = datePicker.value;
       if (!selectedDate) {
         container.innerHTML = "❗ Merci de sélectionner une date.";
         return;
       }
 
-      let [year, month, day] = selectedDate.split("-");
+      const [year, month, day] = selectedDate.split("-");
       const formattedDate = `${day}/${month}/${year}`;
       container.innerHTML = "🔄 Chargement...";
 
@@ -138,6 +148,8 @@
       }
     }
   </script>
+
+  <!-- Script PWA -->
   <script src="pwa-ui.js"></script>
 </body>
 </html>
