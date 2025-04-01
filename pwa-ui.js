@@ -1,18 +1,20 @@
-// pwa-ui.js
-
 document.addEventListener("DOMContentLoaded", () => {
-  const themeToggleBtn = document.getElementById("toggleThemeBtn");
-  const currentTheme = localStorage.getItem("theme");
+  const toggleBtn = document.getElementById("toggleThemeBtn");
+  const savedTheme = localStorage.getItem("theme");
 
-  if (currentTheme === "dark") {
-    document.body.classList.add("dark-theme");
+  // Appliquer le thème au chargement
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    if (toggleBtn) toggleBtn.textContent = "☀️ Mode clair";
+  } else {
+    if (toggleBtn) toggleBtn.textContent = "🌙 Mode sombre";
   }
 
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark-theme");
-      const isDark = document.body.classList.contains("dark-theme");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-    });
-  }
+  // Gestion du bouton de bascule
+  toggleBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    const isDark = document.body.classList.contains("dark-mode");
+    toggleBtn.textContent = isDark ? "☀️ Mode clair" : "🌙 Mode sombre";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
 });
