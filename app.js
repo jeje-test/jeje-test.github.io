@@ -80,22 +80,20 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
     const scannerStatus = document.getElementById("scannerStatus");
-if (typeof Html5QrCode === "undefined") {
-  scannerStatus.textContent = "❌ Scanner non disponible (librairie manquante)";
-  scannerStatus.style.color = "red";
-} else {
-  // Vérifie si l'accès caméra est théoriquement possible
-  navigator.mediaDevices?.getUserMedia({ video: true })
-    .then(() => {
-      scannerStatus.textContent = "✅ Scanner prêt";
-      scannerStatus.style.color = "green";
-    })
-    .catch(() => {
-      scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
-      scannerStatus.style.color = "orange";
-    });
-}
-
+    if (typeof Html5Qrcode === "undefined") {
+      scannerStatus.textContent = "❌ Scanner non disponible (librairie manquante)";
+      scannerStatus.style.color = "red";
+    } else {
+      navigator.mediaDevices?.getUserMedia({ video: true })
+        .then(() => {
+          scannerStatus.textContent = "✅ Scanner prêt";
+          scannerStatus.style.color = "green";
+        })
+        .catch(() => {
+          scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
+          scannerStatus.style.color = "orange";
+        });
+    }
   }
 
   function onScanSuccess(decodedText) {
@@ -190,7 +188,7 @@ if (typeof Html5QrCode === "undefined") {
   }
 
   function startScanner() {
-    if (typeof Html5QrCode === "undefined") {
+    if (typeof Html5Qrcode === "undefined") {
       showStatusModal("❌ Scanner indisponible : librairie non chargée.");
       return;
     }
@@ -199,7 +197,7 @@ if (typeof Html5QrCode === "undefined") {
     show(scannerContainer);
     resultDiv.innerHTML = "Scan en cours...";
     hide(actionsContainer);
-    html5QrCode = new Html5QrCode("reader");
+    html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
