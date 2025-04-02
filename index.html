@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>📷 Scanner un QR Code</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="libs/html5-qrcode.min.js"></script>
   
 </head>
   
@@ -30,8 +30,10 @@
 
   <!-- Boutons de scan et actions -->
   <div class="buttons">
-    <button id="startScan">📸 Scanner un QR Code</button>
-    <p id="scannerStatus" class="subtext"></p>
+      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <button id="startScan">📸 Scanner un QR Code</button>
+        <span id="scannerStatus" class="subtext"></span>
+      </div>
 
     <button onclick="window.location.href='offline.html'">📴 Scan QR Code hors ligne</button>
     <p id="offlineNotice" class="pending-notice hidden">⚠️ Données hors ligne en attente d’envoi</p>
