@@ -642,3 +642,10 @@ canvas {
   padding: 6px;
   border-bottom: 1px solid #ccc;
 }
+
+#scannerStatus {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.9em;
+  vertical-align: middle;
+}
