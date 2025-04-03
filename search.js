@@ -43,6 +43,24 @@ document.addEventListener("DOMContentLoaded", () => {
     return params;
   }
 
+
+function maskEmail(email) {
+  if (typeof email !== "string") return "";
+  const atIndex = email.indexOf("@");
+  if (atIndex === -1) return email;
+
+  const localPart = email.slice(0, atIndex);
+  const domainPart = email.slice(atIndex);
+  
+  if (localPart.length <= 3) return "***" + domainPart;
+
+  const visibleEnd = localPart.slice(-2);
+  const masked = 'x'.repeat(localPart.length - 2) + visibleEnd;
+  
+  return masked + domainPart;
+}
+
+  
   function renderResults(list) {
     if (!list.length) {
       resultsContainer.innerHTML = "🔍 Aucun résultat trouvé.";
@@ -58,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="result-icon">👉</span>
             </div>
             <div class="result-info">
-              <p><strong>Email :</strong> ${item.email || '–'}</p>
+              <p><strong>Email :</strong> ${maskEmail(item.email)}</p>
               <p><strong>Abonnement :</strong> ${item.abonnement || '–'}</p>
               <p><strong>Début :</strong> ${item.debut || '–'}</p>
             </div>
@@ -161,3 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadVersionAndURL();
 });
+
+
+
