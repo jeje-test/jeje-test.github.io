@@ -107,16 +107,17 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 function maskEmail(email) {
+  if (typeof email !== "string") return ""; // protection supplémentaire
+
   const atIndex = email.indexOf('@');
-  if (atIndex === -1) return email; // Si pas d'@, on ne modifie pas l'email.
+  if (atIndex === -1) return email;
 
-  const localPart = email.slice(0, atIndex); // Partie avant le "@"
-  const domainPart = email.slice(atIndex);   // Partie après le "@"
+  const localPart = email.slice(0, atIndex);
+  const domainPart = email.slice(atIndex);
+  const maskedLocal = 'x'.repeat(localPart.length - 2) + localPart.slice(-2);
 
-  const maskedLocal = 'x'.repeat(localPart.length - 2) + localPart.slice(-2); // Masque tout sauf les 2 dernières lettres
-  return maskedLocal + domainPart;  // Combine la partie masquée avec le domaine
+  return maskedLocal + domainPart;
 }
-
   
 function fetchDataFromGoogleSheet(qrData) {
   show(loader);
@@ -133,11 +134,10 @@ function fetchDataFromGoogleSheet(qrData) {
       if (data && data.result) {
         let resultHTML = `<strong>Résultat :</strong><br>`;
         
-        // Masque l'email
-        const maskedEmail = maskEmail(data.result.email);
-
-        resultHTML += `<p><strong>Email :</strong> ${maskedEmail}</p>`; // Affiche l'email masqué
-
+if (data.result.email) {
+  const maskedEmail = maskEmail(data.result.email);
+  resultHTML += `<p><strong>Email :</strong> ${maskedEmail}</p>`;
+}
         resultHTML += `<table class="result-table"><tbody>`;
         for (let key in data.result) {
           if (key !== "email") { // On évite de doubler l'affichage de l'email
