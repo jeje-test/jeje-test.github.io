@@ -120,6 +120,19 @@ function maskEmail(email) {
 }
   
 function fetchDataFromGoogleSheet(qrData) {
+  const fieldsToDisplay = {
+    nom: "Nom",
+    prenom: "Prénom",
+    abonnement: "Abonnement",
+    dateDebut: "Date de début",
+    dateFin: "Date de fin",
+    totalCours: "Nombre de cours",
+    coursUtilises: "Cours utilisés",
+    coursRestants: "Cours Restants",
+    dernierScan: "Dernier scan",
+    statut: "Statut"
+  };
+
   show(loader);
   resultDiv.innerHTML = "";
   hide(actionsContainer);
@@ -133,27 +146,33 @@ function fetchDataFromGoogleSheet(qrData) {
       hide(loader);
       if (data && data.result) {
         let resultHTML = `<strong>Résultat :</strong><br>`;
-        
-if (data.result.email) {
-  const maskedEmail = maskEmail(data.result.email);
-  resultHTML += `<p><strong>Email :</strong> ${maskedEmail}</p>`;
-}
+
+        // Masquage de l'e-mail s'il existe
+        if (data.result.email) {
+          const maskedEmail = maskEmail(data.result.email);
+          resultHTML += `<p id="email"><strong>Email :</strong> ${maskedEmail}</p>`;
+        }
+
+        // Affichage du tableau structuré
         resultHTML += `<table class="result-table"><tbody>`;
-        for (let key in data.result) {
-          if (key !== "email") { // On évite de doubler l'affichage de l'email
-            let value = data.result[key];
+        for (const key in fieldsToDisplay) {
+          const label = fieldsToDisplay[key];
+          const value = data.result[key];
+
+          if (value !== undefined && value !== "") {
             let highlight = "";
 
-            if (key.toLowerCase().includes("restants") && !isNaN(value)) {
+            if (key === "coursRestants" && !isNaN(value)) {
               const nb = parseInt(value);
               if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
               else if (nb <= 5) highlight = ' style="color: orange;"';
             }
 
-            resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
+            resultHTML += `<tr><th>${label}</th><td${highlight} id="${key}">${value}</td></tr>`;
           }
         }
         resultHTML += `</tbody></table>`;
+
         resultDiv.innerHTML = resultHTML;
         resultDiv.classList.add("fade-in");
         setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
@@ -176,53 +195,63 @@ if (data.result.email) {
 function resendQrCode() {
   show(loader);
 
-  const email = document.getElementById("email").textContent.trim();    // Email
-  const nom = document.getElementById("nom").textContent.trim();        // Nom
-  const prenom = document.getElementById("prenom").textContent.trim();  // Prénom
-  const abonnement = document.getElementById("abonnement").textContent.trim(); // Abonnement
-  const dateDebut = document.getElementById("dateDebut").textContent.trim();   // Date de début
+  // 🔒 Récupère les valeurs à partir des nouveaux IDs générés dans le tableau
+  const email = document.getElementById("email")?.textContent?.trim() || "";
+  const nom = document.getElementById("nom")?.textContent?.trim() || "";
+  const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
+  const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
+  const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
 
-  // Désactiver le bouton pour éviter plusieurs clics
+  // Vérifie que les infos essentielles sont bien présentes
+  if (!email || !nom || !prenom || !abonnement || !dateDebut) {
+    hide(loader);
+    showStatusModal("❌ Données manquantes pour renvoyer le QR Code.");
+    return;
+  }
+
+  // Désactive le bouton pour éviter les clics multiples
   const validateActionBtn = document.getElementById("validateActionBtn");
   validateActionBtn.disabled = true;
 
-  // Envoi des données au serveur (Google Apps Script)
+  // 📤 Envoi au serveur Apps Script
   fetch(postURL, {
     method: "POST",
     body: new URLSearchParams({
-      action: "renvoyerQRcode",  // Action pour appeler la fonction "renvoyer" dans doPost
-      email: email,
-      nom: nom,
-      prenom: prenom,
-      abonnement: abonnement,
-      dateDebut: dateDebut
+      action: "renvoyerQRcode",
+      email,
+      nom,
+      prenom,
+      abonnement,
+      dateDebut
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    hide(loader);
-    if (data.status === "success") {
-      showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
-    } else {
-      showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
-    }
-  })
-  .catch(err => {
-    hide(loader);
-    showStatusModal("❌ Erreur lors de l'envoi.");
-    console.error(err);
-  })
-  .finally(() => {
-    // Réactiver le bouton après la requête
-    validateActionBtn.disabled = false;
-  });
+    .then(res => res.json())
+    .then(data => {
+      hide(loader);
+      if (data.status === "success") {
+        showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
+      } else {
+        showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
+      }
+    })
+    .catch(err => {
+      hide(loader);
+      console.error(err);
+      showStatusModal("❌ Erreur lors de l'envoi.");
+    })
+    .finally(() => {
+      validateActionBtn.disabled = false;
+    });
 }
 
 
 
 
 
+
   function sendDataToGoogleSheet(scannedData) {
+
+   
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
