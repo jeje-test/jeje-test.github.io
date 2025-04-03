@@ -106,25 +106,41 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchDataFromGoogleSheet(decodedText);
   }
 
-  function fetchDataFromGoogleSheet(qrData) {
-    show(loader);
-    resultDiv.innerHTML = "";
-    hide(actionsContainer);
+function maskEmail(email) {
+  const atIndex = email.indexOf('@');
+  if (atIndex === -1) return email; // Si pas d'@, on ne modifie pas l'email.
 
-    const cacheBuster = `&cacheBust=${Date.now()}`;
-    fetch(`${getURL}${encodeURIComponent(qrData)}${cacheBuster}`, {
-      cache: "no-store"
-    })
-      .then(response => response.json())
-      .then(data => {
-        hide(loader);
-        if (data && data.result) {
-          let resultHTML = `<strong>Résultat :</strong><br>`;
-          if (fromSearch) {
-            resultHTML += `<p id="searchNotice" class="subtext">🔍 Résultat issu d'une recherche manuelle</p>`;
-          }
-          resultHTML += `<table class="result-table"><tbody>`;
-          for (let key in data.result) {
+  const localPart = email.slice(0, atIndex); // Partie avant le "@"
+  const domainPart = email.slice(atIndex);   // Partie après le "@"
+
+  const maskedLocal = 'x'.repeat(localPart.length - 2) + localPart.slice(-2); // Masque tout sauf les 2 dernières lettres
+  return maskedLocal + domainPart;  // Combine la partie masquée avec le domaine
+}
+
+  
+function fetchDataFromGoogleSheet(qrData) {
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
+
+  const cacheBuster = `&cacheBust=${Date.now()}`;
+  fetch(`${getURL}${encodeURIComponent(qrData)}${cacheBuster}`, {
+    cache: "no-store"
+  })
+    .then(response => response.json())
+    .then(data => {
+      hide(loader);
+      if (data && data.result) {
+        let resultHTML = `<strong>Résultat :</strong><br>`;
+        
+        // Masque l'email
+        const maskedEmail = maskEmail(data.result.email);
+
+        resultHTML += `<p><strong>Email :</strong> ${maskedEmail}</p>`; // Affiche l'email masqué
+
+        resultHTML += `<table class="result-table"><tbody>`;
+        for (let key in data.result) {
+          if (key !== "email") { // On évite de doubler l'affichage de l'email
             let value = data.result[key];
             let highlight = "";
 
@@ -136,23 +152,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
             resultHTML += `<tr><th>${key}</th><td${highlight}>${value}</td></tr>`;
           }
-          resultHTML += `</tbody></table>`;
-          resultDiv.innerHTML = resultHTML;
-          resultDiv.classList.add("fade-in");
-          setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
-          show(actionsContainer);
-        } else {
-          resultDiv.innerHTML = "Aucune donnée trouvée.";
-          showStatusModal("❌ Aucune donnée trouvée.");
         }
-      })
-      .catch(error => {
-        hide(loader);
-        resultDiv.innerHTML = "Erreur de récupération des données.";
-        console.error("Erreur GET :", error);
-        showStatusModal("❌ Erreur lors de la récupération des données.");
-      });
-  }
+        resultHTML += `</tbody></table>`;
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.classList.add("fade-in");
+        setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
+        show(actionsContainer);
+      } else {
+        resultDiv.innerHTML = "Aucune donnée trouvée.";
+        showStatusModal("❌ Aucune donnée trouvée.");
+      }
+    })
+    .catch(error => {
+      hide(loader);
+      resultDiv.innerHTML = "Erreur de récupération des données.";
+      console.error("Erreur GET :", error);
+      showStatusModal("❌ Erreur lors de la récupération des données.");
+    });
+}
+
 
   function sendDataToGoogleSheet(scannedData) {
     show(loader);
