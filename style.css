@@ -649,3 +649,35 @@ canvas {
   font-size: 0.9em;
   vertical-align: middle;
 }
+
+.result-card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  margin: 10px 0;
+  background: var(--card-bg, #f9f9f9);
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.result-card:hover {
+  background: var(--card-hover, #eef);
+  transform: scale(1.01);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.result-name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.result-info p {
+  margin: 4px 0;
+  font-size: 0.95em;
+}
+
