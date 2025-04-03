@@ -401,15 +401,25 @@ function resendDetailInformation() {
         return;
       }
 
-      if (selected === "decrement") {
-        sendDataToGoogleSheet(lastScannedCode);
-      } else if (selected === "resendQrCode") {
-        resendQrCode();  // Envoie les informations pour renvoyer le QR code
-      } else if (selected === "resendDetailInformation") {
-        resendDetailInformation();  // Envoie les informations pour le détail des décomptes
-      } else {
-        showStatusModal("❌ Action non reconnue.");
+      console.log("selected =", JSON.stringify(selected));
+
+      switch (selected?.trim()) {
+        case "decrement":
+          sendDataToGoogleSheet(lastScannedCode);
+          break;
+        case "resendQrCode":
+          resendQrCode();
+          break;
+        case "resendDetailInformation":
+          resendDetailInformation();
+          break;
+        default:
+          showStatusModal(`❌ Action non reconnue : ${selected}`);
+          break;
       }
+
+
+      
     });
 
     cancelBtn.addEventListener("click", () => {
