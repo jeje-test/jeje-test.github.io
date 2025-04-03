@@ -247,12 +247,66 @@ function resendQrCode() {
 }
 
 
+  // Fonction pour renvoyer le détail des décomptes
+function resendDetailInformation() {
+  show(loader);
+
+  // 🔒 Récupère les valeurs à partir des nouveaux IDs générés dans le tableau
+  const emailEl = document.getElementById("email");
+  const email = emailEl?.dataset?.email || "";
+  
+  const nom = document.getElementById("nom")?.textContent?.trim() || "";
+  const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
+  const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
+  const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
+
+  // Vérifie que les infos essentielles sont bien présentes
+  if (!email || !nom || !prenom || !abonnement || !dateDebut) {
+    hide(loader);
+    showStatusModal("❌ Données manquantes pour renvoyer le QR Code.");
+    return;
+  }
+
+  // Désactive le bouton pour éviter les clics multiples
+  const validateActionBtn = document.getElementById("validateActionBtn");
+  validateActionBtn.disabled = true;
+
+  // 📤 Envoi au serveur Apps Script
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "renvoyerDetailDecompte",
+      email,
+      nom,
+      prenom,
+      abonnement,
+      dateDebut
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      hide(loader);
+      if (data.status === "success") {
+        showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
+      } else {
+        showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
+      }
+    })
+    .catch(err => {
+      hide(loader);
+      console.error(err);
+      showStatusModal("❌ Erreur lors de l'envoi.");
+    })
+    .finally(() => {
+      validateActionBtn.disabled = false;
+    });
+}
+
 
 
 
 
   function sendDataToGoogleSheet(scannedData) {
-
    
     show(loader);
     resultDiv.innerHTML = "";
@@ -351,8 +405,8 @@ function resendQrCode() {
         sendDataToGoogleSheet(lastScannedCode);
       } else if (selected === "resend") {
         resendQrCode();  // Envoie les informations pour renvoyer le QR code
-      } else if (selected === "sendOffline") {
-        showStatusModal("📤 Fonction 'Envoyer le décompte' à implémenter.");
+      } else if (selected === "resendDetailInformation") {
+        resendDetailInformation();  // Envoie les informations pour le détail des décomptes
       } else {
         showStatusModal("❌ Action non reconnue.");
       }
