@@ -49,47 +49,57 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    resultsContainer.innerHTML = "<strong>📋 Résultats :</strong><ul class='result-list'>" +
+    resultsContainer.innerHTML = "<strong>📋 Résultats :</strong>" +
       list.map((item) => {
-        const label = `${item.nom} ${item.prenom} - ${item.email || ''}`;
-        return `<li><button class="result-button" data-code="${item.code}">${label}</button></li>`;
-      }).join("") + "</ul>";
+        return `
+          <div class="result-card" data-code="${item.code}">
+            <div class="result-header">
+              <span class="result-name">${item.nom} ${item.prenom}</span>
+              <span class="result-icon">👉</span>
+            </div>
+            <div class="result-info">
+              <p><strong>Email :</strong> ${item.email || '–'}</p>
+              <p><strong>Abonnement :</strong> ${item.abonnement || '–'}</p>
+              <p><strong>Début :</strong> ${item.debut || '–'}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
 
-    document.querySelectorAll("#searchResults button").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const code = btn.getAttribute("data-code");
+    document.querySelectorAll(".result-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const code = card.getAttribute("data-code");
         showConfirmationModal(code);
       });
     });
   }
 
-function showConfirmationModal(code) {
-  const modal = document.getElementById("confirmModal");
-  const btnYes = document.getElementById("confirmYes");
-  const btnNo = document.getElementById("confirmNo");
+  function showConfirmationModal(code) {
+    const modal = document.getElementById("confirmModal");
+    const btnYes = document.getElementById("confirmYes");
+    const btnNo = document.getElementById("confirmNo");
 
-  show(modal); // affiche la modale
+    show(modal);
 
-  const cleanup = () => {
-    hide(modal);
-    btnYes.removeEventListener("click", onYes);
-    btnNo.removeEventListener("click", onNo);
-  };
+    const cleanup = () => {
+      hide(modal);
+      btnYes.removeEventListener("click", onYes);
+      btnNo.removeEventListener("click", onNo);
+    };
 
-  const onYes = () => {
-    cleanup();
-    window.location.href = `index.html?q=${encodeURIComponent(code)}`;
-  };
+    const onYes = () => {
+      cleanup();
+      window.location.href = `index.html?q=${encodeURIComponent(code)}`;
+    };
 
-  const onNo = () => {
-    cleanup();
-    fetchDetail(code);
-  };
+    const onNo = () => {
+      cleanup();
+      fetchDetail(code);
+    };
 
-  btnYes.addEventListener("click", onYes);
-  btnNo.addEventListener("click", onNo);
-}
-
+    btnYes.addEventListener("click", onYes);
+    btnNo.addEventListener("click", onNo);
+  }
 
   function fetchDetail(code) {
     detailContainer.innerHTML = "⏳ Chargement de la fiche...";
