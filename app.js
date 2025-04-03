@@ -107,17 +107,24 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 function maskEmail(email) {
-  if (typeof email !== "string") return ""; // protection supplémentaire
-
-  const atIndex = email.indexOf('@');
+  if (typeof email !== "string") return "";
+  const atIndex = email.indexOf("@");
   if (atIndex === -1) return email;
 
   const localPart = email.slice(0, atIndex);
   const domainPart = email.slice(atIndex);
-  const maskedLocal = 'x'.repeat(localPart.length - 2) + localPart.slice(-2);
 
-  return maskedLocal + domainPart;
+  if (localPart.length <= 2) {
+    return localPart[0] + '*' + domainPart;
+  }
+
+  const first = localPart[0];
+  const last = localPart[localPart.length - 1];
+  const masked = 'x'.repeat(localPart.length - 2);
+
+  return `${first}${masked}${last}${domainPart}`;
 }
+
   
 function fetchDataFromGoogleSheet(qrData) {
   const fieldsToDisplay = {
