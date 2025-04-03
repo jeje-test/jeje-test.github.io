@@ -403,7 +403,7 @@ function resendDetailInformation() {
 
       if (selected === "decrement") {
         sendDataToGoogleSheet(lastScannedCode);
-      } else if (selected === "resend") {
+      } else if (selected === "resendQrCode") {
         resendQrCode();  // Envoie les informations pour renvoyer le QR code
       } else if (selected === "resendDetailInformation") {
         resendDetailInformation();  // Envoie les informations pour le détail des décomptes
