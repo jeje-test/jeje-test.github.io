@@ -190,7 +190,7 @@ function resendQrCode() {
   fetch(postURL, {
     method: "POST",
     body: new URLSearchParams({
-      action: "renvoyer",  // Action pour appeler la fonction "renvoyer" dans doPost
+      action: "renvoyerQRcode",  // Action pour appeler la fonction "renvoyer" dans doPost
       email: email,
       nom: nom,
       prenom: prenom,
