@@ -172,6 +172,56 @@ function fetchDataFromGoogleSheet(qrData) {
 }
 
 
+// Fonction pour renvoyer le QR Code
+function resendQrCode() {
+  show(loader);
+
+  const email = document.getElementById("email").textContent.trim();    // Email
+  const nom = document.getElementById("nom").textContent.trim();        // Nom
+  const prenom = document.getElementById("prenom").textContent.trim();  // Prénom
+  const abonnement = document.getElementById("abonnement").textContent.trim(); // Abonnement
+  const dateDebut = document.getElementById("dateDebut").textContent.trim();   // Date de début
+
+  // Désactiver le bouton pour éviter plusieurs clics
+  const validateActionBtn = document.getElementById("validateActionBtn");
+  validateActionBtn.disabled = true;
+
+  // Envoi des données au serveur (Google Apps Script)
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "renvoyer",  // Action pour appeler la fonction "renvoyer" dans doPost
+      email: email,
+      nom: nom,
+      prenom: prenom,
+      abonnement: abonnement,
+      dateDebut: dateDebut
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    hide(loader);
+    if (data.status === "success") {
+      showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
+    } else {
+      showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
+    }
+  })
+  .catch(err => {
+    hide(loader);
+    showStatusModal("❌ Erreur lors de l'envoi.");
+    console.error(err);
+  })
+  .finally(() => {
+    // Réactiver le bouton après la requête
+    validateActionBtn.disabled = false;
+  });
+}
+
+
+
+
+
   function sendDataToGoogleSheet(scannedData) {
     show(loader);
     resultDiv.innerHTML = "";
@@ -269,7 +319,7 @@ function fetchDataFromGoogleSheet(qrData) {
       if (selected === "decrement") {
         sendDataToGoogleSheet(lastScannedCode);
       } else if (selected === "resend") {
-        showStatusModal("📧 Fonction 'Renvoyer le QR code' à implémenter.");
+        resendQrCode();  // Envoie les informations pour renvoyer le QR code
       } else if (selected === "sendOffline") {
         showStatusModal("📤 Fonction 'Envoyer le décompte' à implémenter.");
       } else {
