@@ -51,14 +51,18 @@ function maskEmail(email) {
 
   const localPart = email.slice(0, atIndex);
   const domainPart = email.slice(atIndex);
-  
-  if (localPart.length <= 3) return "***" + domainPart;
 
-  const visibleEnd = localPart.slice(-2);
-  const masked = 'x'.repeat(localPart.length - 2) + visibleEnd;
-  
-  return masked + domainPart;
+  if (localPart.length <= 2) {
+    return localPart[0] + '*' + domainPart;
+  }
+
+  const first = localPart[0];
+  const last = localPart[localPart.length - 1];
+  const masked = 'x'.repeat(localPart.length - 2);
+
+  return `${first}${masked}${last}${domainPart}`;
 }
+
 
   
   function renderResults(list) {
