@@ -651,18 +651,19 @@ canvas {
 }
 
 .result-card {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 8px 12px;
-  margin: 6px 0;
-  background-color: var(--card-bg, #fdfdfd);
+  padding: 10px 14px;
+  margin: 8px 0;
+  background-color: var(--card-bg, #fff);
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-size: 0.95em;
 }
 
 .result-card:hover {
-  background-color: var(--card-hover, #e8f0ff);
+  background-color: var(--card-hover, #eef6ff);
   transform: scale(1.005);
 }
 
@@ -670,26 +671,30 @@ canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
-}
-
-.result-name {
   font-weight: 600;
   font-size: 1em;
+  margin-bottom: 6px;
 }
 
 .result-icon {
   font-size: 1.2em;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .result-info {
-  font-size: 0.9em;
-  line-height: 1.3em;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .result-info p {
-  margin: 2px 0;
+  margin: 0;
+  line-height: 1.4em;
 }
+
+.result-info p strong {
+  font-weight: 500;
+}
+
 
 
