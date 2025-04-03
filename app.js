@@ -150,7 +150,7 @@ function fetchDataFromGoogleSheet(qrData) {
         // Masquage de l'e-mail s'il existe
         if (data.result.email) {
           const maskedEmail = maskEmail(data.result.email);
-          resultHTML += `<p id="email"><strong>Email :</strong> ${maskedEmail}</p>`;
+          resultHTML += `<p id="email" data-email="${data.result.email}"><strong>Email :</strong> ${maskedEmail}</p>`;
         }
 
         // Affichage du tableau structuré
@@ -196,7 +196,9 @@ function resendQrCode() {
   show(loader);
 
   // 🔒 Récupère les valeurs à partir des nouveaux IDs générés dans le tableau
-  const email = document.getElementById("email")?.textContent?.trim() || "";
+  const emailEl = document.getElementById("email");
+  const email = emailEl?.dataset?.email || "";
+  
   const nom = document.getElementById("nom")?.textContent?.trim() || "";
   const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
   const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
