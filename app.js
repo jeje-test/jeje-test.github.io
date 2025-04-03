@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetch(postURL, {
       method: "POST",
-      body: new URLSearchParams({ data: scannedData })
+      body: new URLSearchParams({ data: scannedData, type: "decompte" })
     })
       .then(response => response.json())
       .then(data => {
