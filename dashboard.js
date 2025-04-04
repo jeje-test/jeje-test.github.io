@@ -1,7 +1,5 @@
 // dashboard.js
 
-// Fichier autonome pour afficher un dashboard + gestion PWA + thème + version + graphique
-
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("dashboardContainer");
   const versionDiv = document.getElementById("appVersion");
@@ -57,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Chargement des données depuis le script Apps Script (via POST pour éviter CORS)
+  // Chargement des données depuis le script Apps Script
   fetch("manifest.json")
     .then(res => res.json())
     .then(manifest => {
@@ -73,82 +71,102 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(res => res.json())
     .then(stats => {
-     const html = `
-    <div class="result-box">
-    <h2>📦 Répartition des abonnements</h2>
-    <canvas id="abonnementChart" height="200"></canvas>
-  </div>
+      const html = `
+      <div class="result-box">
+        <h2>📦 Répartition des abonnements</h2>
+        <canvas id="abonnementChart" height="200"></canvas>
+      </div>
 
-  <div class="result-box compact">
-    <h2>📅 Cours décomptés</h2>
-    <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
-    <p><strong>Cette semaine :</strong> ${stats.thisWeek}</p>
-    <p><strong>Total global :</strong> ${stats.total}</p>
-    <canvas id="weeklyChart" height="200"></canvas>
-  </div>
+      <div class="result-box compact">
+        <h2>📅 Cours décomptés</h2>
+        <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
+        <p><strong>Cette semaine :</strong> ${stats.thisWeek}</p>
+        <p><strong>Total global :</strong> ${stats.total}</p>
+        <canvas id="weeklyChart" height="200"></canvas>
+      </div>
 
-  <div class="result-box">
-    <h2>⚠️ Alertes - Cours restants faibles</h2>
-    ${
-      Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
-        ? `
-          <div class="table-container">
-            <table class="alert-table">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Abonnement</th>
-                  <th>Date de début</th>
-                  <th>Cours restants</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${stats.lowBalanceUsers
-                  .sort((a, b) => a.remaining - b.remaining)
-                  .map(u => `
+      <div class="result-box">
+        <h2>⚠️ Alertes - Cours restants faibles</h2>
+        ${
+          Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
+            ? `
+              <div class="table-container">
+                <table class="alert-table">
+                  <thead>
                     <tr>
-                      <td><strong>${u.name}</strong></td>
-                      <td>${u.plan || "-"}</td>
-                      <td>${u.startDate || "-"}</td>
-                      <td><strong>${u.remaining}</strong></td>
+                      <th>Nom</th>
+                      <th>Abonnement</th>
+                      <th>Date de début</th>
+                      <th>Cours restants</th>
                     </tr>
-                  `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `
-        : '<p>Aucune alerte 👍</p>'
-    }
-  </div>
-`;
+                  </thead>
+                  <tbody>
+                    ${stats.lowBalanceUsers
+                      .sort((a, b) => a.remaining - b.remaining)
+                      .map(u => `
+                        <tr class="alert-row" data-code="${encodeURIComponent(`${u.name} ${u.plan} ${u.startDate}`)}">
+                          <td><strong>${u.name}</strong> <span class="action-icon">➡️</span></td>
+                          <td>${u.plan || "-"}</td>
+                          <td>${u.startDate || "-"}</td>
+                          <td><strong>${u.remaining}</strong></td>
+                        </tr>
+                      `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `
+            : '<p>Aucune alerte 👍</p>'
+        }
+      </div>
+    `;
 
       container.innerHTML = html;
       drawChart(stats.weekly || []);
+      drawAbonnementChart(stats.abonnements || {});
 
-      drawChart(stats.weekly || []);
-      drawAbonnementChart(stats.abonnements || {}); // <-- 👈 on appelle ici notre 2e graphique
-      
+      // ✅ Clique sur ligne alertes → confirmation modale → redirection
+      document.querySelectorAll('.alert-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const code = row.dataset.code;
 
+          const modal = document.createElement("div");
+          modal.className = "custom-modal";
+          modal.innerHTML = `
+            <div class="custom-modal-content">
+              <p>🔍 Charger cette fiche dans la page principale ?</p>
+              <div class="modal-buttons">
+                <button id="confirmGoBtn">✅ Oui</button>
+                <button id="cancelGoBtn">❌ Non</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
 
-      
+          document.getElementById("confirmGoBtn").onclick = () => {
+            window.location.href = `index.html?code=${code}`;
+          };
+          document.getElementById("cancelGoBtn").onclick = () => {
+            modal.remove();
+          };
+        });
+      });
+
     })
     .catch(error => {
       console.error("Erreur chargement dashboard:", error);
       container.innerHTML = `<p style="color: red;">Erreur lors du chargement du tableau de bord.</p>`;
     });
 
+
+// === Graphiques ===
+
 let weeklyChartInstance = null;
 function drawChart(data) {
   if (!data || data.length === 0 || typeof Chart === 'undefined') return;
-
   const ctx = document.getElementById("weeklyChart").getContext("2d");
 
-  // 🔁 Détruire l'ancien graphique s'il existe
-  if (weeklyChartInstance) {
-    weeklyChartInstance.destroy();
-  }
+  if (weeklyChartInstance) weeklyChartInstance.destroy();
 
-  // 🎨 Nouveau graphique
   weeklyChartInstance = new Chart(ctx, {
     type: "bar",
     data: {
@@ -172,9 +190,7 @@ function drawChart(data) {
           anchor: 'end',
           align: 'top',
           color: '#000',
-          font: {
-            weight: 'bold'
-          },
+          font: { weight: 'bold' },
           formatter: value => value
         }
       },
@@ -187,14 +203,10 @@ function drawChart(data) {
 }
 
 let abonnementChartInstance = null;
-
 function drawAbonnementChart(data) {
   const ctx = document.getElementById("abonnementChart").getContext("2d");
 
-  // 🔁 Détruire l'ancien graphique s'il existe
-  if (abonnementChartInstance) {
-    abonnementChartInstance.destroy();
-  }
+  if (abonnementChartInstance) abonnementChartInstance.destroy();
 
   abonnementChartInstance = new Chart(ctx, {
     type: "pie",
@@ -210,14 +222,10 @@ function drawAbonnementChart(data) {
     },
     options: {
       plugins: {
-        legend: {
-          position: 'right'
-        },
+        legend: { position: 'right' },
         datalabels: {
           color: '#000',
-          font: {
-            weight: 'bold'
-          },
+          font: { weight: 'bold' },
           formatter: value => value
         }
       }
@@ -225,8 +233,3 @@ function drawAbonnementChart(data) {
     plugins: [ChartDataLabels]
   });
 }
-
-
-
-  
-});
