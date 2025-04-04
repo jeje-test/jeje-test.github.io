@@ -233,3 +233,5 @@ function drawAbonnementChart(data) {
     plugins: [ChartDataLabels]
   });
 }
+
+});
