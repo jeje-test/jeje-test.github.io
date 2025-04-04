@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ${stats.lowBalanceUsers
                       .sort((a, b) => a.remaining - b.remaining)
                       .map(u => `
-                        <tr class="alert-row" data-code="${encodeURIComponent(`${u.name} ${u.plan} ${u.startDate}`)}">
+                          <tr class="alert-row" data-q="${encodeURIComponent(`${u.name} ${u.plan} ${u.startDate}`)}">
                           <td><strong>${u.name}</strong> <span class="action-icon">➡️</span></td>
                           <td>${u.plan || "-"}</td>
                           <td>${u.startDate || "-"}</td>
@@ -127,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // ✅ Clique sur ligne alertes → confirmation modale → redirection
       document.querySelectorAll('.alert-row').forEach(row => {
         row.addEventListener('click', () => {
-          const code = row.dataset.code;
+          const code = row.dataset.q;
 
           const modal = document.createElement("div");
           modal.className = "custom-modal";
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
           document.body.appendChild(modal);
 
           document.getElementById("confirmGoBtn").onclick = () => {
-            window.location.href = `index.html?code=${code}`;
+            window.location.href = `index.html?q=${code}`;
           };
           document.getElementById("cancelGoBtn").onclick = () => {
             modal.remove();
