@@ -74,6 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const html = `
       <div class="result-box">
         <h2>📦 Répartition des abonnements</h2>
+      <div class="field-tip">
+        📌 Tous les abonnements de l'année scolaire, hors staut "clos" ou "résilié"
+      </div>
         <canvas id="abonnementChart" height="200"></canvas>
       </div>
 
@@ -87,6 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="result-box">
         <h2>⚠️ Alertes - Cours restants faibles</h2>
+          <div class="field-tip">
+        📌 Selectionner une ligne pour redirection fiche détaillé et voir les actions possibles
+        </div>
         ${
           Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
             ? `
