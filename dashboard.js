@@ -74,6 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(stats => {
      const html = `
+    <div class="result-box">
+    <h2>📦 Répartition des abonnements</h2>
+    <canvas id="abonnementChart" height="200"></canvas>
+  </div>
+
   <div class="result-box compact">
     <h2>📅 Cours décomptés</h2>
     <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
@@ -119,6 +124,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       container.innerHTML = html;
       drawChart(stats.weekly || []);
+
+      drawChart(stats.weekly || []);
+      drawAbonnementChart(stats.abonnements || {}); // <-- 👈 on appelle ici notre 2e graphique
+      
+
+
+      
     })
     .catch(error => {
       console.error("Erreur chargement dashboard:", error);
@@ -164,4 +176,43 @@ document.addEventListener("DOMContentLoaded", () => {
       plugins: [ChartDataLabels]
     });
   }
+
+function drawAbonnementChart(data) {
+  const ctx = document.getElementById("abonnementChart").getContext("2d");
+  const labels = Object.keys(data);
+  const counts = Object.values(data);
+
+  new Chart(ctx, {
+    type: "pie",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Nombre d’abonnés",
+        data: counts,
+        backgroundColor: [
+          "#007bff", "#28a745", "#ffc107", "#dc3545", "#6c757d", "#6610f2", "#17a2b8"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'right'
+        },
+        datalabels: {
+          color: '#000',
+          font: {
+            weight: 'bold'
+          },
+          formatter: (value) => value
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+
+  
 });
