@@ -73,24 +73,50 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .then(res => res.json())
     .then(stats => {
-      const html = `
-        <div class="result-box">
-          <h2>📅 Cours décomptés</h2>
-          <p>Aujourd'hui : <strong>${stats.today}</strong></p>
-          <p>Cette semaine : <strong>${stats.thisWeek}</strong></p>
-          <p>Total global : <strong>${stats.total}</strong></p>
-          <canvas id="weeklyChart" height="200"></canvas>
-        </div>
+     const html = `
+  <div class="result-box compact">
+    <h2>📅 Cours décomptés</h2>
+    <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
+    <p><strong>Cette semaine :</strong> ${stats.thisWeek}</p>
+    <p><strong>Total global :</strong> ${stats.total}</p>
+    <canvas id="weeklyChart" height="200"></canvas>
+  </div>
 
-        <div class="result-box">
-          <h2>⚠️ Alertes - Cours restants faibles</h2>
-          <ul>
-            ${Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
-              ? stats.lowBalanceUsers.map(u => `<li><strong>${u.name}</strong> : ${u.remaining} cours restants</li>`).join('')
-              : '<li>Aucune alerte 👍</li>'}
-          </ul>
-        </div>
-      `;
+  <div class="result-box">
+    <h2>⚠️ Alertes - Cours restants faibles</h2>
+    ${
+      Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
+        ? `
+          <div class="table-container">
+            <table class="alert-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Abonnement</th>
+                  <th>Date de début</th>
+                  <th>Cours restants</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${stats.lowBalanceUsers
+                  .sort((a, b) => a.remaining - b.remaining)
+                  .map(u => `
+                    <tr>
+                      <td><strong>${u.name}</strong></td>
+                      <td>${u.plan || "-"}</td>
+                      <td>${u.startDate || "-"}</td>
+                      <td><strong>${u.remaining}</strong></td>
+                    </tr>
+                  `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `
+        : '<p>Aucune alerte 👍</p>'
+    }
+  </div>
+`;
+
       container.innerHTML = html;
       drawChart(stats.weekly || []);
     })
