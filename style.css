@@ -505,6 +505,41 @@ button {
   font-size: 0.95em;
 }
 
+/* Réduction espace bloc compact */
+.result-box.compact p {
+  margin: 4px 0;
+}
+
+/* Tableau alertes */
+.table-container {
+  overflow-x: auto;
+}
+
+.alert-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.alert-table th, .alert-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.alert-table th {
+  background-color: var(--table-header-bg, #f0f0f0);
+}
+
+.dark-mode .alert-table th {
+  background-color: #222;
+  color: #fff;
+}
+
+.alert-table tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
 .result-box h2 {
   margin-top: 0.3rem;
   margin-bottom: 0.6rem;
