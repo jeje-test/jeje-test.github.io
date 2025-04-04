@@ -62,13 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="result-box">
         <h2>📦 Répartition des abonnements</h2>
       <div class="field-tip">
-        📌 Tous les abonnements de l'année scolaire, hors staut "clos" ou "résilié"
+        📌 Tous les abonnements pour l'année scolaire, sauf ceux qui sont en statut 'clos' ou 'résilié'
       </div>
         <canvas id="abonnementChart" height="200"></canvas>
       </div>
 
       <div class="result-box compact">
         <h2>📅 Cours décomptés</h2>
+              <div class="field-tip">
+        📌 En utilisant l'action 'décompter un cours', que ce soit en ligne, en mode "hors line" avec envoi en masse ou suite à une recherche manuelle.
+        </div>
         <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
         <p><strong>Cette semaine :</strong> ${stats.thisWeek}</p>
         <p><strong>Total global :</strong> ${stats.total}</p>
@@ -78,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="result-box">
         <h2>⚠️ Alertes - Cours restants faibles</h2>
           <div class="field-tip">
-        📌 Selectionner une ligne pour redirection fiche détaillé et voir les actions possibles
+        📌 Sélectionnez une ligne pour accéder à la fiche détaillée et examiner les actions possibles.
         </div>
         ${
           Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
