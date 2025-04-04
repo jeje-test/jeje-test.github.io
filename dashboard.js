@@ -7,19 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const refreshCacheBtn = document.getElementById("refreshCacheBtn");
   const installBtn = document.getElementById("installBtnFooter");
 
-  // Thème clair/sombre
-  toggleBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("dark-mode");
-    const isDark = document.body.classList.contains("dark-mode");
-    toggleBtn.textContent = isDark ? "☀️ Mode clair" : "🌙 Mode sombre";
-    localStorage.setItem("theme", isDark ? "dark" : "light");
-  });
-
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark-mode");
-    toggleBtn.textContent = "☀️ Mode clair";
-  }
-
   // Installation PWA
   let deferredPrompt = null;
   window.addEventListener("beforeinstallprompt", (e) => {
