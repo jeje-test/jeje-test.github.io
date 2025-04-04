@@ -137,65 +137,78 @@ document.addEventListener("DOMContentLoaded", () => {
       container.innerHTML = `<p style="color: red;">Erreur lors du chargement du tableau de bord.</p>`;
     });
 
-  function drawChart(data) {
-    if (!data || data.length === 0 || typeof Chart === 'undefined') return;
-    const ctx = document.getElementById("weeklyChart").getContext("2d");
-    new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: data.map(d => d.day),
-        datasets: [{
-          label: "Cours décomptés",
-          data: data.map(d => d.count),
-          backgroundColor: "#007bff"
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.parsed.y} cours`
-            }
-          },
-          datalabels: {
-            anchor: 'end',
-            align: 'top',
-            color: '#000',
-            font: {
-              weight: 'bold'
-            },
-            formatter: value => value
+let weeklyChartInstance = null;
+function drawChart(data) {
+  if (!data || data.length === 0 || typeof Chart === 'undefined') return;
+
+  const ctx = document.getElementById("weeklyChart").getContext("2d");
+
+  // 🔁 Détruire l'ancien graphique s'il existe
+  if (weeklyChartInstance) {
+    weeklyChartInstance.destroy();
+  }
+
+  // 🎨 Nouveau graphique
+  weeklyChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: data.map(d => d.day),
+      datasets: [{
+        label: "Cours décomptés",
+        data: data.map(d => d.count),
+        backgroundColor: "#007bff"
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.y} cours`
           }
         },
-        scales: {
-          y: { beginAtZero: true, precision: 0 }
+        datalabels: {
+          anchor: 'end',
+          align: 'top',
+          color: '#000',
+          font: {
+            weight: 'bold'
+          },
+          formatter: value => value
         }
       },
-      plugins: [ChartDataLabels]
-    });
-  }
+      scales: {
+        y: { beginAtZero: true, precision: 0 }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+}
+
+let abonnementChartInstance = null;
 
 function drawAbonnementChart(data) {
   const ctx = document.getElementById("abonnementChart").getContext("2d");
-  const labels = Object.keys(data);
-  const counts = Object.values(data);
 
-  new Chart(ctx, {
+  // 🔁 Détruire l'ancien graphique s'il existe
+  if (abonnementChartInstance) {
+    abonnementChartInstance.destroy();
+  }
+
+  abonnementChartInstance = new Chart(ctx, {
     type: "pie",
     data: {
-      labels: labels,
+      labels: Object.keys(data),
       datasets: [{
         label: "Nombre d’abonnés",
-        data: counts,
+        data: Object.values(data),
         backgroundColor: [
           "#007bff", "#28a745", "#ffc107", "#dc3545", "#6c757d", "#6610f2", "#17a2b8"
         ]
       }]
     },
     options: {
-      responsive: true,
       plugins: {
         legend: {
           position: 'right'
@@ -205,13 +218,14 @@ function drawAbonnementChart(data) {
           font: {
             weight: 'bold'
           },
-          formatter: (value) => value
+          formatter: value => value
         }
       }
     },
     plugins: [ChartDataLabels]
   });
 }
+
 
 
   
