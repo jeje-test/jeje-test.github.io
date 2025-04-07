@@ -815,3 +815,20 @@ body.dark-mode .custom-modal-content {
   font-size: 1rem;
 }
 
+.user-menu button {
+  background: #f1f1f1;
+  border-radius: 50%;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+  color: #333;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* En mode sombre */
+body.dark .user-menu button {
+  background: #fff;
+  color: #000;
+}
+
