@@ -16,12 +16,7 @@ const newRequestBtn = document.getElementById('newRequestBtn');
 const submitBtn = document.getElementById('submitBtn');
 const spinner = document.getElementById('loadingSpinner');
 
-// Sélection des éléments
-const raisonModal = document.getElementById("raisonModal");
-const openRaisonModalBtn = document.getElementById("openRaisonModalBtn");
-const closeRaisonModalBtn = document.getElementById("closeRaisonModalBtn");
-const raisonInput = document.getElementById("raison");
-const selectedRaisonText = document.getElementById("selectedRaisonText");
+
 
 let html5QrcodeScanner;
 
@@ -144,24 +139,3 @@ newRequestBtn.addEventListener('click', () => {
 
 
 
-// Ouvrir la modale
-openRaisonModalBtn.addEventListener("click", () => {
-  raisonModal.classList.remove("hidden");
-});
-
-// Fermer la modale
-closeRaisonModalBtn.addEventListener("click", () => {
-  raisonModal.classList.add("hidden");
-});
-
-// Gérer le clic sur une raison
-document.querySelectorAll("#raisonModal .modal-list li").forEach(item => {
-  item.addEventListener("click", () => {
-    const value = item.dataset.value;
-    const label = item.textContent;
-
-    raisonInput.value = value;
-    selectedRaisonText.textContent = `✅ Raison sélectionnée : ${label}`;
-    raisonModal.classList.add("hidden");
-  });
-});
