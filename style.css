@@ -805,4 +805,13 @@ body.dark-mode .custom-modal-content {
 }
 
 
+.user-menu {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
 
