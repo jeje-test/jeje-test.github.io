@@ -7,6 +7,7 @@ function show(el) {
   el.classList.remove("hidden");
 }
 
+
 document.addEventListener("DOMContentLoaded", function () {
   const STORAGE_KEY = "offlineQRScans";
 
@@ -34,6 +35,10 @@ const userNameDisplay = document.getElementById('userNameDisplay');
 const loginModal = document.getElementById('loginModal');
 const passwordInput = document.getElementById('passwordInput');
 const submitLoginBtn = document.getElementById('submitLoginBtn');
+const cancelLoginBtn = document.getElementById('cancelLoginBtn'); // 👈 on le récupère
+
+  cancelLoginBtn.addEventListener("click", closeLoginModal); // 👈 on l'attache
+
 
 const TOKEN_KEY = "auth_token";
 const USER_NAME_KEY = "auth_name";
@@ -92,13 +97,6 @@ submitLoginBtn.addEventListener("click", async () => {
     errorEl.classList.remove("hidden");
   }
 });
-
-
-function closeLoginModal() {
-  document.getElementById("loginModal").classList.add("hidden");
-  document.getElementById("loginError").classList.add("hidden");
-  passwordInput.value = "";
-}
 
   
 function isAdmin() {
@@ -534,6 +532,11 @@ function resendDetailInformation() {
 
 
 
+function closeLoginModal() {
+  document.getElementById("loginModal").classList.add("hidden");
+  document.getElementById("loginError").classList.add("hidden");
+  passwordInput.value = "";
+}
 
 
 
