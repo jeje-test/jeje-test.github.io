@@ -785,8 +785,8 @@ body.dark-mode .custom-modal-content {
 .modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 1rem;
+    gap: 12px; /* ou 16px selon l'espacement souhaité */
+    margin-top: 16px;
 }
 
 .modal-buttons button {
