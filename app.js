@@ -28,11 +28,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const allButtonSections = document.querySelectorAll(".buttons");
 
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const userNameDisplay = document.getElementById('userNameDisplay');
+const loginModal = document.getElementById('loginModal');
+const passwordInput = document.getElementById('passwordInput');
+const submitLoginBtn = document.getElementById('submitLoginBtn');
+
+const TOKEN_KEY = "auth_token";
+const USER_NAME_KEY = "auth_name";
+  
+
   let html5QrCode = null;
   let lastScannedCode = null;
   let getURL = "";
   let postURL = "";
   let fromSearch = false;
+
+
+    // Authentification
+  const token = localStorage.getItem(TOKEN_KEY);
+  const name = localStorage.getItem(USER_NAME_KEY);
+  if (token && name) showLoggedInUI(name);
+
+loginBtn.addEventListener("click", () => {
+  loginModal.classList.remove("hidden");
+});
+
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_NAME_KEY);
+  window.location.reload();
+});
+
+submitLoginBtn.addEventListener("click", async () => {
+  const pwd = passwordInput.value.trim();
+  if (!pwd) return;
+
+  const manifest = await fetch("manifest.json").then(r => r.json());
+  const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
+  const result = await res.json();
+
+  if (result.status === "success" && result.token) {
+    localStorage.setItem(TOKEN_KEY, result.token);
+    localStorage.setItem(USER_NAME_KEY, result.name);
+    loginModal.classList.add("hidden");
+    showLoggedInUI(result.name);
+  } else {
+    alert("❌ Mot de passe incorrect.");
+  }
+});
+  
+function isAdmin() {
+  return !!localStorage.getItem(TOKEN_KEY);
+}
+  
+function showLoggedInUI(name) {
+  userNameDisplay.textContent = `👤 ${name}`;
+  userNameDisplay.classList.remove("hidden");
+  loginBtn.classList.add("hidden");
+  logoutBtn.classList.remove("hidden");
+
+  // tu peux ici déverrouiller certaines fonctionnalités admin
+}
+
+  
+  //
 
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
@@ -446,3 +507,9 @@ function resendDetailInformation() {
 
   fetchManifestAndInit();
 });
+
+
+
+
+
+
