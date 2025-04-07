@@ -16,6 +16,17 @@
   <button id="logoutBtn" class="hidden" title="Déconnexion">🔓</button>
 </div>
 
+
+  <!-- Modale de connexion -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>🔐 Connexion</h3>
+    <input type="password" id="passwordInput" placeholder="Mot de passe..." />
+    <button id="submitLoginBtn">✅ Valider</button>
+    <button onclick="document.getElementById('loginModal').classList.add('hidden')">❌ Annuler</button>
+  </div>
+</div>
+
   
   <!-- Popup modale -->
   <div id="statusModal" class="modal hidden">
