@@ -61,12 +61,14 @@
     <input type="email" id="email" name="email" required />
 
     <label for="raison">Raison de la requête :</label>
-    <select id="raison" name="raison" required>
-      <option value="">--Sélectionner--</option>
-      <option value="prolonger_date">Prolonger date de fin</option>
-      <option value="erreur_annulation">Erreur annuler un cours</option>
-      <option value="autre">Autre</option>
-    </select>
+          <select id="raison" name="raison" required>
+             <option value="prolonger_date">Prolonger date de fin</option>
+            <option value="annuler_cours_erreur">Annuler un cours - Erreur de saisie</option>
+            <option value="declarer_inscription_place">Déclarer une inscription sur place</option>
+            <option value="declarer_cours_essai_place" selected>Déclarer un cours d'essai</option>
+            <option value="declarer_cours_normal_place">Déclarer un cours normal</option>
+            <option value="demander_decompte">Demander de décompte</option>
+          </select>
 
     <label for="commentaire">Commentaire :</label>
     <textarea id="commentaire" name="commentaire" rows="4"></textarea>
