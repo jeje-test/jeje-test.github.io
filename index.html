@@ -17,15 +17,17 @@
 </div>
 
 
-  <!-- Modale de connexion -->
+<!-- Modale de connexion -->
 <div id="loginModal" class="modal hidden">
   <div class="modal-content">
     <h3>🔐 Connexion</h3>
     <input type="password" id="passwordInput" placeholder="Mot de passe..." />
+    <p id="loginError" class="error-message hidden">❌</p>
     <button id="submitLoginBtn">✅ Valider</button>
-    <button onclick="document.getElementById('loginModal').classList.add('hidden')">❌ Annuler</button>
+    <button onclick="closeLoginModal()">❌ Annuler</button>
   </div>
 </div>
+
 
   
   <!-- Popup modale -->
