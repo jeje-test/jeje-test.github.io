@@ -62,22 +62,44 @@ logoutBtn.addEventListener("click", () => {
 });
 
 submitLoginBtn.addEventListener("click", async () => {
+  const errorEl = document.getElementById("loginError");
   const pwd = passwordInput.value.trim();
-  if (!pwd) return;
 
-  const manifest = await fetch("manifest.json").then(r => r.json());
-  const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
-  const result = await res.json();
+  if (!pwd) {
+    errorEl.textContent = "⚠️ Veuillez entrer un mot de passe.";
+    errorEl.classList.remove("hidden");
+    return;
+  }
 
-  if (result.status === "success" && result.token) {
-    localStorage.setItem(TOKEN_KEY, result.token);
-    localStorage.setItem(USER_NAME_KEY, result.name);
-    loginModal.classList.add("hidden");
-    showLoggedInUI(result.name);
-  } else {
-    alert("❌ Mot de passe incorrect.");
+  try {
+    const manifest = await fetch("manifest.json").then(r => r.json());
+    const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
+    const result = await res.json();
+
+    if (result.status === "success" && result.token) {
+      localStorage.setItem(TOKEN_KEY, result.token);
+      localStorage.setItem(USER_NAME_KEY, result.name);
+      loginModal.classList.add("hidden");
+      errorEl.classList.add("hidden");
+      showLoggedInUI(result.name);
+    } else {
+      errorEl.textContent = "❌ Mot de passe incorrect.";
+      errorEl.classList.remove("hidden");
+    }
+  } catch (err) {
+    console.error("Erreur de connexion :", err);
+    errorEl.textContent = "❌ Erreur serveur. Réessayez plus tard.";
+    errorEl.classList.remove("hidden");
   }
 });
+
+
+function closeLoginModal() {
+  document.getElementById("loginModal").classList.add("hidden");
+  document.getElementById("loginError").classList.add("hidden");
+  passwordInput.value = "";
+}
+
   
 function isAdmin() {
   return !!localStorage.getItem(TOKEN_KEY);
@@ -259,6 +281,8 @@ function fetchDataFromGoogleSheet(qrData) {
 }
 
 
+
+  
 // Fonction pour renvoyer le QR Code
 function resendQrCode() {
   show(loader);
