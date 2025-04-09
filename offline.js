@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let postURL = "";
 
   const STORAGE_KEY = "offlineQRScans";
+  const TOKEN = localStorage.getItem("auth_token") || ""; // ✅ Ajout du token
 
   function show(el) {
     el.classList.remove("hidden");
@@ -127,7 +128,8 @@ document.addEventListener("DOMContentLoaded", function () {
           method: "POST",
           body: new URLSearchParams({
             data: code,
-            offline: "true"
+            type: "decompte",
+            token: TOKEN, // ✅ Ajout du token ici
           })
         });
 
