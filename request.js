@@ -89,7 +89,9 @@ exceptionForm.addEventListener('submit', async (e) => {
     prenom: prenomInput.value.trim(),
     email: document.getElementById('email').value.trim(),
     raison: document.getElementById('raison').value,
-    commentaire: document.getElementById('commentaire').value.trim()
+    commentaire: document.getElementById('commentaire').value.trim(),
+        token: localStorage.getItem("auth_token") || "" // ✅ Ajout ici
+
   };
 
   const params = new URLSearchParams();
