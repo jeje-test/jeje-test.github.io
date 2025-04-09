@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const refreshCacheBtn = document.getElementById("refreshCacheBtn");
   const installBtn = document.getElementById("installBtnFooter");
 
-  // Installation PWA
   let deferredPrompt = null;
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
@@ -28,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Rafraîchissement du cache
   refreshCacheBtn?.addEventListener("click", () => {
     if ('caches' in window) {
       caches.keys().then(names => {
@@ -42,14 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Chargement des données depuis le script Apps Script
   fetch("manifest.json")
     .then(res => res.json())
     .then(manifest => {
       versionDiv.textContent = "Version: " + manifest.version;
 
+      // ✅ Ajout du token ici
       const form = new FormData();
       form.append("action", "dashboard");
+      form.append("token", localStorage.getItem("auth_token") || "");
 
       return fetch(manifest.scriptURL, {
         method: "POST",
