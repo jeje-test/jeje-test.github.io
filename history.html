@@ -9,17 +9,8 @@
 
 <body>
   <!-- 🔐 Protection -->
-  <script>
-    if (!localStorage.getItem("auth_token")) {
-      document.body.innerHTML = `
-        <div style="text-align: center; padding: 50px;">
-          <h2>🔒 Accès refusé</h2>
-          <p>Vous devez être connecté pour consulter l’historique des scans.</p>
-          <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
-        </div>
-      `;
-    }
-  </script>
+<script>requireAuthentication("Dashboard");</script>
+
 
   <!-- ✅ Bandeau utilisateur -->
   <div class="user-menu">
