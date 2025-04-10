@@ -6,31 +6,49 @@
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-  <script>
-  // Protection : accès réservé aux utilisateurs authentifiés
-  const token = localStorage.getItem("auth_token");
-  if (!token) {
-    document.body.innerHTML = `
-      <div style="text-align: center; padding: 50px;">
-        <h2>🔒 Accès refusé</h2>
-        <p>Vous devez être connecté pour consulter l’historique des scans.</p>
-        <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
-      </div>
-    `;
-  }
-</script>
 
 <body>
+  <!-- 🔐 Protection -->
+  <script>
+    if (!localStorage.getItem("auth_token")) {
+      document.body.innerHTML = `
+        <div style="text-align: center; padding: 50px;">
+          <h2>🔒 Accès refusé</h2>
+          <p>Vous devez être connecté pour consulter l’historique des scans.</p>
+          <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+        </div>
+      `;
+    }
+  </script>
+
+  <!-- ✅ Bandeau utilisateur -->
+  <div class="user-menu">
+    <span id="userNameDisplay" class="hidden"></span>
+    <button id="loginBtn" title="Connexion">👤</button>
+    <button id="logoutBtn" class="hidden" title="Déconnexion">🔓</button>
+  </div>
+
+  <!-- ✅ Modale de connexion -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>🔐 Connexion</h3>
+      <input type="password" id="passwordInput" placeholder="Mot de passe..." />
+      <p id="loginError" class="error-message hidden">❌</p>
+      <button id="submitLoginBtn">✅ Valider</button>
+      <button id="cancelLoginBtn">❌ Annuler</button>
+    </div>
+  </div>
+
   <!-- Logo -->
-<div class="image-container">
-  <a href="index.html" aria-label="Retour à l'accueil">
-    <img 
-      src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
-      alt="Logo TY"
-      style="max-width: 20%; height: auto;" 
-    />
-  </a>
-</div>
+  <div class="image-container">
+    <a href="index.html" aria-label="Retour à l'accueil">
+      <img 
+        src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
+        alt="Logo TY"
+        style="max-width: 20%; height: auto;" 
+      />
+    </a>
+  </div>
 
   <!-- Barre de retour -->
   <div class="top-bar">
@@ -39,13 +57,12 @@
 
   <hr class="separator" />
 
-  <!-- Titre -->
   <h1>📜 Historique des scans</h1>
   <p class="subtext">Consultez les enregistrements des derniers jours</p>
 
   <!-- Filtres -->
-<input type="date" id="datePicker" class="date-input" title="Sélectionner une date dans les 15 derniers jours" />
-    <button onclick="loadHistory()">📅 Valider</button>
+  <input type="date" id="datePicker" class="date-input" title="Sélectionner une date dans les 15 derniers jours" />
+  <button onclick="loadHistory()">📅 Valider</button>
 
   <!-- Résultat -->
   <h2 id="selectedDateLabel">Résultats pour ...</h2>
@@ -62,7 +79,7 @@
     </div>
   </footer>
 
-  <!-- Script de la page -->
+  <!-- Scripts -->
   <script>
     const datePicker = document.getElementById("datePicker");
 
@@ -115,11 +132,6 @@
       }
 
       const selectedDate = datePicker.value;
-      if (!selectedDate) {
-        container.innerHTML = "❗ Merci de sélectionner une date.";
-        return;
-      }
-
       const [year, month, day] = selectedDate.split("-");
       const formattedDate = `${day}/${month}/${year}`;
       container.innerHTML = "🔄 Chargement...";
@@ -166,7 +178,7 @@
     }
   </script>
 
-  <!-- Script PWA -->
+  <script src="auth-ui.js"></script>
   <script src="pwa-ui.js"></script>
 </body>
 </html>
