@@ -43,9 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
   fetch("manifest.json")
     .then(res => res.json())
     .then(manifest => {
-      versionDiv.textContent = "Version: " + manifest.version;
+      versionDiv.textContent = "📦 Version : " + manifest.version;
 
-      // ✅ Ajout du token ici
       const form = new FormData();
       form.append("action", "dashboard");
       form.append("token", localStorage.getItem("auth_token") || "");
@@ -60,16 +59,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const html = `
       <div class="result-box">
         <h2>📦 Répartition des abonnements</h2>
-      <div class="field-tip">
-        📌 Tous les abonnements pour l'année scolaire, sauf ceux qui sont en statut 'clos' ou 'résilié'
-      </div>
+        <div class="field-tip">
+          📌 Tous les abonnements pour l'année scolaire, sauf ceux qui sont en statut 'clos' ou 'résilié'
+        </div>
         <canvas id="abonnementChart" height="200"></canvas>
       </div>
 
       <div class="result-box compact">
         <h2>📅 Cours décomptés</h2>
-              <div class="field-tip">
-        📌 En utilisant l'action 'décompter un cours', que ce soit en ligne, en mode "hors line" avec envoi en masse ou suite à une recherche manuelle.
+        <div class="field-tip">
+          📌 En utilisant l'action 'décompter un cours', que ce soit en ligne, en mode "hors ligne" avec envoi en masse ou suite à une recherche manuelle.
         </div>
         <p><strong>Aujourd'hui :</strong> ${stats.today}</p>
         <p><strong>Cette semaine :</strong> ${stats.thisWeek}</p>
@@ -79,12 +78,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="result-box">
         <h2>⚠️ Alertes - Cours restants faibles</h2>
-          <div class="field-tip">
-        📌 Sélectionnez une ligne pour accéder à la fiche détaillée et examiner les actions possibles.
+        <div class="field-tip">
+          📌 Sélectionnez une ligne pour accéder à la fiche détaillée et examiner les actions possibles.
         </div>
-        ${
-          Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
-            ? `
+        ${Array.isArray(stats.lowBalanceUsers) && stats.lowBalanceUsers.length > 0
+          ? `
               <div class="table-container">
                 <table class="alert-table">
                   <thead>
@@ -110,8 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </table>
               </div>
             `
-            : '<p>Aucune alerte 👍</p>'
-        }
+          : '<p>Aucune alerte 👍</p>'}
       </div>
     `;
 
@@ -119,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
       drawChart(stats.weekly || []);
       drawAbonnementChart(stats.abonnements || {});
 
-      // ✅ Clique sur ligne alertes → confirmation modale → redirection
       document.querySelectorAll('.alert-row').forEach(row => {
         row.addEventListener('click', () => {
           const code = row.dataset.q;
