@@ -13,7 +13,7 @@
 
   <!-- 🔐 Optionnel : blocage si non connecté -->
   <script>
-    if (!localStorage.getItem("auth_token")) {
+    if (!window.localStorage.getItem("auth_token")) {
       document.body.innerHTML = `
         <div style="text-align: center; padding: 50px;">
           <h2>🔒 Accès refusé</h2>
