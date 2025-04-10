@@ -100,15 +100,10 @@ function isAdmin() {
       scannerStatus.textContent = "❌ Scanner non disponible (librairie manquante)";
       scannerStatus.style.color = "red";
     } else {
-      navigator.mediaDevices?.getUserMedia({ video: true })
-        .then(() => {
-          scannerStatus.textContent = "✅ Scanner prêt";
-          scannerStatus.style.color = "green";
-        })
-        .catch(() => {
-          scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
-          scannerStatus.style.color = "orange";
-        });
+       // Ici, on ne teste plus automatiquement la caméra.
+       // On indiquera simplement un statut initial ou un message neutre.
+      scannerStatus.textContent = "Cliquez sur « Démarrer » pour activer la caméra.";
+       scannerStatus.style.color = "black";
     }
   }
 
@@ -365,28 +360,46 @@ function resendDetailInformation() {
       });
   }
 
-  function startScanner() {
-    if (typeof Html5Qrcode === "undefined") {
-      showStatusModal("❌ Scanner indisponible : librairie non chargée.");
-      return;
-    }
-
-    hideAllButtonSections();
-    show(scannerContainer);
-    resultDiv.innerHTML = "Scan en cours...";
-    hide(actionsContainer);
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      onScanSuccess
-    ).catch(err => {
-      console.error("❌ Erreur démarrage scanner:", err);
-      showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
-      hide(scannerContainer);
-      showAllButtonSections();
-    });
+function startScanner() {
+  if (typeof Html5Qrcode === "undefined") {
+    showStatusModal("❌ Scanner indisponible : librairie non chargée.");
+    return;
   }
+
+  hideAllButtonSections();
+  show(scannerContainer);
+  resultDiv.innerHTML = "Scan en cours...";
+  hide(actionsContainer);
+
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    onScanSuccess
+  )
+  .then(() => {
+    // Si démarrage OK, on peut mettre un message de statut
+    const scannerStatus = document.getElementById("scannerStatus");
+    if (scannerStatus) {
+      scannerStatus.textContent = "✅ Caméra activée et prête à scanner";
+      scannerStatus.style.color = "green";
+    }
+  })
+  .catch(err => {
+    console.error("❌ Erreur démarrage scanner:", err);
+    showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
+    hide(scannerContainer);
+    showAllButtonSections();
+
+    // Optionnel : mettre le statut à jour
+    const scannerStatus = document.getElementById("scannerStatus");
+    if (scannerStatus) {
+      scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
+      scannerStatus.style.color = "orange";
+    }
+  });
+}
+
 
   function stopScanner() {
     if (html5QrCode) {
