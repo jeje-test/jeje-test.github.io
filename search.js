@@ -3,10 +3,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetBtn = document.getElementById("resetBtn");
   const resultsContainer = document.getElementById("searchResults");
   const detailContainer = document.getElementById("detailContainer");
-  const versionDiv = document.getElementById("appVersion");
 
   let getURL = "";
-  
+
   function show(el) {
     el.classList.remove("hidden");
   }
@@ -19,8 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("manifest.json")
       .then((res) => res.json())
       .then((data) => {
-        versionDiv.textContent = `📦 Version : ${data.version}`;
         getURL = data.scriptURL;
+      })
+      .catch((err) => {
+        console.error("Erreur de chargement manifest.json :", err);
       });
   }
 
@@ -43,28 +44,25 @@ document.addEventListener("DOMContentLoaded", () => {
     return params;
   }
 
+  function maskEmail(email) {
+    if (typeof email !== "string") return "";
+    const atIndex = email.indexOf("@");
+    if (atIndex === -1) return email;
 
-function maskEmail(email) {
-  if (typeof email !== "string") return "";
-  const atIndex = email.indexOf("@");
-  if (atIndex === -1) return email;
+    const localPart = email.slice(0, atIndex);
+    const domainPart = email.slice(atIndex);
 
-  const localPart = email.slice(0, atIndex);
-  const domainPart = email.slice(atIndex);
+    if (localPart.length <= 2) {
+      return localPart[0] + '*' + domainPart;
+    }
 
-  if (localPart.length <= 2) {
-    return localPart[0] + '*' + domainPart;
+    const first = localPart[0];
+    const last = localPart[localPart.length - 1];
+    const masked = 'x'.repeat(localPart.length - 2);
+
+    return `${first}${masked}${last}${domainPart}`;
   }
 
-  const first = localPart[0];
-  const last = localPart[localPart.length - 1];
-  const masked = 'x'.repeat(localPart.length - 2);
-
-  return `${first}${masked}${last}${domainPart}`;
-}
-
-
-  
   function renderResults(list) {
     if (!list.length) {
       resultsContainer.innerHTML = "🔍 Aucun résultat trouvé.";
@@ -129,7 +127,7 @@ function maskEmail(email) {
     show(detailContainer);
 
     const token = localStorage.getItem("auth_token") || "";
-    fetch(`${getURL}?${params.toString()}&token=${encodeURIComponent(token)}&cacheBust=${Date.now()}`)
+    const url = `${getURL}?q=${encodeURIComponent(code)}&token=${encodeURIComponent(token)}&cacheBust=${Date.now()}`;
 
     fetch(url)
       .then((res) => res.json())
@@ -166,7 +164,8 @@ function maskEmail(email) {
     hide(detailContainer);
     show(resultsContainer);
 
-    fetch(`${getURL}?${params.toString()}&cacheBust=${Date.now()}`)
+    const token = localStorage.getItem("auth_token") || "";
+    fetch(`${getURL}?${params.toString()}&token=${encodeURIComponent(token)}&cacheBust=${Date.now()}`)
       .then((res) => res.json())
       .then((data) => renderResults(data.results || []))
       .catch((err) => {
@@ -185,6 +184,3 @@ function maskEmail(email) {
 
   loadVersionAndURL();
 });
-
-
-
