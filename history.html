@@ -6,6 +6,20 @@
   <title>📜 Historique des scans</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+  <script>
+  // Protection : accès réservé aux utilisateurs authentifiés
+  const token = localStorage.getItem("auth_token");
+  if (!token) {
+    document.body.innerHTML = `
+      <div style="text-align: center; padding: 50px;">
+        <h2>🔒 Accès refusé</h2>
+        <p>Vous devez être connecté pour consulter l’historique des scans.</p>
+        <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+      </div>
+    `;
+  }
+</script>
+
 <body>
   <!-- Logo -->
 <div class="image-container">
