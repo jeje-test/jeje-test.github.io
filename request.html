@@ -7,11 +7,12 @@
   <link rel="stylesheet" href="style.css" />
   <script src="libs/html5-qrcode.min.js"></script>
 </head>
-
+<script src="auth-ui.js" defer></script>
+<script src="pwa-ui.js" defer></script>
 <body>
 
   <!-- 🔐 Protection -->
-<script>requireAuthentication("Dashboard");</script>
+<script>requireAuthentication("Demande");</script>
 
 
 <!-- ✅ Bandeau utilisateur -->
@@ -126,7 +127,6 @@
 
 <!-- Scripts -->
 <script src="request.js" defer></script>
-<script src="auth-ui.js" defer></script>
-<script src="pwa-ui.js" defer></script>
+
 </body>
 </html>
