@@ -10,7 +10,38 @@
 
 <body>
 
-  <!-- Logo -->
+<!-- 🔐 Protection -->
+<script>
+  if (!localStorage.getItem("auth_token")) {
+    document.body.innerHTML = `
+      <div style="text-align: center; padding: 50px;">
+        <h2>🔒 Accès refusé</h2>
+        <p>Vous devez être connecté pour accéder à ce formulaire.</p>
+        <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+      </div>
+    `;
+  }
+</script>
+
+<!-- ✅ Bandeau utilisateur -->
+<div class="user-menu">
+  <span id="userNameDisplay" class="hidden"></span>
+  <button id="loginBtn" title="Connexion">👤</button>
+  <button id="logoutBtn" class="hidden" title="Déconnexion">🔓</button>
+</div>
+
+<!-- ✅ Modale de connexion -->
+<div id="loginModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>🔐 Connexion</h3>
+    <input type="password" id="passwordInput" placeholder="Mot de passe..." />
+    <p id="loginError" class="error-message hidden">❌</p>
+    <button id="submitLoginBtn">✅ Valider</button>
+    <button id="cancelLoginBtn">❌ Annuler</button>
+  </div>
+</div>
+
+<!-- Logo -->
 <div class="image-container">
   <a href="index.html" aria-label="Retour à l'accueil">
     <img 
@@ -21,92 +52,90 @@
   </a>
 </div>
 
-  <!-- Barre retour -->
-  <div class="top-bar">
-    <button onclick="window.location.href='index.html'">⬅️ Retour</button>
-  </div>
+<!-- Barre retour -->
+<div class="top-bar">
+  <button onclick="window.location.href='index.html'">⬅️ Retour</button>
+</div>
 
-  <hr class="separator" />
+<hr class="separator" />
+<h1 class="title-center">⚠️ Requête Exceptionnelle</h1>
 
-  <h1 class="title-center">⚠️ Requête Exceptionnelle</h1>
-
-  <!-- Formulaire -->
-  <form id="exceptionForm" class="form-container">
-    <div class="field-group">
-      <label for="qrCode">QR Code** :</label>
-      <div class="qr-row">
-        <input type="text" id="qrCode" name="qrCode" />
-        <button type="button" id="startScan">📸</button>
-      </div>
-      <div class="field-tip">
-        📌 Utiliser de préférence un QR Code. Sinon, laisser vide et renseigner Nom + Prénom.
-      </div>
+<!-- Formulaire -->
+<form id="exceptionForm" class="form-container">
+  <div class="field-group">
+    <label for="qrCode">QR Code** :</label>
+    <div class="qr-row">
+      <input type="text" id="qrCode" name="qrCode" />
+      <button type="button" id="startScan">📸</button>
     </div>
-
-    <!-- Scanner -->
-    <div id="scannerContainer" class="hidden scanner-wrapper">
-      <div id="reader" class="scanner-reader"></div>
-      <button type="button" id="stopScan">❌ Fermer</button>
-    </div>
-
-    <div id="identityFields" class="identity-fields">
-      <label for="nom">Nom :</label>
-      <input type="text" id="nom" name="nom" />
-
-      <label for="prenom">Prénom :</label>
-      <input type="text" id="prenom" name="prenom" />
-    </div>
-
-    <label for="email">Email :</label>
-    <input type="email" id="email" name="email" required />
-
-      <!-- Modale de choix de raison -->
-        <label for="raison">Raison de la requête :</label>
-    <select id="raison" name="raison" required>
-  <option value="prolonger_date">✅ Prolonger date de fin</option>
-  <option value="annuler_cours_erreur">❌ Annuler un cours - Erreur de saisie</option>
-  <option value="declarer_inscription_place">🧾 Déclarer une inscription sur place</option>
-  <option value="declarer_cours_essai_place" selected>🧪 Déclarer un cours d’essai</option>
-  <option value="declarer_cours_normal_place">📚 Déclarer un cours normal</option>
-  <option value="demander_decompte">🔢 Demander mail de décompte</option>    
-    </select>
-
-
-    <label for="commentaire">Commentaire :</label>
-    <textarea id="commentaire" name="commentaire" rows="4"></textarea>
     <div class="field-tip">
-      📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
-    </div>
-
-    <div class="form-buttons">
-      <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
-      <button type="submit" id="submitBtn">
-        ✅ Valider
-        <span id="loadingSpinner" class="spinner hidden"></span>
-      </button>
-    </div>
-  </form>
-
-  <!-- Modale de statut -->
-  <div id="statusModal" class="modal hidden">
-    <div class="modal-content">
-      <p id="statusText"></p>
-      <button id="newRequestBtn">➕ Nouvelle demande</button>
+      📌 Utiliser de préférence un QR Code. Sinon, laisser vide et renseigner Nom + Prénom.
     </div>
   </div>
 
-  <!-- Footer PWA -->
-  <footer>
-    <hr class="separator" />
-    <div id="pwaControls">
-      <button id="toggleThemeBtn">🌙 Mode sombre</button>
-      <button id="refreshCacheBtn">♻️ Recharger l’app</button>
-      <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
-      <p id="appVersion"></p>
-    </div>
-  </footer>
+  <!-- Scanner -->
+  <div id="scannerContainer" class="hidden scanner-wrapper">
+    <div id="reader" class="scanner-reader"></div>
+    <button type="button" id="stopScan">❌ Fermer</button>
+  </div>
 
-  <script src="request.js"></script>
-  <script src="pwa-ui.js"></script>
+  <div id="identityFields" class="identity-fields">
+    <label for="nom">Nom :</label>
+    <input type="text" id="nom" name="nom" />
+    <label for="prenom">Prénom :</label>
+    <input type="text" id="prenom" name="prenom" />
+  </div>
+
+  <label for="email">Email :</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="raison">Raison de la requête :</label>
+  <select id="raison" name="raison" required>
+    <option value="prolonger_date">✅ Prolonger date de fin</option>
+    <option value="annuler_cours_erreur">❌ Annuler un cours - Erreur de saisie</option>
+    <option value="declarer_inscription_place">🧾 Déclarer une inscription sur place</option>
+    <option value="declarer_cours_essai_place" selected>🧪 Déclarer un cours d’essai</option>
+    <option value="declarer_cours_normal_place">📚 Déclarer un cours normal</option>
+    <option value="demander_decompte">🔢 Demander mail de décompte</option>
+  </select>
+
+  <label for="commentaire">Commentaire :</label>
+  <textarea id="commentaire" name="commentaire" rows="4"></textarea>
+  <div class="field-tip">
+    📝 Vous pouvez préciser ici un complément utile : dates, erreur, ou tout autre détail important.
+  </div>
+
+  <div class="form-buttons">
+    <button type="reset" id="resetBtn">♻️ Réinitialiser</button>
+    <button type="submit" id="submitBtn">
+      ✅ Valider
+      <span id="loadingSpinner" class="spinner hidden"></span>
+    </button>
+  </div>
+</form>
+
+<!-- Modale de statut -->
+<div id="statusModal" class="modal hidden">
+  <div class="modal-content">
+    <p id="statusText"></p>
+    <button id="newRequestBtn">➕ Nouvelle demande</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <hr class="separator" />
+  <div id="pwaControls">
+    <button id="toggleThemeBtn">🌙 Mode sombre</button>
+    <button id="refreshCacheBtn">♻️ Recharger l’app</button>
+    <button id="installBtnFooter" style="display: none;">➕ Ajouter à l'écran d'accueil</button>
+    <p id="appVersion"></p>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="request.js" defer></script>
+<script src="auth-ui.js" defer></script>
+<script src="pwa-ui.js" defer></script>
 </body>
 </html>
