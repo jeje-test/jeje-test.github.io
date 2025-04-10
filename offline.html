@@ -11,16 +11,47 @@
 
 <body>
 
+  <!-- 🔐 Optionnel : blocage si non connecté -->
+  <script>
+    if (!localStorage.getItem("auth_token")) {
+      document.body.innerHTML = `
+        <div style="text-align: center; padding: 50px;">
+          <h2>🔒 Accès refusé</h2>
+          <p>Vous devez être connecté pour accéder au mode hors ligne.</p>
+          <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+        </div>
+      `;
+    }
+  </script>
+
+  <!-- ✅ Bandeau utilisateur -->
+  <div class="user-menu">
+    <span id="userNameDisplay" class="hidden"></span>
+    <button id="loginBtn" title="Connexion">👤</button>
+    <button id="logoutBtn" class="hidden" title="Déconnexion">🔓</button>
+  </div>
+
+  <!-- ✅ Modale de connexion -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-content">
+      <h3>🔐 Connexion</h3>
+      <input type="password" id="passwordInput" placeholder="Mot de passe..." />
+      <p id="loginError" class="error-message hidden">❌</p>
+      <button id="submitLoginBtn">✅ Valider</button>
+      <button id="cancelLoginBtn">❌ Annuler</button>
+    </div>
+  </div>
+
   <!-- Logo -->
-<div class="image-container">
-  <a href="index.html" aria-label="Retour à l'accueil">
-    <img 
-      src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
-      alt="Logo TY"
-      style="max-width: 20%; height: auto;" 
-    />
-  </a>
-</div>
+  <div class="image-container">
+    <a href="index.html" aria-label="Retour à l'accueil">
+      <img 
+        src="https://static.wixstatic.com/media/d0d4b9_e9433d3ddd1448499e2701ff2b2c4687~mv2.png/v1/crop/x_0,y_13,w_500,h_474/fill/w_600,h_567,al_c,lg_1,q_85,enc_avif,quality_auto/TY.png" 
+        alt="Logo TY"
+        style="max-width: 20%; height: auto;" 
+      />
+    </a>
+  </div>
 
   <!-- Barre retour -->
   <div class="top-bar">
@@ -74,7 +105,9 @@
     </div>
   </footer>
 
+  <!-- Scripts JS -->
   <script src="offline.js"></script>
+  <script src="auth-ui.js"></script>
   <script src="pwa-ui.js"></script>
 </body>
 </html>
