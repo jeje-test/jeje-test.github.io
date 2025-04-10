@@ -1,35 +1,27 @@
-// auth-ui.js : gestion du bandeau connexion/déconnexion et modale login
+// auth-ui.js
 
-const TOKEN_KEY = "auth_token";
-const USER_NAME_KEY = "auth_name";
-
-function show(el) {
-  el.classList.remove("hidden");
+// ✅ Gestion de l’affichage de connexion si l'utilisateur n'est pas authentifié
+function enforceAuthAccess(pageName = "") {
+  const token = localStorage.getItem("auth_token");
+  if (!token) {
+    const modal = document.createElement("div");
+    modal.className = "custom-modal fullscreen-modal";
+    modal.innerHTML = `
+      <div class="custom-modal-content">
+        <h2>🔒 Accès restreint</h2>
+        <p>Vous devez être connecté pour accéder à cette page${pageName ? ` (${pageName})` : ''}.</p>
+        <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+      </div>
+    `;
+    document.body.innerHTML = '';
+    document.body.appendChild(modal);
+    return false;
+  }
+  return true;
 }
 
-function hide(el) {
-  el.classList.add("hidden");
-}
-
-function showLoggedInUI(name) {
-  const userNameDisplay = document.getElementById("userNameDisplay");
-  const loginBtn = document.getElementById("loginBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (!userNameDisplay || !loginBtn || !logoutBtn) return;
-
-  userNameDisplay.textContent = `👤 ${name}`;
-  show(userNameDisplay);
-  hide(loginBtn);
-  show(logoutBtn);
-}
-
-function checkAuthStatus() {
-  const token = localStorage.getItem(TOKEN_KEY);
-  const name = localStorage.getItem(USER_NAME_KEY);
-  if (token && name) showLoggedInUI(name);
-}
-
-function setupAuthUI() {
+// ✅ Affiche l'identité connectée ou les boutons login/logout si présents dans la page
+function setupUserMenu() {
   const loginBtn = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const userNameDisplay = document.getElementById("userNameDisplay");
@@ -39,55 +31,72 @@ function setupAuthUI() {
   const cancelLoginBtn = document.getElementById("cancelLoginBtn");
   const loginError = document.getElementById("loginError");
 
-  if (!loginBtn || !logoutBtn || !submitLoginBtn) return;
+  const token = localStorage.getItem("auth_token");
+  const name = localStorage.getItem("auth_name");
 
-  loginBtn.addEventListener("click", () => show(loginModal));
+  if (token && userNameDisplay && loginBtn && logoutBtn) {
+    userNameDisplay.textContent = `👤 ${name || "Connecté"}`;
+    userNameDisplay.classList.remove("hidden");
+    loginBtn.classList.add("hidden");
+    logoutBtn.classList.remove("hidden");
 
-  cancelLoginBtn?.addEventListener("click", () => {
-    hide(loginModal);
-    hide(loginError);
-    if (passwordInput) passwordInput.value = "";
-  });
+    logoutBtn.onclick = () => {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_name");
+      window.location.reload();
+    };
+  }
 
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_NAME_KEY);
-    location.reload();
-  });
+  if (loginBtn && loginModal && passwordInput && submitLoginBtn && loginError) {
+    loginBtn.onclick = () => loginModal.classList.remove("hidden");
 
-  submitLoginBtn.addEventListener("click", async () => {
-    if (!passwordInput) return;
-    const pwd = passwordInput.value.trim();
-    if (!pwd) {
-      loginError.textContent = "⚠️ Veuillez entrer un mot de passe.";
-      show(loginError);
-      return;
-    }
+    cancelLoginBtn?.addEventListener("click", () => {
+      loginModal.classList.add("hidden");
+      loginError.classList.add("hidden");
+      passwordInput.value = "";
+    });
 
-    try {
-      const manifest = await fetch("manifest.json").then(r => r.json());
-      const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
-      const result = await res.json();
-
-      if (result.status === "success" && result.token) {
-        localStorage.setItem(TOKEN_KEY, result.token);
-        localStorage.setItem(USER_NAME_KEY, result.name);
-        hide(loginModal);
-        hide(loginError);
-        showLoggedInUI(result.name);
-      } else {
-        loginError.textContent = "❌ Mot de passe incorrect.";
-        show(loginError);
+    submitLoginBtn.addEventListener("click", async () => {
+      const pwd = passwordInput.value.trim();
+      if (!pwd) {
+        loginError.textContent = "⚠️ Veuillez entrer un mot de passe.";
+        loginError.classList.remove("hidden");
+        return;
       }
-    } catch (err) {
-      console.error("Erreur login:", err);
-      loginError.textContent = "❌ Erreur serveur.";
-      show(loginError);
-    }
-  });
 
-  checkAuthStatus();
+      try {
+        const manifest = await fetch("manifest.json").then(r => r.json());
+        const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
+        const result = await res.json();
+
+        if (result.status === "success" && result.token) {
+          localStorage.setItem("auth_token", result.token);
+          localStorage.setItem("auth_name", result.name);
+          loginModal.classList.add("hidden");
+          loginError.classList.add("hidden");
+          setupUserMenu();
+        } else {
+          loginError.textContent = "❌ Mot de passe incorrect.";
+          loginError.classList.remove("hidden");
+        }
+      } catch (err) {
+        console.error("Erreur login:", err);
+        loginError.textContent = "❌ Erreur serveur.";
+        loginError.classList.remove("hidden");
+      }
+    });
+  }
 }
 
-// Exécution automatique au chargement de la page
-window.addEventListener("DOMContentLoaded", setupAuthUI);
+// ✅ À appeler dans les pages protégées
+function requireAuthentication(pageName = "") {
+  document.addEventListener("DOMContentLoaded", () => {
+    const allowed = enforceAuthAccess(pageName);
+    if (allowed) setupUserMenu();
+  });
+}
+
+// ✅ Appel automatique si le script est chargé (sauf dashboard déjà autonome)
+if (!window.skipAuthUIAutoInit) {
+  setupUserMenu();
+}
