@@ -128,7 +128,9 @@ function maskEmail(email) {
     hide(resultsContainer);
     show(detailContainer);
 
-    const url = `${getURL}?q=${encodeURIComponent(code)}&cacheBust=${Date.now()}`;
+    const token = localStorage.getItem("auth_token") || "";
+    fetch(`${getURL}?${params.toString()}&token=${encodeURIComponent(token)}&cacheBust=${Date.now()}`)
+
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
