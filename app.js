@@ -29,20 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const allButtonSections = document.querySelectorAll(".buttons");
 
-const loginBtn = document.getElementById('loginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-const userNameDisplay = document.getElementById('userNameDisplay');
-const loginModal = document.getElementById('loginModal');
-const passwordInput = document.getElementById('passwordInput');
-const submitLoginBtn = document.getElementById('submitLoginBtn');
-const cancelLoginBtn = document.getElementById('cancelLoginBtn'); // 👈 on le récupère
-
-  cancelLoginBtn.addEventListener("click", closeLoginModal); // 👈 on l'attache
 
 
-const TOKEN_KEY = "auth_token";
-const USER_NAME_KEY = "auth_name";
-  
 
   let html5QrCode = null;
   let lastScannedCode = null;
@@ -51,67 +39,14 @@ const USER_NAME_KEY = "auth_name";
   let fromSearch = false;
 
 
-    // Authentification
-  const token = localStorage.getItem(TOKEN_KEY);
-  const name = localStorage.getItem(USER_NAME_KEY);
-  if (token && name) showLoggedInUI(name);
 
-loginBtn.addEventListener("click", () => {
-  loginModal.classList.remove("hidden");
-});
 
-logoutBtn.addEventListener("click", () => {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(USER_NAME_KEY);
-  window.location.reload();
-});
-
-submitLoginBtn.addEventListener("click", async () => {
-  const errorEl = document.getElementById("loginError");
-  const pwd = passwordInput.value.trim();
-
-  if (!pwd) {
-    errorEl.textContent = "⚠️ Veuillez entrer un mot de passe.";
-    errorEl.classList.remove("hidden");
-    return;
-  }
-
-  try {
-    const manifest = await fetch("manifest.json").then(r => r.json());
-    const res = await fetch(`${manifest.scriptURL}?action=login&password=${encodeURIComponent(pwd)}`);
-    const result = await res.json();
-
-    if (result.status === "success" && result.token) {
-      localStorage.setItem(TOKEN_KEY, result.token);
-      localStorage.setItem(USER_NAME_KEY, result.name);
-      loginModal.classList.add("hidden");
-      errorEl.classList.add("hidden");
-      showLoggedInUI(result.name);
-    } else {
-      errorEl.textContent = "❌ Mot de passe incorrect.";
-      errorEl.classList.remove("hidden");
-    }
-  } catch (err) {
-    console.error("Erreur de connexion :", err);
-    errorEl.textContent = "❌ Erreur serveur. Réessayez plus tard.";
-    errorEl.classList.remove("hidden");
-  }
-});
 
   
 function isAdmin() {
   return !!localStorage.getItem(TOKEN_KEY);
 }
   
-function showLoggedInUI(name) {
-  userNameDisplay.textContent = `👤 ${name}`;
-  userNameDisplay.classList.remove("hidden");
-  loginBtn.classList.add("hidden");
-  logoutBtn.classList.remove("hidden");
-
-  // tu peux ici déverrouiller certaines fonctionnalités admin
-}
-
   
   //
 
@@ -529,14 +464,3 @@ function resendDetailInformation() {
 
   fetchManifestAndInit();
 });
-
-
-
-function closeLoginModal() {
-  document.getElementById("loginModal").classList.add("hidden");
-  document.getElementById("loginError").classList.add("hidden");
-  passwordInput.value = "";
-}
-
-
-
