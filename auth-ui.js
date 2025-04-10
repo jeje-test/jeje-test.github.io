@@ -1,23 +1,51 @@
 // auth-ui.js
 
+const TOKEN_KEY = "auth_token";
+const USER_NAME_KEY = "auth_name";
+
+function show(el) {
+  el.classList.remove("hidden");
+}
+
+function hide(el) {
+  el.classList.add("hidden");
+}
+
+// ✅ Vérifie avec le serveur si le token est encore valide
+async function verifyTokenWithServer(token) {
+  try {
+    const manifest = await fetch("manifest.json").then(r => r.json());
+    const res = await fetch(`${manifest.scriptURL}?action=verify&token=${encodeURIComponent(token)}`);
+    const result = await res.json();
+    return result.status === "valid";
+  } catch (e) {
+    console.error("Erreur de vérification du token:", e);
+    return false;
+  }
+}
+
 // ✅ Gestion de l’affichage de connexion si l'utilisateur n'est pas authentifié
 function enforceAuthAccess(pageName = "") {
-  const token = localStorage.getItem("auth_token");
+  const token = localStorage.getItem(TOKEN_KEY);
   if (!token) {
-    const modal = document.createElement("div");
-    modal.className = "custom-modal fullscreen-modal";
-    modal.innerHTML = `
-      <div class="custom-modal-content">
-        <h2>🔒 Accès restreint</h2>
-        <p>Vous devez être connecté pour accéder à cette page${pageName ? ` (${pageName})` : ''}.</p>
-        <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
-      </div>
-    `;
-    document.body.innerHTML = '';
-    document.body.appendChild(modal);
+    blockPageAccess(pageName);
     return false;
   }
   return true;
+}
+
+function blockPageAccess(pageName = "") {
+  const modal = document.createElement("div");
+  modal.className = "custom-modal fullscreen-modal";
+  modal.innerHTML = `
+    <div class="custom-modal-content">
+      <h2>🔒 Accès restreint</h2>
+      <p>Vous devez être connecté pour accéder à cette page${pageName ? ` (${pageName})` : ''}.</p>
+      <button onclick="window.location.href='index.html'">🔑 Se connecter</button>
+    </div>
+  `;
+  document.body.innerHTML = '';
+  document.body.appendChild(modal);
 }
 
 // ✅ Affiche l'identité connectée ou les boutons login/logout si présents dans la page
@@ -31,8 +59,8 @@ function setupUserMenu() {
   const cancelLoginBtn = document.getElementById("cancelLoginBtn");
   const loginError = document.getElementById("loginError");
 
-  const token = localStorage.getItem("auth_token");
-  const name = localStorage.getItem("auth_name");
+  const token = localStorage.getItem(TOKEN_KEY);
+  const name = localStorage.getItem(USER_NAME_KEY);
 
   if (token && userNameDisplay && loginBtn && logoutBtn) {
     userNameDisplay.textContent = `👤 ${name || "Connecté"}`;
@@ -41,8 +69,8 @@ function setupUserMenu() {
     logoutBtn.classList.remove("hidden");
 
     logoutBtn.onclick = () => {
-      localStorage.removeItem("auth_token");
-      localStorage.removeItem("auth_name");
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_NAME_KEY);
       window.location.reload();
     };
   }
@@ -70,8 +98,8 @@ function setupUserMenu() {
         const result = await res.json();
 
         if (result.status === "success" && result.token) {
-          localStorage.setItem("auth_token", result.token);
-          localStorage.setItem("auth_name", result.name);
+          localStorage.setItem(TOKEN_KEY, result.token);
+          localStorage.setItem(USER_NAME_KEY, result.name);
           loginModal.classList.add("hidden");
           loginError.classList.add("hidden");
           setupUserMenu();
@@ -91,8 +119,20 @@ function setupUserMenu() {
 // ✅ À appeler dans les pages protégées
 function requireAuthentication(pageName = "") {
   document.addEventListener("DOMContentLoaded", () => {
-    const allowed = enforceAuthAccess(pageName);
-    if (allowed) setupUserMenu();
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      blockPageAccess(pageName);
+      return;
+    }
+    verifyTokenWithServer(token).then(valid => {
+      if (valid) {
+        setupUserMenu();
+      } else {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_NAME_KEY);
+        blockPageAccess(pageName);
+      }
+    });
   });
 }
 
