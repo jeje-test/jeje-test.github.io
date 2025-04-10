@@ -13,12 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const rescanBtn = document.getElementById("rescanBtn");
   const pendingNotice = document.getElementById("pendingNotice");
 
-  let html5QrCode = null;
+  let html5QrCode = new Html5Qrcode("reader");
   let offlineScans = [];
   let postURL = "";
 
   const STORAGE_KEY = "offlineQRScans";
-  const TOKEN = localStorage.getItem("auth_token") || ""; // ✅ Ajout du token
+  const TOKEN = localStorage.getItem("auth_token") || "";
 
   function show(el) {
     el.classList.remove("hidden");
@@ -83,8 +83,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function startScanner() {
+    if (typeof Html5Qrcode === "undefined") {
+      showStatusModal("❌ Scanner non disponible. Vérifiez que la librairie html5-qrcode.min.js est bien chargée.");
+      return;
+    }
+
     show(scannerContainer);
-    html5QrCode = new Html5Qrcode("reader");
     html5QrCode.start(
       { facingMode: "environment" },
       { fps: 10, qrbox: { width: 250, height: 250 } },
@@ -120,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
     show(loader);
 
     let totalEnvoyes = 0;
+    let successCount = 0;
     let resultats = [];
 
     for (const code of offlineScans) {
@@ -129,14 +134,14 @@ document.addEventListener("DOMContentLoaded", function () {
           body: new URLSearchParams({
             data: code,
             type: "decompte",
-            token: TOKEN, // ✅ Ajout du token ici
+            token: TOKEN,
           })
         });
 
         const res = await response.json();
-        totalEnvoyes++; // ✅ On compte même les KO
+        totalEnvoyes++;
+        if (res.status === "success") successCount++;
         resultats.push(`📌 ${code} → ${res.message || "Réponse inconnue"}`);
-
       } catch (err) {
         resultats.push(`❌ ${code} → Erreur d'envoi`);
       }
@@ -145,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     hide(loader);
     clearOfflineScans();
 
-    const messageFinal = `✅ ${totalEnvoyes} envoyés\n\n${resultats.join('\n')}`;
+    const messageFinal = `✅ ${successCount}/${totalEnvoyes} réussis\n\n${resultats.join('\n')}`;
     showStatusModal(messageFinal);
   }
 
