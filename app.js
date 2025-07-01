@@ -7,8 +7,8 @@ function show(el) {
   el.classList.remove("hidden");
 }
 
-// Clé de stockage du token
-const TOKEN_KEY = "myAppToken";
+// Clé alignée avec auth-ui.js
+const TOKEN_KEY = "auth_token";
 
 document.addEventListener("DOMContentLoaded", function () {
   const STORAGE_KEY = "offlineQRScans";
@@ -28,7 +28,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const closeStatusBtn = document.getElementById("closeStatusBtn");
 
   const offlineNotice = document.getElementById("offlineNotice");
+
   const allButtonSections = document.querySelectorAll(".buttons");
+
+
+
 
   let html5QrCode = null;
   let lastScannedCode = null;
@@ -36,9 +40,17 @@ document.addEventListener("DOMContentLoaded", function () {
   let postURL = "";
   let fromSearch = false;
 
-  function isAdmin() {
-    return !!localStorage.getItem(TOKEN_KEY);
-  }
+
+
+
+
+  
+function isAdmin() {
+  return !!localStorage.getItem(TOKEN_KEY);
+}
+  
+  
+  //
 
   function hideAllButtonSections() {
     allButtonSections.forEach(el => hide(el));
@@ -90,8 +102,10 @@ document.addEventListener("DOMContentLoaded", function () {
       scannerStatus.textContent = "❌ Scanner non disponible (librairie manquante)";
       scannerStatus.style.color = "red";
     } else {
+       // Ici, on ne teste plus automatiquement la caméra.
+       // On indiquera simplement un statut initial ou un message neutre.
       scannerStatus.textContent = "Cliquez sur « Démarrer » pour activer la caméra.";
-      scannerStatus.style.color = "black";
+       scannerStatus.style.color = "black";
     }
   }
 
@@ -105,206 +119,229 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchDataFromGoogleSheet(decodedText);
   }
 
-  function maskEmail(email) {
-    if (typeof email !== "string") return "";
-    const atIndex = email.indexOf("@");
-    if (atIndex === -1) return email;
+function maskEmail(email) {
+  if (typeof email !== "string") return "";
+  const atIndex = email.indexOf("@");
+  if (atIndex === -1) return email;
 
-    const localPart = email.slice(0, atIndex);
-    const domainPart = email.slice(atIndex);
+  const localPart = email.slice(0, atIndex);
+  const domainPart = email.slice(atIndex);
 
-    if (localPart.length <= 2) {
-      return localPart[0] + '*' + domainPart;
-    }
-
-    const first = localPart[0];
-    const last = localPart[localPart.length - 1];
-    const masked = 'x'.repeat(localPart.length - 2);
-
-    return `${first}${masked}${last}${domainPart}`;
+  if (localPart.length <= 2) {
+    return localPart[0] + '*' + domainPart;
   }
 
-  function fetchDataFromGoogleSheet(qrData) {
-    const fieldsToDisplay = {
-      nom: "Nom",
-      prenom: "Prénom",
-      abonnement: "Abonnement",
-      dateDebut: "Date de début",
-      dateFin: "Date de fin",
-      totalCours: "Nombre de cours",
-      coursUtilises: "Cours utilisés",
-      coursRestants: "Cours Restants",
-      dernierScan: "Dernier scan",
-      statut: "Statut"
-    };
+  const first = localPart[0];
+  const last = localPart[localPart.length - 1];
+  const masked = 'x'.repeat(localPart.length - 2);
 
-    show(loader);
-    resultDiv.innerHTML = "";
-    hide(actionsContainer);
+  return `${first}${masked}${last}${domainPart}`;
+}
 
-    const cacheBuster = `&cacheBust=${Date.now()}`;
-    const token = localStorage.getItem(TOKEN_KEY);
-    fetch(`${getURL}${encodeURIComponent(qrData)}&token=${encodeURIComponent(token)}${cacheBuster}`, {
-      cache: "no-store"
-    })
-      .then(response => response.json())
-      .then(data => {
-        hide(loader);
-        if (data && data.result) {
-          let resultHTML = `<strong>Résultat :</strong><br>`;
+  
+function fetchDataFromGoogleSheet(qrData) {
+  const fieldsToDisplay = {
+    nom: "Nom",
+    prenom: "Prénom",
+    abonnement: "Abonnement",
+    dateDebut: "Date de début",
+    dateFin: "Date de fin",
+    totalCours: "Nombre de cours",
+    coursUtilises: "Cours utilisés",
+    coursRestants: "Cours Restants",
+    dernierScan: "Dernier scan",
+    statut: "Statut"
+  };
 
-          if (data.result.email) {
-            const maskedEmail = maskEmail(data.result.email);
-            resultHTML += `<p id="email" data-email="${data.result.email}"><strong>Email :</strong> ${maskedEmail}</p>`;
-          }
+  show(loader);
+  resultDiv.innerHTML = "";
+  hide(actionsContainer);
 
-          resultHTML += `<table class="result-table"><tbody>`;
-          for (const key in fieldsToDisplay) {
-            const label = fieldsToDisplay[key];
-            const value = data.result[key];
+  const cacheBuster = `&cacheBust=${Date.now()}`;
+// Injection du token
+  const token = localStorage.getItem("auth_token");
+  fetch(`${getURL}${encodeURIComponent(qrData)}&token=${encodeURIComponent(token)}${cacheBuster}`, {
+    cache: "no-store"
+  })
+    
+    .then(response => response.json())
+    .then(data => {
+      hide(loader);
+      if (data && data.result) {
+        let resultHTML = `<strong>Résultat :</strong><br>`;
 
-            if (value !== undefined && value !== "") {
-              let highlight = "";
+        // Masquage de l'e-mail s'il existe
+        if (data.result.email) {
+          const maskedEmail = maskEmail(data.result.email);
+          resultHTML += `<p id="email" data-email="${data.result.email}"><strong>Email :</strong> ${maskedEmail}</p>`;
+        }
 
-              if (key === "coursRestants" && !isNaN(value)) {
-                const nb = parseInt(value);
-                if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
-                else if (nb <= 5) highlight = ' style="color: orange;"';
-              }
+        // Affichage du tableau structuré
+        resultHTML += `<table class="result-table"><tbody>`;
+        for (const key in fieldsToDisplay) {
+          const label = fieldsToDisplay[key];
+          const value = data.result[key];
 
-              resultHTML += `<tr><th>${label}</th><td${highlight} id="${key}">${value}</td></tr>`;
+          if (value !== undefined && value !== "") {
+            let highlight = "";
+
+            if (key === "coursRestants" && !isNaN(value)) {
+              const nb = parseInt(value);
+              if (nb <= 2) highlight = ' style="color: red; font-weight: bold;"';
+              else if (nb <= 5) highlight = ' style="color: orange;"';
             }
+
+            resultHTML += `<tr><th>${label}</th><td${highlight} id="${key}">${value}</td></tr>`;
           }
-          resultHTML += `</tbody></table>`;
-
-          resultDiv.innerHTML = resultHTML;
-          resultDiv.classList.add("fade-in");
-          setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
-          show(actionsContainer);
-        } else {
-          resultDiv.innerHTML = "Aucune donnée trouvée.";
-          showStatusModal("❌ Aucune donnée trouvée.");
         }
-      })
-      .catch(error => {
-        hide(loader);
-        resultDiv.innerHTML = "Erreur de récupération des données.";
-        console.error("Erreur GET :", error);
-        showStatusModal("❌ Erreur lors de la récupération des données.");
-      });
-  }
+        resultHTML += `</tbody></table>`;
 
-  function resendQrCode() {
-    show(loader);
-
-    const emailEl = document.getElementById("email");
-    const email = emailEl?.dataset?.email || "";
-    const nom = document.getElementById("nom")?.textContent?.trim() || "";
-    const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
-    const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
-    const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
-
-    if (!email || !nom || !prenom || !abonnement || !dateDebut) {
-      hide(loader);
-      showStatusModal("❌ Données manquantes pour renvoyer le QR Code.");
-      return;
-    }
-
-    const validateActionBtn = document.getElementById("validateActionBtn");
-    validateActionBtn.disabled = true;
-
-    const token = localStorage.getItem(TOKEN_KEY);
-    fetch(postURL, {
-      method: "POST",
-      body: new URLSearchParams({
-        token,
-        action: "renvoyerQRcode",
-        email,
-        nom,
-        prenom,
-        abonnement,
-        dateDebut
-      })
+        resultDiv.innerHTML = resultHTML;
+        resultDiv.classList.add("fade-in");
+        setTimeout(() => resultDiv.classList.remove("fade-in"), 500);
+        show(actionsContainer);
+      } else {
+        resultDiv.innerHTML = "Aucune donnée trouvée.";
+        showStatusModal("❌ Aucune donnée trouvée.");
+      }
     })
-      .then(res => res.json())
-      .then(data => {
-        hide(loader);
-        if (data.status === "success") {
-          showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
-        } else {
-          showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
-        }
-      })
-      .catch(err => {
-        hide(loader);
-        console.error(err);
-        showStatusModal("❌ Erreur lors de l'envoi.");
-      })
-      .finally(() => {
-        document.getElementById("validateActionBtn").disabled = false;
-      });
-  }
-
-  function resendDetailInformation() {
-    show(loader);
-
-    const emailEl = document.getElementById("email");
-    const email = emailEl?.dataset?.email || "";
-    const nom = document.getElementById("nom")?.textContent?.trim() || "";
-    const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
-    const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
-    const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
-
-    if (!email || !nom || !prenom || !abonnement || !dateDebut) {
+    .catch(error => {
       hide(loader);
-      showStatusModal("❌ Données manquantes pour renvoyer le détail.");
-      return;
-    }
+      resultDiv.innerHTML = "Erreur de récupération des données.";
+      console.error("Erreur GET :", error);
+      showStatusModal("❌ Erreur lors de la récupération des données.");
+    });
+}
 
-    const validateActionBtn = document.getElementById("validateActionBtn");
-    validateActionBtn.disabled = true;
 
-    const token = localStorage.getItem(TOKEN_KEY);
-    fetch(postURL, {
-      method: "POST",
-      body: new URLSearchParams({
-        token,
-        action: "renvoyerDetailDecompte",
-        email,
-        nom,
-        prenom,
-        abonnement,
-        dateDebut
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-        hide(loader);
-        if (data.status === "success") {
-          showStatusModal("📧 " + (data.message || "Détail envoyé avec succès !"));
-        } else {
-          showStatusModal("❌ " + (data.message || "Échec de l'envoi du détail."));
-        }
-      })
-      .catch(err => {
-        hide(loader);
-        console.error(err);
-        showStatusModal("❌ Erreur lors de l'envoi.");
-      })
-      .finally(() => {
-        document.getElementById("validateActionBtn").disabled = false;
-      });
+
+  
+// Fonction pour renvoyer le QR Code
+function resendQrCode() {
+  show(loader);
+
+  // 🔒 Récupère les valeurs à partir des nouveaux IDs générés dans le tableau
+  const emailEl = document.getElementById("email");
+  const email = emailEl?.dataset?.email || "";
+  
+  const nom = document.getElementById("nom")?.textContent?.trim() || "";
+  const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
+  const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
+  const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
+
+  // Vérifie que les infos essentielles sont bien présentes
+  if (!email || !nom || !prenom || !abonnement || !dateDebut) {
+    hide(loader);
+    showStatusModal("❌ Données manquantes pour renvoyer le QR Code.");
+    return;
   }
+
+  // Désactive le bouton pour éviter les clics multiples
+  const validateActionBtn = document.getElementById("validateActionBtn");
+  validateActionBtn.disabled = true;
+
+  // 📤 Envoi au serveur Apps Script
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({
+      // Injection du token
+      token: localStorage.getItem("auth_token"),
+      action: "renvoyerQRcode",
+      email,
+      nom,
+      prenom,
+      abonnement,
+      dateDebut
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      hide(loader);
+      if (data.status === "success") {
+        showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
+      } else {
+        showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
+      }
+    })
+    .catch(err => {
+      hide(loader);
+      console.error(err);
+      showStatusModal("❌ Erreur lors de l'envoi.");
+    })
+    .finally(() => {
+      validateActionBtn.disabled = false;
+    });
+}
+
+
+  // Fonction pour renvoyer le détail des décomptes
+function resendDetailInformation() {
+  show(loader);
+
+  // 🔒 Récupère les valeurs à partir des nouveaux IDs générés dans le tableau
+  const emailEl = document.getElementById("email");
+  const email = emailEl?.dataset?.email || "";
+  
+  const nom = document.getElementById("nom")?.textContent?.trim() || "";
+  const prenom = document.getElementById("prenom")?.textContent?.trim() || "";
+  const abonnement = document.getElementById("abonnement")?.textContent?.trim() || "";
+  const dateDebut = document.getElementById("dateDebut")?.textContent?.trim() || "";
+
+  // Vérifie que les infos essentielles sont bien présentes
+  if (!email || !nom || !prenom || !abonnement || !dateDebut) {
+    hide(loader);
+    showStatusModal("❌ Données manquantes pour renvoyer le QR Code.");
+    return;
+  }
+
+  // Désactive le bouton pour éviter les clics multiples
+  const validateActionBtn = document.getElementById("validateActionBtn");
+  validateActionBtn.disabled = true;
+
+  // 📤 Envoi au serveur Apps Script
+  fetch(postURL, {
+    method: "POST",
+    body: new URLSearchParams({
+      action: "renvoyerDetailDecompte",
+      email,
+      nom,
+      prenom,
+      abonnement,
+      dateDebut
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      hide(loader);
+      if (data.status === "success") {
+        showStatusModal("📧 " + (data.message || "QR Code renvoyé avec succès !"));
+      } else {
+        showStatusModal("❌ " + (data.message || "Échec de renvoi du QR Code."));
+      }
+    })
+    .catch(err => {
+      hide(loader);
+      console.error(err);
+      showStatusModal("❌ Erreur lors de l'envoi.");
+    })
+    .finally(() => {
+      validateActionBtn.disabled = false;
+    });
+}
+
+
+
+
 
   function sendDataToGoogleSheet(scannedData) {
+   
     show(loader);
     resultDiv.innerHTML = "";
     hide(actionsContainer);
 
-    const token = localStorage.getItem(TOKEN_KEY);
     fetch(postURL, {
       method: "POST",
-      body: new URLSearchParams({ token, data: scannedData, type: "decompte" })
+      body: new URLSearchParams({ data: scannedData, type: "decompte" })
     })
       .then(response => response.json())
       .then(data => {
@@ -330,43 +367,46 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  function startScanner() {
-    if (typeof Html5Qrcode === "undefined") {
-      showStatusModal("❌ Scanner indisponible : librairie non chargée.");
-      return;
-    }
-
-    hideAllButtonSections();
-    show(scannerContainer);
-    resultDiv.innerHTML = "Scan en cours...";
-    hide(actionsContainer);
-
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: { width: 250, height: 250 } },
-      onScanSuccess
-    )
-    .then(() => {
-      const scannerStatus = document.getElementById("scannerStatus");
-      if (scannerStatus) {
-        scannerStatus.textContent = "✅ Caméra activée et prête à scanner";
-        scannerStatus.style.color = "green";
-      }
-    })
-    .catch(err => {
-      console.error("❌ Erreur démarrage scanner:", err);
-      showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
-      hide(scannerContainer);
-      showAllButtonSections();
-
-      const scannerStatus = document.getElementById("scannerStatus");
-      if (scannerStatus) {
-        scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
-        scannerStatus.style.color = "orange";
-      }
-    });
+function startScanner() {
+  if (typeof Html5Qrcode === "undefined") {
+    showStatusModal("❌ Scanner indisponible : librairie non chargée.");
+    return;
   }
+
+  hideAllButtonSections();
+  show(scannerContainer);
+  resultDiv.innerHTML = "Scan en cours...";
+  hide(actionsContainer);
+
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: { width: 250, height: 250 } },
+    onScanSuccess
+  )
+  .then(() => {
+    // Si démarrage OK, on peut mettre un message de statut
+    const scannerStatus = document.getElementById("scannerStatus");
+    if (scannerStatus) {
+      scannerStatus.textContent = "✅ Caméra activée et prête à scanner";
+      scannerStatus.style.color = "green";
+    }
+  })
+  .catch(err => {
+    console.error("❌ Erreur démarrage scanner:", err);
+    showStatusModal("❌ Accès à la caméra refusé ou indisponible.<br><br>Merci de vérifier vos autorisations dans le navigateur.");
+    hide(scannerContainer);
+    showAllButtonSections();
+
+    // Optionnel : mettre le statut à jour
+    const scannerStatus = document.getElementById("scannerStatus");
+    if (scannerStatus) {
+      scannerStatus.textContent = "⚠️ Scanner non autorisé (caméra bloquée)";
+      scannerStatus.style.color = "orange";
+    }
+  });
+}
+
 
   function stopScanner() {
     if (html5QrCode) {
@@ -400,10 +440,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     validateActionBtn.addEventListener("click", () => {
       const selected = actionSelect.value;
+
       if (!lastScannedCode) {
         showStatusModal("❌ Aucune donnée à traiter.");
         return;
       }
+
+      console.log("selected =", JSON.stringify(selected));
+
       switch (selected?.trim()) {
         case "decrement":
           sendDataToGoogleSheet(lastScannedCode);
@@ -418,6 +462,9 @@ document.addEventListener("DOMContentLoaded", function () {
           showStatusModal(`❌ Action non reconnue : ${selected}`);
           break;
       }
+
+
+      
     });
 
     cancelBtn.addEventListener("click", () => {
@@ -425,10 +472,12 @@ document.addEventListener("DOMContentLoaded", function () {
       lastScannedCode = null;
       hide(actionsContainer);
       showAllButtonSections();
+
       if (window.history.replaceState) {
         const cleanUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
       }
+
       localStorage.removeItem("lastScannedQR");
     });
   }
