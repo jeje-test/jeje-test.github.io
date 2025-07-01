@@ -341,7 +341,11 @@ function resendDetailInformation() {
 
     fetch(postURL, {
       method: "POST",
-      body: new URLSearchParams({ data: scannedData, type: "decompte" })
+      body: new URLSearchParams({
+        token: localStorage.getItem("auth_token"),
+        data: scannedData,²
+        type: "decompte"
+    })
     })
       .then(response => response.json())
       .then(data => {
