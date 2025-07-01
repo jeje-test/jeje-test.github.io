@@ -7,8 +7,6 @@ function show(el) {
   el.classList.remove("hidden");
 }
 
-// Clé alignée avec auth-ui.js
-const TOKEN_KEY = "auth_token";
 
 document.addEventListener("DOMContentLoaded", function () {
   const STORAGE_KEY = "offlineQRScans";
@@ -158,12 +156,9 @@ function fetchDataFromGoogleSheet(qrData) {
   hide(actionsContainer);
 
   const cacheBuster = `&cacheBust=${Date.now()}`;
-// Injection du token
-  const token = localStorage.getItem("auth_token");
-  fetch(`${getURL}${encodeURIComponent(qrData)}&token=${encodeURIComponent(token)}${cacheBuster}`, {
+  fetch(`${getURL}${encodeURIComponent(qrData)}${cacheBuster}`, {
     cache: "no-store"
   })
-    
     .then(response => response.json())
     .then(data => {
       hide(loader);
@@ -244,8 +239,6 @@ function resendQrCode() {
   fetch(postURL, {
     method: "POST",
     body: new URLSearchParams({
-      // Injection du token
-      token: localStorage.getItem("auth_token"),
       action: "renvoyerQRcode",
       email,
       nom,
@@ -341,11 +334,7 @@ function resendDetailInformation() {
 
     fetch(postURL, {
       method: "POST",
-      body: new URLSearchParams({
-        token: localStorage.getItem("auth_token"),
-        data: scannedData,²
-        type: "decompte"
-    })
+      body: new URLSearchParams({ data: scannedData, type: "decompte" })
     })
       .then(response => response.json())
       .then(data => {
